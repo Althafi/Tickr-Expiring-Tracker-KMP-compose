@@ -3,7 +3,6 @@ package com.project.tickr.ui.screen.onboarding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.project.tickr.presentation.navigation.Navigator
 import com.project.tickr.presentation.onboarding.OnboardingEvent
 import com.project.tickr.presentation.onboarding.OnboardingViewModel
