@@ -1,0 +1,24 @@
+package com.project.tickr.presentation.di
+
+import com.project.tickr.presentation.auth.AuthViewModel
+import com.project.tickr.presentation.category.form.CategoryFormViewModel
+import com.project.tickr.presentation.category.list.CategoryListViewModel
+import com.project.tickr.presentation.home.HomeViewModel
+import com.project.tickr.presentation.item.detail.ItemDetailViewModel
+import com.project.tickr.presentation.item.form.ItemFormViewModel
+import com.project.tickr.presentation.item.list.ItemListViewModel
+import com.project.tickr.presentation.onboarding.OnboardingViewModel
+import com.project.tickr.presentation.profile.ProfileViewModel
+import org.koin.dsl.module
+
+val presentationModule = module {
+    factory { AuthViewModel(get(), get(), get(), get(), get()) }
+    factory { OnboardingViewModel(get()) }
+    factory { HomeViewModel(get(), get(), get()) }
+    factory { ItemListViewModel(get(), get(), get(), get(), get()) }
+    factory { ItemDetailViewModel(get(), get(), get(), get()) }
+    factory { ItemFormViewModel(get(), get(), get(), get(), get()) }
+    factory { CategoryListViewModel(get(), get(), get(), get()) }
+    factory { CategoryFormViewModel(get(), get(), get(), get()) }
+    factory { ProfileViewModel(get(), get(), get(), get(), get()) }
+}

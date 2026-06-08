@@ -21,4 +21,13 @@ object Validators {
         return if (value == null || !regex.matches(value))
             AppError.Validation(field, "must be #RRGGBB or #AARRGGBB") else null
     }
+
+    fun requireEmail(value: String?, field: String): AppError.Validation? {
+        val regex = Regex("""^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$""")
+        return if (value == null || !regex.matches(value))
+            AppError.Validation(field, "must be a valid email") else null
+    }
+
+    fun requireMinLength(value: String?, min: Int, field: String): AppError.Validation? =
+        if ((value?.length ?: 0) < min) AppError.Validation(field, "minimum $min characters") else null
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Onboarding Strings -->
+    <!-- TODO(user): sesuaikan semua nilai di bawah (teks diambil persis dari mockup) -->
+    <string name="onboarding_title_1">Yuk, kelola bahan makanan, kosmetik, hingga stok tokomu dengan lebih pintar. Katakan selamat tinggal pada barang kedaluwarsa!</string>
+    <string name="onboarding_title_2">Satu catatan kecil darimu, langkah besar untuk kurangi sampah dan hemat isi dompet. Pantau semua tanggal kedaluwarsa dengan mudah.</string>
+    <string name="onboarding_title_3">Terima notifikasi sebelum terlambat. Nikmati kemudahan melacak tanpa takut kecolongan lagi. Mulai sekarang!</string>
+    <string name="onboarding_continue">Lanjutkan</string>
+    <string name="app_version_copyright">Versi 1.0.4 • © 2024 Tickr Team</string>
+
+    <!-- Content Descriptions -->
+    <string name="cd_onboarding_next">Lanjut ke halaman berikutnya</string>
+    <string name="cd_onboarding_welcome">Ilustrasi sambutan Tickr</string>
+    <string name="cd_onboarding_eco">Ilustrasi ramah lingkungan dan pencatatan</string>
+    <string name="cd_onboarding_notify">Ilustrasi notifikasi pengingat kedaluwarsa</string>
+</resources>

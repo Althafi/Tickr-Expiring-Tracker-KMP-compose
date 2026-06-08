@@ -3,6 +3,12 @@ package com.project.tickr.domain.di
 import com.project.tickr.core.util.DateTimeUtil
 import com.project.tickr.core.util.DateTimeUtilImpl
 import com.project.tickr.domain.error.ErrorMessageProvider
+import com.project.tickr.domain.usecase.auth.GetCurrentUserIdUseCase
+import com.project.tickr.domain.usecase.auth.ObserveSessionUseCase
+import com.project.tickr.domain.usecase.auth.ResetPasswordUseCase
+import com.project.tickr.domain.usecase.auth.SignInUseCase
+import com.project.tickr.domain.usecase.auth.SignOutUseCase
+import com.project.tickr.domain.usecase.auth.SignUpUseCase
 import com.project.tickr.domain.usecase.category.CreateCategoryUseCase
 import com.project.tickr.domain.usecase.category.DeleteCategoryUseCase
 import com.project.tickr.domain.usecase.category.GetCategoriesUseCase
@@ -23,11 +29,20 @@ import com.project.tickr.domain.usecase.notification.GetNotificationsUseCase
 import com.project.tickr.domain.usecase.notification.ScheduleNotificationUseCase
 import com.project.tickr.domain.usecase.profile.GetProfileUseCase
 import com.project.tickr.domain.usecase.profile.UpsertProfileUseCase
+import com.project.tickr.domain.usecase.onboarding.GetOnboardingSeenUseCase
+import com.project.tickr.domain.usecase.onboarding.CompleteOnboardingUseCase
 import org.koin.dsl.module
 
 val domainModule = module {
     single<DateTimeUtil> { DateTimeUtilImpl() }
     single { ErrorMessageProvider() }
+
+    factory { SignUpUseCase(get()) }
+    factory { SignInUseCase(get()) }
+    factory { SignOutUseCase(get()) }
+    factory { ObserveSessionUseCase(get()) }
+    factory { GetCurrentUserIdUseCase(get()) }
+    factory { ResetPasswordUseCase(get()) }
 
     factory { GetProfileUseCase(get()) }
     factory { UpsertProfileUseCase(get()) }
@@ -52,4 +67,7 @@ val domainModule = module {
     factory { GetNotificationsByItemUseCase(get()) }
     factory { ScheduleNotificationUseCase(get(), get()) }
     factory { DeleteNotificationUseCase(get()) }
+
+    factory { GetOnboardingSeenUseCase(get()) }
+    factory { CompleteOnboardingUseCase(get()) }
 }

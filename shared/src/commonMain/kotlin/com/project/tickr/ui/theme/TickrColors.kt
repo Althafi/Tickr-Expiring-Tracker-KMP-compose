@@ -1,0 +1,107 @@
+package com.project.tickr.ui.theme
+
+import androidx.compose.material3.ColorScheme
+import androidx.compose.ui.graphics.Color
+
+data class TickrColors(
+    val primaryBrand: Color,
+    val primaryPressed: Color,
+    val secondaryAccent: Color,
+    val background: Color,
+    val surface: Color,
+    val textPrimary: Color,
+    val textSecondary: Color,
+    val critical: Color,
+    val criticalContainer: Color,
+    val warning: Color,
+    val warningContainer: Color,
+    val safe: Color,
+    val safeContainer: Color,
+) {
+    fun toMaterial3ColorScheme(isDarkTheme: Boolean): ColorScheme = ColorScheme(
+        primary = primaryBrand,
+        onPrimary = Color.White,
+        primaryContainer = primaryBrand.copy(alpha = 0.1f),
+        onPrimaryContainer = primaryBrand,
+        inversePrimary = primaryPressed,
+        secondary = secondaryAccent,
+        onSecondary = Color.White,
+        secondaryContainer = secondaryAccent.copy(alpha = 0.1f),
+        onSecondaryContainer = secondaryAccent,
+        tertiary = safe,
+        onTertiary = Color.White,
+        tertiaryContainer = safe.copy(alpha = 0.1f),
+        onTertiaryContainer = safe,
+        background = background,
+        onBackground = textPrimary,
+        surface = surface,
+        onSurface = textPrimary,
+        surfaceVariant = surface.copy(alpha = 0.5f),
+        onSurfaceVariant = textSecondary,
+        surfaceTint = primaryBrand,
+        inverseSurface = if (isDarkTheme) surface else background,
+        inverseOnSurface = if (isDarkTheme) background else surface,
+        error = critical,
+        onError = Color.White,
+        errorContainer = criticalContainer,
+        onErrorContainer = critical,
+        outline = textSecondary,
+        outlineVariant = textSecondary.copy(alpha = 0.5f),
+        scrim = Color.Black.copy(alpha = 0.5f),
+        // Bright/Dim/Container variants (new in Material3)
+        surfaceBright = surface,
+        surfaceDim = surface.copy(alpha = 0.8f),
+        surfaceContainer = surface.copy(alpha = 0.9f),
+        surfaceContainerHigh = surface.copy(alpha = 0.95f),
+        surfaceContainerHighest = surface,
+        surfaceContainerLow = surface.copy(alpha = 0.85f),
+        surfaceContainerLowest = background,
+        // Primary fixed colors
+        primaryFixed = primaryBrand.copy(alpha = 0.9f),
+        primaryFixedDim = primaryBrand.copy(alpha = 0.7f),
+        onPrimaryFixed = Color.White,
+        onPrimaryFixedVariant = primaryBrand,
+        // Secondary fixed colors
+        secondaryFixed = secondaryAccent.copy(alpha = 0.9f),
+        secondaryFixedDim = secondaryAccent.copy(alpha = 0.7f),
+        onSecondaryFixed = Color.White,
+        onSecondaryFixedVariant = secondaryAccent,
+        // Tertiary fixed colors
+        tertiaryFixed = safe.copy(alpha = 0.9f),
+        tertiaryFixedDim = safe.copy(alpha = 0.7f),
+        onTertiaryFixed = Color.White,
+        onTertiaryFixedVariant = safe,
+    )
+}
+
+val TickrLightColors = TickrColors(
+    primaryBrand = Color(0xFF0D6759),
+    primaryPressed = Color(0xFF08443B),
+    secondaryAccent = Color(0xFFFA9A08),
+    background = Color(0xFFFAFAFA),
+    surface = Color(0xFFFFFFFF),
+    textPrimary = Color(0xFF1A1A2E),
+    textSecondary = Color(0xFF6B7280),
+    critical = Color(0xFFDC2626),
+    criticalContainer = Color(0xFFFEECEC),
+    warning = Color(0xFFD97706),
+    warningContainer = Color(0xFFFEF6E0),
+    safe = Color(0xFF16A34A),
+    safeContainer = Color(0xFFE8F8EE),
+)
+
+val TickrDarkColors = TickrColors(
+    primaryBrand = Color(0xFF14A085),
+    primaryPressed = Color(0xFF0D6759),
+    secondaryAccent = Color(0xFFFFB13D),
+    background = Color(0xFF101713),
+    surface = Color(0xFF1A221E),
+    textPrimary = Color(0xFFECEFEC),
+    textSecondary = Color(0xFF9BA39C),
+    critical = Color(0xFFFF6B6B),
+    criticalContainer = Color(0xFF3A1E1E),
+    warning = Color(0xFFFFC257),
+    warningContainer = Color(0xFF3A3017),
+    safe = Color(0xFF4ADE80),
+    safeContainer = Color(0xFF16291D),
+)
