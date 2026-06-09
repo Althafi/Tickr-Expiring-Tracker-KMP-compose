@@ -18,7 +18,13 @@ fun OnboardingRoute(
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
-                is OnboardingEvent.NavigateToAuth -> navigator.navigate(com.project.tickr.presentation.navigation.Destination.Auth)
+                is OnboardingEvent.NavigateToAuth -> {
+                    // popUpToInclusive=true agar back tidak kembali ke onboarding
+                    navigator.navigate(
+                        com.project.tickr.presentation.navigation.Destination.Login,
+                        popUpToInclusive = true,
+                    )
+                }
             }
         }
     }

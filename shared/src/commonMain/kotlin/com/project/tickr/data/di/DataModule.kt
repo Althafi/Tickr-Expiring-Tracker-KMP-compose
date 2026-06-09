@@ -7,6 +7,7 @@ import com.project.tickr.data.remote.datasource.ItemRemoteDataSource
 import com.project.tickr.data.remote.datasource.NotificationRemoteDataSource
 import com.project.tickr.data.remote.datasource.ProfileRemoteDataSource
 import com.project.tickr.data.repository.AuthRepositoryImpl
+import com.project.tickr.data.repository.FakeAuthRepository
 import com.project.tickr.data.repository.CategoryRepositoryImpl
 import com.project.tickr.data.repository.ItemRepositoryImpl
 import com.project.tickr.data.repository.NotificationRepositoryImpl
@@ -28,7 +29,8 @@ val dataModule = module {
     single { ItemRemoteDataSource(get()) }
     single { NotificationRemoteDataSource(get()) }
 
-    single<AuthRepository> { AuthRepositoryImpl(get<SupabaseClient>()) }
+    // TODO(user): Ganti baris ini ke AuthRepositoryImpl saat Supabase Auth siap.
+    single<AuthRepository> { FakeAuthRepository() }
     single<ProfileRepository> { ProfileRepositoryImpl(get()) }
     single<CategoryRepository> { CategoryRepositoryImpl(get()) }
     single<ItemRepository> { ItemRepositoryImpl(get()) }

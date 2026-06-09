@@ -4,11 +4,16 @@ import com.project.tickr.core.util.DateTimeUtil
 import com.project.tickr.core.util.DateTimeUtilImpl
 import com.project.tickr.domain.error.ErrorMessageProvider
 import com.project.tickr.domain.usecase.auth.GetCurrentUserIdUseCase
+import com.project.tickr.domain.usecase.auth.LoginUseCase
 import com.project.tickr.domain.usecase.auth.ObserveSessionUseCase
+import com.project.tickr.domain.usecase.auth.RegisterUseCase
 import com.project.tickr.domain.usecase.auth.ResetPasswordUseCase
 import com.project.tickr.domain.usecase.auth.SignInUseCase
 import com.project.tickr.domain.usecase.auth.SignOutUseCase
 import com.project.tickr.domain.usecase.auth.SignUpUseCase
+import com.project.tickr.domain.usecase.auth.ValidateEmailUseCase
+import com.project.tickr.domain.usecase.auth.ValidateNameUseCase
+import com.project.tickr.domain.usecase.auth.ValidatePasswordUseCase
 import com.project.tickr.domain.usecase.category.CreateCategoryUseCase
 import com.project.tickr.domain.usecase.category.DeleteCategoryUseCase
 import com.project.tickr.domain.usecase.category.GetCategoriesUseCase
@@ -43,6 +48,12 @@ val domainModule = module {
     factory { ObserveSessionUseCase(get()) }
     factory { GetCurrentUserIdUseCase(get()) }
     factory { ResetPasswordUseCase(get()) }
+    // Phase 3.5 Auth use cases
+    factory { LoginUseCase(get()) }
+    factory { RegisterUseCase(get()) }
+    factory { ValidateEmailUseCase() }
+    factory { ValidatePasswordUseCase() }
+    factory { ValidateNameUseCase() }
 
     factory { GetProfileUseCase(get()) }
     factory { UpsertProfileUseCase(get()) }

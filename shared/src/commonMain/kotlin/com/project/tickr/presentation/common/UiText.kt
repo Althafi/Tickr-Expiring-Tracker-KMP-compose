@@ -5,3 +5,7 @@ sealed interface UiText {
 }
 
 fun String.toUiText(): UiText = UiText.Raw(this)
+
+fun UiText.asString(): String = when (this) {
+    is UiText.Raw -> value
+}

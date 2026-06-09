@@ -1,6 +1,8 @@
 package com.project.tickr.presentation.di
 
 import com.project.tickr.presentation.auth.AuthViewModel
+import com.project.tickr.presentation.login.LoginViewModel
+import com.project.tickr.presentation.register.RegisterViewModel
 import com.project.tickr.presentation.category.form.CategoryFormViewModel
 import com.project.tickr.presentation.category.list.CategoryListViewModel
 import com.project.tickr.presentation.home.HomeViewModel
@@ -13,6 +15,8 @@ import org.koin.dsl.module
 
 val presentationModule = module {
     factory { AuthViewModel(get(), get(), get(), get(), get()) }
+    factory { LoginViewModel(get()) }
+    factory { RegisterViewModel(get(), get(), get(), get()) }
     factory { OnboardingViewModel(get()) }
     factory { HomeViewModel(get(), get(), get()) }
     factory { ItemListViewModel(get(), get(), get(), get(), get()) }

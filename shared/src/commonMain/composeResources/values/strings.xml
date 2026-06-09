@@ -8,9 +8,60 @@
     <string name="onboarding_continue">Lanjutkan</string>
     <string name="app_version_copyright">Versi 1.0.4 • © 2024 Tickr Team</string>
 
-    <!-- Content Descriptions -->
+    <!-- Onboarding Content Descriptions -->
     <string name="cd_onboarding_next">Lanjut ke halaman berikutnya</string>
     <string name="cd_onboarding_welcome">Ilustrasi sambutan Tickr</string>
     <string name="cd_onboarding_eco">Ilustrasi ramah lingkungan dan pencatatan</string>
     <string name="cd_onboarding_notify">Ilustrasi notifikasi pengingat kedaluwarsa</string>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- Auth Strings — Phase 3.5                                       -->
+    <!-- TODO(user): sesuaikan semua nilai di bawah                     -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- Login -->
+    <string name="login_google_cta">Masuk dengan Google</string>
+    <string name="login_divider_or">ATAU</string>
+    <string name="login_field_identifier_hint">Masukan Nama Lengkap / Email</string>
+    <string name="login_field_password_hint">Masukan Password</string>
+    <string name="login_cta_submit">Masuk</string>
+    <string name="login_cta_register">Daftar jika belum punya akun</string>
+    <string name="login_footer_terms">Dengan melanjutkan, kamu menyetujui Syarat &amp; Ketentuan serta Kebijakan Privasi kami.</string>
+    <string name="login_error_invalid">Email/nama atau kata sandi salah.</string>
+
+    <!-- Register -->
+    <string name="register_title">Daftar Akun Baru</string>
+    <string name="register_subtitle">Mulai kelola persediaan rumah Anda dengan lebih mudah.</string>
+    <string name="register_label_name">Nama Lengkap</string>
+    <string name="register_hint_name">Contoh: Budi Santoso</string>
+    <string name="register_label_email">Alamat Email</string>
+    <string name="register_hint_email">nama@email.com</string>
+    <string name="register_label_password">Kata Sandi</string>
+    <string name="register_hint_password">Min. 8 karakter</string>
+    <string name="register_cta_submit">Daftar Sekarang</string>
+    <string name="register_have_account">Sudah punya akun? </string>
+    <string name="register_login_link">Masuk di sini</string>
+    <string name="register_divider_or">Atau daftar dengan</string>
+    <string name="register_google_cta">Google</string>
+    <string name="register_error_email_taken">Email ini sudah terdaftar.</string>
+
+    <!-- Password requirements -->
+    <string name="pw_req_length">Minimal 8 karakter</string>
+    <string name="pw_req_case">Huruf besar &amp; kecil</string>
+    <string name="pw_req_digit">Mengandung angka</string>
+    <string name="pw_req_symbol">Mengandung simbol</string>
+    <string name="pw_strength_weak">Lemah</string>
+    <string name="pw_strength_fair">Cukup</string>
+    <string name="pw_strength_good">Baik</string>
+    <string name="pw_strength_strong">Kuat</string>
+
+    <!-- Auth Success -->
+    <string name="auth_success_title">Registrasi Berhasil!</string>
+    <string name="auth_success_body">Akunmu sudah siap. Sekarang kamu bisa mulai mencatat barang dan memantau tanggal kedaluwarsa agar tidak ada lagi yang mubazir.</string>
+
+    <!-- Auth Content Descriptions -->
+    <string name="cd_logo_tickr">Logo Tickr</string>
+    <string name="cd_google_icon">Ikon Google</string>
+    <string name="cd_toggle_password">Tampilkan atau sembunyikan kata sandi</string>
+    <string name="cd_success_check">Ikon registrasi berhasil</string>
 </resources>
