@@ -9,10 +9,12 @@ import com.project.tickr.domain.repository.AuthRepository
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
+import io.github.jan.supabase.auth.status.SessionStatus
 import io.github.jan.supabase.exceptions.RestException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonPrimitive
@@ -80,20 +82,22 @@ class AuthRepositoryImpl : AuthRepository {
         DataResult.Error(AppError.Network)
     }
 
-    // Emit outside the catch block to avoid Kotlin Flow exception transparency violation.
-    // AbortFlowException (from first()) is a CancellationException — if caught inside the
-    // flow builder it would cause "Emissions from catch blocks are prohibited" crash.
-    override fun observeSession(): Flow<AuthUser?> = flow {
-        val result = try {
-            val user = safeCurrentUser()
-            user?.let { AuthUser(it.id, it.email ?: "") }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            null
-        }
-        emit(result)
-    }
+    // Use sessionStatus instead of currentUserOrNull() so that App.kt's .first() waits
+    // until Supabase finishes loading the persisted token from storage (Initializing phase).
+    // Without this, a cold app start would race the storage load and return null,
+    // incorrectly routing the user to Login after an app kill.
+    override fun observeSession(): Flow<AuthUser?> =
+        client.auth.sessionStatus
+            .filterNot { it is SessionStatus.Initializing }
+            .map { status ->
+                when (status) {
+                    is SessionStatus.Authenticated -> {
+                        val user = status.session.user
+                        user?.let { AuthUser(it.id, it.email ?: "") }
+                    }
+                    else -> null
+                }
+            }
 
     override fun currentUserId(): String? = safeCurrentUser()?.id
 

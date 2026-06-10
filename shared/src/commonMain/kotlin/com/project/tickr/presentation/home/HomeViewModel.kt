@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
@@ -81,35 +82,41 @@ class HomeViewModel(
         }
         _state.update { it.copy(isLoading = true, error = null) }
 
+        // All data fetches run in parallel inside a single parent coroutine.
+        // isLoading is cleared only after every child job completes, so the
+        // skeleton stays visible for the full duration of the load/refresh.
         viewModelScope.launch {
-            getProfile(userId).onSuccess { profile ->
-                _state.update { it.copy(userName = profile.fullName ?: "") }
-            }
-        }
-        viewModelScope.launch {
-            getExpiringGrouped(userId).onSuccess { groups ->
-                val criticalCount = groups.sumOf { g ->
-                    g.items.count { it.urgency == Urgency.CRITICAL }
-                }
-                _state.update {
-                    it.copy(expiringGroups = groups, criticalCount = criticalCount)
-                }
-            }.onError { err ->
-                _state.update { it.copy(error = err.message) }
-            }
-        }
-        viewModelScope.launch {
-            getCategoryConsumption(userId).onSuccess { slices ->
-                val total = slices.sumOf { it.count }
-                _state.update { it.copy(slices = slices, totalItems = total) }
-            }
-        }
-        viewModelScope.launch {
-            getWasteTrend(userId).onSuccess { trend ->
-                _state.update { it.copy(wasteTrend = trend) }
-            }
-        }
-        viewModelScope.launch {
+            val jobs = listOf(
+                launch {
+                    getProfile(userId).onSuccess { profile ->
+                        _state.update { it.copy(userName = profile.fullName ?: "") }
+                    }
+                },
+                launch {
+                    getExpiringGrouped(userId).onSuccess { groups ->
+                        val criticalCount = groups.sumOf { g ->
+                            g.items.count { it.urgency == Urgency.CRITICAL }
+                        }
+                        _state.update {
+                            it.copy(expiringGroups = groups, criticalCount = criticalCount)
+                        }
+                    }.onError { err ->
+                        _state.update { it.copy(error = err.message) }
+                    }
+                },
+                launch {
+                    getCategoryConsumption(userId).onSuccess { slices ->
+                        val total = slices.sumOf { it.count }
+                        _state.update { it.copy(slices = slices, totalItems = total) }
+                    }
+                },
+                launch {
+                    getWasteTrend(userId).onSuccess { trend ->
+                        _state.update { it.copy(wasteTrend = trend) }
+                    }
+                },
+            )
+            jobs.joinAll()
             _state.update { it.copy(isLoading = false) }
         }
     }
