@@ -7,6 +7,8 @@ import com.project.tickr.presentation.login.LoginViewModel
 import com.project.tickr.presentation.register.RegisterViewModel
 import com.project.tickr.presentation.category.form.CategoryFormViewModel
 import com.project.tickr.presentation.category.list.CategoryListViewModel
+import com.project.tickr.presentation.expiry.ExpiryViewModel
+import com.project.tickr.presentation.expiry.detail.ExpiryDetailViewModel
 import com.project.tickr.presentation.home.HomeViewModel
 import com.project.tickr.presentation.item.detail.ItemDetailViewModel
 import com.project.tickr.presentation.item.form.ItemFormViewModel
@@ -23,6 +25,8 @@ val presentationModule = module {
     factory { OnboardingViewModel(get()) }
     factory { HomeViewModel(get(), get(), get(), get(), get(), get()) }
     factory { AddItemViewModel(get(), get(), get(), get()) }
+    factory { ExpiryViewModel(get(), get(), get(), get()) }
+    factory { ExpiryDetailViewModel(get(), get(), get(), get(), get(), get(), get()) }
     factory { ItemListViewModel(get(), get(), get(), get(), get()) }
     factory { ItemDetailViewModel(get(), get(), get(), get()) }
     factory { ItemFormViewModel(get(), get(), get(), get(), get()) }

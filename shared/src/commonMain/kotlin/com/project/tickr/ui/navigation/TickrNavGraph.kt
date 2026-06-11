@@ -11,15 +11,19 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.project.tickr.presentation.navigation.Destination
 import com.project.tickr.ui.screen.auth.LoginRoute
 import com.project.tickr.ui.screen.auth.RegisterFailedRoute
 import com.project.tickr.ui.screen.auth.RegisterRoute
 import com.project.tickr.ui.screen.auth.RegisterSuccessRoute
+import com.project.tickr.ui.screen.expiry.detail.ItemDetailRoute
 // HomePlaceholderScreen diganti oleh MainShell
 import com.project.tickr.ui.screen.onboarding.OnboardingRoute
+import org.koin.compose.viewmodel.koinViewModel
 
 private const val TRANSITION_DURATION = 300
 
@@ -134,6 +138,39 @@ fun TickrNavGraph(
             },
         ) {
             MainShell(navigator = navigator)
+        }
+
+        // ─── Item Detail (Expiry) ────────────────────────────────────────────
+        composable(
+            route = Destination.ItemDetail.PATTERN,
+            arguments = listOf(navArgument(Destination.ItemDetail.ARG_ID) { type = NavType.LongType }),
+            enterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { it } + fadeIn(tween(TRANSITION_DURATION))
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { it } + fadeOut(tween(TRANSITION_DURATION))
+            },
+            popEnterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { -it / 3 } + fadeIn(tween(TRANSITION_DURATION))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { it } + fadeOut(tween(TRANSITION_DURATION))
+            },
+        ) { backStackEntry ->
+            val itemId = backStackEntry.arguments?.getLong(Destination.ItemDetail.ARG_ID) ?: return@composable
+            ItemDetailRoute(
+                itemId = itemId,
+                navigator = navigator,
+                viewModel = koinViewModel(),
+            )
         }
 
         // Legacy Auth route (kept untuk backward compat dengan kode lama)

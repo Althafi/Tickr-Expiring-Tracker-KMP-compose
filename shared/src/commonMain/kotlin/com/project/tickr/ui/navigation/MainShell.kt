@@ -28,6 +28,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,9 +41,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.project.tickr.presentation.additem.AddItemEvent
 import com.project.tickr.presentation.additem.AddItemViewModel
+import com.project.tickr.presentation.expiry.ExpiryViewModel
 import com.project.tickr.presentation.home.HomeEvent
 import com.project.tickr.presentation.home.HomeViewModel
 import com.project.tickr.presentation.navigation.Navigator
+import com.project.tickr.ui.screen.expiry.ExpiryRoute
 import com.project.tickr.ui.screen.home.HomeRoute
 import com.project.tickr.ui.screen.home.additem.AddItemSheet
 import com.project.tickr.ui.theme.TickrTheme
@@ -71,8 +74,9 @@ private enum class BottomTab(
 fun MainShell(navigator: Navigator) {
     val homeVm: HomeViewModel = koinViewModel()
     val addItemVm: AddItemViewModel = koinViewModel()
+    val expiryVm: ExpiryViewModel = koinViewModel()
 
-    var selectedTab by remember { mutableStateOf(BottomTab.HOME) }
+    var selectedTab by rememberSaveable { mutableStateOf(BottomTab.HOME) }
     var showAddItem by remember { mutableStateOf(false) }
 
     // HomeRoute's "Tambah Barang" CTA button routes through HomeEvent — handle it here.
@@ -93,6 +97,7 @@ fun MainShell(navigator: Navigator) {
                 AddItemEvent.Saved -> {
                     showAddItem = false
                     homeVm.onAction(com.project.tickr.presentation.home.HomeAction.Refresh)
+                    expiryVm.onAction(com.project.tickr.presentation.expiry.ExpiryAction.Refresh)
                 }
                 else -> Unit
             }
@@ -116,7 +121,14 @@ fun MainShell(navigator: Navigator) {
         Box(Modifier.fillMaxSize().padding(innerPadding)) {
             when (selectedTab) {
                 BottomTab.HOME -> HomeRoute(navigator = navigator, viewModel = homeVm)
-                BottomTab.EXPIRING -> ComingSoonPlaceholder("Kadaluwarsa") // TODO(user): implementasi layar
+                BottomTab.EXPIRING -> ExpiryRoute(
+                    navigator = navigator,
+                    viewModel = expiryVm,
+                    onAddItemRequest = {
+                        addItemVm.onAction(com.project.tickr.presentation.additem.AddItemAction.Reset)
+                        showAddItem = true
+                    },
+                )
                 BottomTab.INSIGHT -> ComingSoonPlaceholder("Wawasan")     // TODO(user): implementasi layar
                 BottomTab.PROFILE -> ComingSoonPlaceholder("Profil")      // TODO(user): implementasi layar
             }
