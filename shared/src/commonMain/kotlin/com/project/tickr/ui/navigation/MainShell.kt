@@ -45,9 +45,11 @@ import com.project.tickr.presentation.expiry.ExpiryViewModel
 import com.project.tickr.presentation.home.HomeEvent
 import com.project.tickr.presentation.home.HomeViewModel
 import com.project.tickr.presentation.navigation.Navigator
+import com.project.tickr.presentation.profile.ProfileViewModel
 import com.project.tickr.ui.screen.expiry.ExpiryRoute
 import com.project.tickr.ui.screen.home.HomeRoute
 import com.project.tickr.ui.screen.home.additem.AddItemSheet
+import com.project.tickr.ui.screen.profile.ProfileRoute
 import com.project.tickr.ui.theme.TickrTheme
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -75,6 +77,7 @@ fun MainShell(navigator: Navigator) {
     val homeVm: HomeViewModel = koinViewModel()
     val addItemVm: AddItemViewModel = koinViewModel()
     val expiryVm: ExpiryViewModel = koinViewModel()
+    val profileVm: ProfileViewModel = koinViewModel()
 
     var selectedTab by rememberSaveable { mutableStateOf(BottomTab.HOME) }
     var showAddItem by remember { mutableStateOf(false) }
@@ -130,7 +133,7 @@ fun MainShell(navigator: Navigator) {
                     },
                 )
                 BottomTab.INSIGHT -> ComingSoonPlaceholder("Wawasan")     // TODO(user): implementasi layar
-                BottomTab.PROFILE -> ComingSoonPlaceholder("Profil")      // TODO(user): implementasi layar
+                BottomTab.PROFILE -> ProfileRoute(navigator = navigator, viewModel = profileVm)
             }
         }
     }

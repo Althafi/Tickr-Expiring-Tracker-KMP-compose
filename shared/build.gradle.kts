@@ -69,6 +69,10 @@ kotlin {
             // Navigation
             implementation(libs.navigation.compose)
 
+            // Coil — image loading (avatar)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor)
+
         }
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)

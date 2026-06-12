@@ -60,6 +60,7 @@ val domainModule = module {
     factory { ValidateEmailUseCase() }
     factory { ValidatePasswordUseCase() }
     factory { ValidateNameUseCase() }
+    factory { com.project.tickr.domain.usecase.auth.ChangePasswordUseCase(get()) }
 
     factory { GetProfileUseCase(get()) }
     factory { UpsertProfileUseCase(get()) }

@@ -1,6 +1,7 @@
 package com.project.tickr.data.remote.datasource
 
 import com.project.tickr.core.result.DataResult
+import com.project.tickr.data.remote.dto.CreateItemDto
 import com.project.tickr.data.remote.dto.ItemDto
 import io.github.jan.supabase.SupabaseClient
 
@@ -20,7 +21,7 @@ class ItemRemoteDataSource(client: SupabaseClient) : BaseRemoteDataSource(client
         db.from(table).select { filter { eq("id", id) } }.decodeSingle<ItemDto>()
     }
 
-    suspend fun insert(dto: ItemDto): DataResult<ItemDto> = safeApiCall {
+    suspend fun insert(dto: CreateItemDto): DataResult<ItemDto> = safeApiCall {
         db.from(table).insert(dto) { select() }.decodeSingle<ItemDto>()
     }
 

@@ -199,6 +199,15 @@ class AuthRepositoryImpl : AuthRepository {
     override suspend fun loginWithGoogle(): DataResult<UserSession> =
         DataResult.Error(AppError.Unknown("Google OAuth not implemented"))
 
+    override suspend fun changePassword(newPassword: String): DataResult<Unit> = try {
+        client.auth.updateUser { password = newPassword }
+        DataResult.Success(Unit)
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        DataResult.Error(AppError.Unknown(debugMessage(e)))
+    }
+
     private fun debugMessage(e: Exception): String =
         "[${e::class.simpleName}] ${e.message ?: "no message"}"
 }

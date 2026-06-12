@@ -80,4 +80,8 @@ class FakeAuthRepository : AuthRepository {
     // TODO(user): implementasi Google/OAuth (Supabase) — jangan panggil apa pun
     override suspend fun loginWithGoogle(): DataResult<UserSession> =
         DataResult.Error(AppError.Unknown("Google OAuth belum diimplementasikan."))
+
+    override suspend fun changePassword(newPassword: String): DataResult<Unit> {
+        TODO("Not yet implemented")
+    }
 }

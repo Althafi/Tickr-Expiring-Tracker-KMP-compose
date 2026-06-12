@@ -18,4 +18,5 @@ interface AuthRepository {
     suspend fun login(identifier: String, password: String): DataResult<UserSession>
     suspend fun register(fullName: String, email: String, password: String): DataResult<UserSession>
     suspend fun loginWithGoogle(): DataResult<UserSession> // TODO(user): implementasi Google/OAuth (Supabase) — jangan panggil apa pun
+    suspend fun changePassword(newPassword: String): DataResult<Unit>
 }

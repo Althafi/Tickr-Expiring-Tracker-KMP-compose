@@ -3,6 +3,7 @@ package com.project.tickr.data.repository
 import com.project.tickr.core.result.DataResult
 import com.project.tickr.core.result.mapData
 import com.project.tickr.data.mapper.toDomain
+import com.project.tickr.data.mapper.toCreateDto
 import com.project.tickr.data.mapper.toDto
 import com.project.tickr.data.remote.datasource.ItemRemoteDataSource
 import com.project.tickr.domain.model.Item
@@ -22,7 +23,7 @@ class ItemRepositoryImpl(
         remote.getById(id).mapData { it.toDomain() }
 
     override suspend fun createItem(item: Item): DataResult<Item> =
-        remote.insert(item.toDto()).mapData { it.toDomain() }
+        remote.insert(item.toCreateDto()).mapData { it.toDomain() }
 
     override suspend fun updateItem(item: Item): DataResult<Item> =
         remote.update(item.id, item.toDto()).mapData { it.toDomain() }

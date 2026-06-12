@@ -15,6 +15,9 @@ import com.project.tickr.presentation.item.form.ItemFormViewModel
 import com.project.tickr.presentation.item.list.ItemListViewModel
 import com.project.tickr.presentation.onboarding.OnboardingViewModel
 import com.project.tickr.presentation.profile.ProfileViewModel
+import com.project.tickr.presentation.editprofile.EditProfileViewModel
+import com.project.tickr.presentation.changepassword.ChangePasswordViewModel
+import com.project.tickr.presentation.help.HelpViewModel
 import org.koin.dsl.module
 
 val presentationModule = module {
@@ -32,5 +35,8 @@ val presentationModule = module {
     factory { ItemFormViewModel(get(), get(), get(), get(), get()) }
     factory { CategoryListViewModel(get(), get(), get(), get()) }
     factory { CategoryFormViewModel(get(), get(), get(), get()) }
-    factory { ProfileViewModel(get(), get(), get(), get(), get()) }
+    factory { ProfileViewModel(get(), get(), get(), get(), get(), get()) }
+    factory { EditProfileViewModel(get(), get(), get(), get(), get()) }
+    factory { ChangePasswordViewModel(get(), get()) }
+    factory { HelpViewModel() }
 }

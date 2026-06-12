@@ -112,4 +112,59 @@
     <string name="additem_cta_save">Catat Barang</string>
     <string name="cd_additem_close">Tutup</string>
     <string name="cd_additem_photo">Unggah foto produk</string>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- Profile Strings — Phase 3.5                                    -->
+    <!-- TODO(user): sesuaikan semua nilai di bawah                     -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <string name="profile_menu_connect_google">Hubungkan Google</string>
+    <string name="profile_menu_notifications">Pengaturan Notifikasi</string>
+    <string name="profile_menu_privacy">Kebijakan Privasi</string>
+    <string name="profile_menu_help">Bantuan</string>
+    <string name="profile_logout">Keluar dari Akun</string>
+    <string name="profile_coming_soon_badge">Segera</string>
+    <string name="cd_profile_avatar">Foto profil pengguna</string>
+    <string name="cd_profile_edit_badge">Ubah profil</string>
+    <string name="cd_profile_coming_soon">Fitur ini segera hadir</string>
+
+    <!-- Edit Profile -->
+    <string name="edit_profile_title">Edit Profil</string>
+    <string name="edit_profile_change_photo">Ubah Foto</string>
+    <string name="edit_profile_label_name">Nama Lengkap</string>
+    <string name="edit_profile_label_email">Alamat Email</string>
+    <string name="edit_profile_change_password">Ubah Kata Sandi</string>
+    <string name="edit_profile_info">Informasi profil Anda akan digunakan untuk memudahkan proses pengelolaan stok dan pengingat tanggal kedaluwarsa.</string>
+    <string name="edit_profile_save">Simpan Perubahan</string>
+    <string name="cd_edit_change_photo">Ubah foto profil</string>
+    <string name="cd_back">Kembali</string>
+
+    <!-- Change Password -->
+    <string name="password_title">Ubah Kata Sandi</string>
+    <string name="password_hero_title">Amankan Akun Anda</string>
+    <string name="password_hero_subtitle">Perbarui kata sandi secara berkala untuk menjaga data inventaris tetap aman.</string>
+    <string name="password_label_current">Kata Sandi Saat Ini</string>
+    <string name="password_label_new">Kata Sandi Baru</string>
+    <string name="password_label_confirm">Konfirmasi Kata Sandi Baru</string>
+    <string name="password_rule_info">Gunakan minimal 8 karakter dengan kombinasi huruf dan angka untuk keamanan maksimal.</string>
+    <string name="password_cta_submit">Perbarui Kata Sandi</string>
+    <string name="security_title">Keamanan Akun</string>
+    <string name="password_fail_title">Gagal Memperbarui Kata Sandi</string>
+    <string name="password_fail_body">Maaf, terjadi kendala saat mencoba memperbarui kata sandi Anda. Pastikan koneksi internet stabil atau coba gunakan kata sandi yang berbeda.</string>
+    <string name="password_fail_retry">Coba Lagi</string>
+    <string name="password_fail_help">Bantuan</string>
+    <string name="password_success_title">Kata Sandi Berhasil Diperbarui</string>
+    <string name="password_success_body">Bagus! Kata sandi Anda telah berhasil diubah. Sekarang akun Anda lebih aman dan siap digunakan kembali.</string>
+    <string name="password_success_back">Kembali ke Profil</string>
+    <string name="cd_password_toggle">Tampilkan atau sembunyikan kata sandi</string>
+    <string name="cd_password_fail_illustration">Ilustrasi gagal memperbarui kata sandi</string>
+    <string name="cd_password_success_illustration">Ilustrasi kata sandi berhasil diperbarui</string>
+
+    <!-- Help -->
+    <string name="help_title">Bantuan</string>
+    <string name="help_subtitle">Temukan jawaban cepat atau hubungi tim kami bila butuh bantuan lebih lanjut.</string>
+    <string name="help_section_faq">Pertanyaan Umum</string>
+    <string name="help_section_contact">Hubungi Kami</string>
+    <string name="help_contact_email">Email Dukungan</string>
+    <string name="help_contact_whatsapp">WhatsApp</string>
+    <string name="cd_help_faq_toggle">Buka atau tutup jawaban</string>
 </resources>

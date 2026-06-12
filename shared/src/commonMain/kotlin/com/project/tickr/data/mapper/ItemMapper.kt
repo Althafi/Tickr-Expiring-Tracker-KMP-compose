@@ -1,5 +1,6 @@
 package com.project.tickr.data.mapper
 
+import com.project.tickr.data.remote.dto.CreateItemDto
 import com.project.tickr.data.remote.dto.ItemDto
 import com.project.tickr.domain.model.Item
 
@@ -33,4 +34,17 @@ fun Item.toDto() = ItemDto(
     unit = unit,
     createdAt = createdAt,
     updatedAt = updatedAt
+)
+
+fun Item.toCreateDto() = CreateItemDto(
+    userId = userId,
+    categoryId = categoryId,
+    name = name,
+    barcode = barcode,
+    expiryDate = expiryDate,
+    imageUrl = imageUrl,
+    notes = notes,
+    isConsumed = isConsumed,
+    quantity = quantity,
+    unit = unit,
 )

@@ -15,13 +15,16 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.savedstate.read
 import com.project.tickr.presentation.navigation.Destination
 import com.project.tickr.ui.screen.auth.LoginRoute
 import com.project.tickr.ui.screen.auth.RegisterFailedRoute
 import com.project.tickr.ui.screen.auth.RegisterRoute
 import com.project.tickr.ui.screen.auth.RegisterSuccessRoute
+import com.project.tickr.ui.screen.changepassword.ChangePasswordRoute
+import com.project.tickr.ui.screen.editprofile.EditProfileRoute
 import com.project.tickr.ui.screen.expiry.detail.ItemDetailRoute
-// HomePlaceholderScreen diganti oleh MainShell
+import com.project.tickr.ui.screen.help.HelpRoute
 import com.project.tickr.ui.screen.onboarding.OnboardingRoute
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -165,12 +168,93 @@ fun TickrNavGraph(
                 ) { it } + fadeOut(tween(TRANSITION_DURATION))
             },
         ) { backStackEntry ->
-            val itemId = backStackEntry.arguments?.getLong(Destination.ItemDetail.ARG_ID) ?: return@composable
+            val itemId = backStackEntry.arguments?.read { getLong(Destination.ItemDetail.ARG_ID) } ?: return@composable
             ItemDetailRoute(
                 itemId = itemId,
                 navigator = navigator,
                 viewModel = koinViewModel(),
             )
+        }
+
+        // ─── Edit Profile ─────────────────────────────────────────────────────
+        composable(
+            route = Destination.EditProfile.route,
+            enterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { it } + fadeIn(tween(TRANSITION_DURATION))
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { -it / 3 } + fadeOut(tween(TRANSITION_DURATION))
+            },
+            popEnterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { -it / 3 } + fadeIn(tween(TRANSITION_DURATION))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { it } + fadeOut(tween(TRANSITION_DURATION))
+            },
+        ) {
+            EditProfileRoute(navigator = navigator)
+        }
+
+        // ─── Change Password ───────────────────────────────────────────────────
+        composable(
+            route = Destination.ChangePassword.route,
+            enterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { it } + fadeIn(tween(TRANSITION_DURATION))
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { -it / 3 } + fadeOut(tween(TRANSITION_DURATION))
+            },
+            popEnterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { -it / 3 } + fadeIn(tween(TRANSITION_DURATION))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { it } + fadeOut(tween(TRANSITION_DURATION))
+            },
+        ) {
+            ChangePasswordRoute(navigator = navigator)
+        }
+
+        // ─── Help ──────────────────────────────────────────────────────────────
+        composable(
+            route = Destination.Help.route,
+            enterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { it } + fadeIn(tween(TRANSITION_DURATION))
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { -it / 3 } + fadeOut(tween(TRANSITION_DURATION))
+            },
+            popEnterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { -it / 3 } + fadeIn(tween(TRANSITION_DURATION))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { it } + fadeOut(tween(TRANSITION_DURATION))
+            },
+        ) {
+            HelpRoute(navigator = navigator)
         }
 
         // Legacy Auth route (kept untuk backward compat dengan kode lama)

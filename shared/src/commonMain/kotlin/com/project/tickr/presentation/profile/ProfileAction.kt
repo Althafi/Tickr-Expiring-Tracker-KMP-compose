@@ -7,4 +7,6 @@ sealed interface ProfileAction : UiAction {
     data class FullNameChanged(val value: String) : ProfileAction
     data object Save : ProfileAction
     data object SignOut : ProfileAction
+    data object EditProfile : ProfileAction
+    data object OpenHelp : ProfileAction
 }
