@@ -64,8 +64,6 @@ import com.project.tickr.domain.model.Category
 import com.project.tickr.presentation.additem.AddItemAction
 import com.project.tickr.presentation.additem.AddItemUiState
 import com.project.tickr.presentation.additem.AddItemViewModel
-import com.project.tickr.presentation.additem.DEFAULT_CATEGORIES
-import com.project.tickr.presentation.additem.StaticCategory
 import com.project.tickr.presentation.additem.UNIT_OPTIONS
 import com.project.tickr.ui.common.PlatformDatePicker
 import com.project.tickr.ui.common.rememberImagePickerLauncher
@@ -305,28 +303,39 @@ private fun CategorySection(
     val colors = TickrTheme.colors
     val typography = TickrTheme.typography
 
-    // Use DB categories if loaded, otherwise show 4 static defaults
-    val categories: List<StaticCategory> = if (state.dbCategories.isNotEmpty()) {
-        state.dbCategories.map { StaticCategory(it.id, it.name, "") }
-    } else {
-        DEFAULT_CATEGORIES
-    }
-
     Column {
         Text(text = "Kategori", style = typography.body, color = colors.textSecondary)
         Spacer(Modifier.height(TickrTheme.spacing.xs))
-        Column(verticalArrangement = Arrangement.spacedBy(TickrTheme.spacing.xs)) {
-            categories.forEach { cat ->
-                val isSelected = if (cat.id != null) {
-                    state.selectedCategoryId == cat.id
-                } else {
-                    state.selectedCategoryId == null && state.selectedCategoryName == cat.name
+        when {
+            state.isLoadingCategories -> {
+                Box(
+                    modifier = Modifier.fillMaxWidth().height(48.dp),
+                    contentAlignment = Alignment.CenterStart,
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = colors.primaryBrand,
+                        strokeWidth = 2.dp,
+                    )
                 }
-                CategoryRadioRow(
-                    label = if (cat.emoji.isNotEmpty()) "${cat.emoji} ${cat.name}" else cat.name,
-                    selected = isSelected,
-                    onClick = { onAction(AddItemAction.CategorySelected(cat.id, cat.name)) },
+            }
+            state.dbCategories.isEmpty() -> {
+                Text(
+                    text = "Gagal memuat kategori. Coba tutup dan buka kembali.",
+                    style = typography.caption,
+                    color = colors.critical,
                 )
+            }
+            else -> {
+                Column(verticalArrangement = Arrangement.spacedBy(TickrTheme.spacing.xs)) {
+                    state.dbCategories.forEach { cat ->
+                        CategoryRadioRow(
+                            label = cat.name,
+                            selected = state.selectedCategoryId == cat.id,
+                            onClick = { onAction(AddItemAction.CategorySelected(cat.id, cat.name)) },
+                        )
+                    }
+                }
             }
         }
     }

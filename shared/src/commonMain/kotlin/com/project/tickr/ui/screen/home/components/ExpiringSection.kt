@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -31,6 +32,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import com.project.tickr.domain.model.CategoryGroup
 import com.project.tickr.domain.model.ExpiringItem
 import com.project.tickr.domain.model.Urgency
@@ -176,8 +178,10 @@ private fun ExpiringItemRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(spacing.md),
     ) {
-        // Thumbnail placeholder — TODO(user): pakai AsyncImage dengan image_url
-        Box(
+        AsyncImage(
+            model = item.imageUrl,
+            contentDescription = "Foto produk ${item.name}",
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(56.dp)
                 .clip(RoundedCornerShape(TickrCornerRadius.thumbnail))

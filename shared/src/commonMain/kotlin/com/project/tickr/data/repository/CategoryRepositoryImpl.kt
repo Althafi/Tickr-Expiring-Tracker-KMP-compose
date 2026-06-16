@@ -13,7 +13,7 @@ class CategoryRepositoryImpl(
 ) : CategoryRepository {
 
     override suspend fun getCategories(): DataResult<List<Category>> =
-        remote.getAll().mapData { list -> list.map { it.toDomain() } }
+        remote.getAll().mapData { list -> list.map { it.toDomain() }.sortedBy { it.id } }
 
     override suspend fun getCategoriesByUser(userId: String): DataResult<List<Category>> =
         remote.getByUserId(userId).mapData { list -> list.map { it.toDomain() } }

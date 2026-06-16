@@ -2,6 +2,7 @@ package com.project.tickr.data.di
 
 import com.project.tickr.core.network.SupabaseProvider
 import com.project.tickr.data.remote.datasource.CategoryRemoteDataSource
+import com.project.tickr.data.remote.datasource.StorageRemoteDataSource
 import io.github.jan.supabase.SupabaseClient
 import com.project.tickr.data.remote.datasource.ItemRemoteDataSource
 import com.project.tickr.data.remote.datasource.NotificationRemoteDataSource
@@ -27,6 +28,7 @@ val dataModule = module {
     single { CategoryRemoteDataSource(get()) }
     single { ItemRemoteDataSource(get()) }
     single { NotificationRemoteDataSource(get()) }
+    single { StorageRemoteDataSource(get()) }
 
     single<AuthRepository> { AuthRepositoryImpl() }
     single<ProfileRepository> { ProfileRepositoryImpl(get()) }

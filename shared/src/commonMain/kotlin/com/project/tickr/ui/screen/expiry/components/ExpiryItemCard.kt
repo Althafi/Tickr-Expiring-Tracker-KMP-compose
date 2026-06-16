@@ -26,10 +26,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.project.tickr.domain.model.ExpiringItem
 import com.project.tickr.domain.model.Urgency
 import com.project.tickr.ui.theme.TickrCornerRadius
@@ -64,13 +66,14 @@ fun ExpiryItemCard(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(spacing.md),
     ) {
-        // Thumbnail — TODO(user): tambahkan Coil3 dependency dan AsyncImage saat aset siap
-        Box(
+        AsyncImage(
+            model = item.imageUrl,
+            contentDescription = "Foto produk ${item.name}",
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(56.dp)
                 .clip(RoundedCornerShape(TickrCornerRadius.thumbnail))
-                .background(colors.primaryBrand.copy(alpha = 0.08f))
-                .semantics { contentDescription = "Foto produk ${item.name}" }, // TODO(user): stringResource
+                .background(colors.primaryBrand.copy(alpha = 0.08f)),
         )
 
         // Info

@@ -28,6 +28,7 @@ import com.project.tickr.domain.usecase.item.GetItemsByUserUseCase
 import com.project.tickr.domain.usecase.item.GetItemsUseCase
 import com.project.tickr.domain.usecase.item.MarkItemConsumedUseCase
 import com.project.tickr.domain.usecase.item.UpdateItemUseCase
+import com.project.tickr.domain.usecase.item.UploadProductImageUseCase
 import com.project.tickr.domain.usecase.notification.DeleteNotificationUseCase
 import com.project.tickr.domain.usecase.notification.GetNotificationsByItemUseCase
 import com.project.tickr.domain.usecase.notification.GetNotificationsUseCase
@@ -80,6 +81,7 @@ val domainModule = module {
     factory { DeleteItemUseCase(get()) }
     factory { MarkItemConsumedUseCase(get()) }
     factory { GetExpiringItemsUseCase(get(), get()) }
+    factory { UploadProductImageUseCase(get()) }
 
     factory { GetNotificationsUseCase(get()) }
     factory { GetNotificationsByItemUseCase(get()) }

@@ -27,7 +27,7 @@ val presentationModule = module {
     factory { RegisterViewModel(get(), get(), get(), get(), get(), get()) }
     factory { OnboardingViewModel(get()) }
     factory { HomeViewModel(get(), get(), get(), get(), get(), get()) }
-    factory { AddItemViewModel(get(), get(), get(), get()) }
+    factory { AddItemViewModel(get(), get(), get(), get(), get()) }
     factory { ExpiryViewModel(get(), get(), get(), get()) }
     factory { ExpiryDetailViewModel(get(), get(), get(), get(), get(), get(), get()) }
     factory { ItemListViewModel(get(), get(), get(), get(), get()) }

@@ -42,7 +42,7 @@ fun StatCardPair(
     ) {
         StatCard(
             value = stats?.consumed?.toString() ?: "–",
-            label = "Barang Berhasil Dikonsumsi", // TODO(user): pakai stringResource
+            label = "Barang Dikonsumsi", // TODO(user): pakai stringResource
             icon = { Icon(Icons.Outlined.Check, contentDescription = null, tint = colors.safe, modifier = Modifier.size(20.dp)) },
             iconBg = colors.safeContainer,
             cardBg = colors.safeContainer.copy(alpha = 0.55f),

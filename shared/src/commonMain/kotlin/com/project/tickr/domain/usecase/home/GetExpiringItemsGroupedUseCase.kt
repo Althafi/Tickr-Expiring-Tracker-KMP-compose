@@ -4,6 +4,7 @@ import com.project.tickr.core.result.DataResult
 import com.project.tickr.core.util.DateTimeUtil
 import com.project.tickr.domain.model.CategoryGroup
 import com.project.tickr.domain.model.ExpiringItem
+import com.project.tickr.domain.model.Urgency
 import com.project.tickr.domain.model.daysToUrgency
 import com.project.tickr.domain.repository.CategoryRepository
 import com.project.tickr.domain.repository.ItemRepository
@@ -17,12 +18,12 @@ class GetExpiringItemsGroupedUseCase(
         val itemsResult = itemRepository.getItemsByUser(userId)
         if (itemsResult is DataResult.Error) return itemsResult
 
-        val categoriesResult = categoryRepository.getCategoriesByUser(userId)
-        if (categoriesResult is DataResult.Error) return categoriesResult
+        val categoryMap = when (val r = categoryRepository.getCategories()) {
+            is DataResult.Success -> r.data.associateBy { it.id }
+            is DataResult.Error -> emptyMap()
+        }
 
         val items = (itemsResult as DataResult.Success).data.filter { !it.isConsumed }
-        val categories = (categoriesResult as DataResult.Success).data
-        val categoryMap = categories.associateBy { it.id }
 
         val expiringItems = items.map { item ->
             val cat = categoryMap[item.categoryId]
@@ -31,7 +32,7 @@ class GetExpiringItemsGroupedUseCase(
                 id = item.id,
                 name = item.name,
                 categoryId = item.categoryId,
-                categoryName = cat?.name ?: "Lainnya", // TODO(user): sesuaikan
+                categoryName = cat?.name ?: "Lainnya",
                 categoryColorHex = cat?.colorHex ?: "#6B7280",
                 expiryDate = item.expiryDate,
                 imageUrl = item.imageUrl,
@@ -40,7 +41,9 @@ class GetExpiringItemsGroupedUseCase(
                 daysUntilExpiry = days,
                 urgency = daysToUrgency(days),
             )
-        }.sortedBy { it.daysUntilExpiry }
+        }
+            .filter { it.urgency != Urgency.SAFE }
+            .sortedBy { it.daysUntilExpiry }
 
         val groups = expiringItems
             .groupBy { it.categoryName }

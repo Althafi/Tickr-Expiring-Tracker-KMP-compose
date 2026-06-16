@@ -17,6 +17,7 @@ val DEFAULT_CATEGORIES = listOf(
 data class AddItemUiState(
     val name: String = "",
     val dbCategories: List<Category> = emptyList(),
+    val isLoadingCategories: Boolean = true,
     val selectedCategoryId: Long? = null,
     val selectedCategoryName: String? = null,
     val quantity: Int = 0,
@@ -31,7 +32,8 @@ data class AddItemUiState(
     val expiryError: String? = null,
 ) {
     val canSave: Boolean
-        get() = name.isNotBlank() && expiryDateMillis != null && quantity >= 1 && !isSaving
+        get() = name.isNotBlank() && expiryDateMillis != null && quantity >= 1 &&
+                selectedCategoryId != null && !isSaving
 
     /** DD / MM / YYYY untuk display (derivasi dari expiryIsoDate) */
     val expiryDateDisplay: String

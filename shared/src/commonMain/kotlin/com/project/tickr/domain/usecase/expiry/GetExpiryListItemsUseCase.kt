@@ -21,7 +21,7 @@ class GetExpiryListItemsUseCase(
         val itemsResult = itemRepository.getItemsByUser(userId)
         if (itemsResult is DataResult.Error) return itemsResult
 
-        val categoryMap = when (val r = categoryRepository.getCategoriesByUser(userId)) {
+        val categoryMap = when (val r = categoryRepository.getCategories()) {
             is DataResult.Success -> r.data.associateBy { it.id }
             is DataResult.Error -> emptyMap()
         }

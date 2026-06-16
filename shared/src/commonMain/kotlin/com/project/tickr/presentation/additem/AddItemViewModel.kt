@@ -5,10 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.project.tickr.core.result.onError
 import com.project.tickr.core.result.onSuccess
 import com.project.tickr.core.util.DateTimeUtil
+import com.project.tickr.core.result.DataResult
 import com.project.tickr.domain.usecase.auth.GetCurrentUserIdUseCase
 import com.project.tickr.domain.usecase.category.GetCategoriesUseCase
 import com.project.tickr.domain.usecase.home.AddItemParams
 import com.project.tickr.domain.usecase.home.AddItemUseCase
+import com.project.tickr.domain.usecase.item.UploadProductImageUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,6 +24,7 @@ class AddItemViewModel(
     private val getCategories: GetCategoriesUseCase,
     private val getCurrentUserId: GetCurrentUserIdUseCase,
     private val dateTime: DateTimeUtil,
+    private val uploadProductImage: UploadProductImageUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AddItemUiState())
@@ -36,8 +39,17 @@ class AddItemViewModel(
 
     fun onAction(action: AddItemAction) {
         when (action) {
-            AddItemAction.Reset -> _state.update {
-                AddItemUiState(dbCategories = it.dbCategories)
+            AddItemAction.Reset -> {
+                _state.update { s ->
+                    val cached = s.dbCategories
+                    AddItemUiState(
+                        dbCategories = cached,
+                        isLoadingCategories = cached.isEmpty(),
+                        selectedCategoryId = cached.firstOrNull()?.id,
+                        selectedCategoryName = cached.firstOrNull()?.name,
+                    )
+                }
+                loadCategories()
             }
             is AddItemAction.NameChanged ->
                 _state.update { it.copy(name = action.value, nameError = null) }
@@ -93,9 +105,21 @@ class AddItemViewModel(
 
     private fun loadCategories() {
         viewModelScope.launch {
-            getCategories().onSuccess { cats ->
-                _state.update { it.copy(dbCategories = cats) }
-            }
+            getCategories()
+                .onSuccess { cats ->
+                    _state.update { s ->
+                        val firstCat = cats.firstOrNull()
+                        s.copy(
+                            isLoadingCategories = false,
+                            dbCategories = cats,
+                            selectedCategoryId = s.selectedCategoryId ?: firstCat?.id,
+                            selectedCategoryName = s.selectedCategoryName ?: firstCat?.name,
+                        )
+                    }
+                }
+                .onError {
+                    _state.update { it.copy(isLoadingCategories = false) }
+                }
         }
     }
 
@@ -109,6 +133,13 @@ class AddItemViewModel(
 
         _state.update { it.copy(isSaving = true) }
         viewModelScope.launch {
+            val remoteImageUrl: String? = if (s.photoPath != null) {
+                when (val r = uploadProductImage(userId, s.photoPath)) {
+                    is DataResult.Success -> r.data
+                    is DataResult.Error -> null
+                }
+            } else null
+
             addItem(
                 AddItemParams(
                     userId = userId,
@@ -117,10 +148,18 @@ class AddItemViewModel(
                     quantity = s.quantity,
                     unit = s.unit,
                     expiryDateMillis = s.expiryDateMillis,
-                    imageUrl = s.photoPath,
+                    imageUrl = remoteImageUrl,
                 )
             ).onSuccess {
-                _state.update { AddItemUiState(dbCategories = it.dbCategories) }
+                _state.update { s ->
+                    val cached = s.dbCategories
+                    AddItemUiState(
+                        dbCategories = cached,
+                        isLoadingCategories = false,
+                        selectedCategoryId = cached.firstOrNull()?.id,
+                        selectedCategoryName = cached.firstOrNull()?.name,
+                    )
+                }
                 _events.send(AddItemEvent.Saved)
             }.onError { err ->
                 _state.update { it.copy(isSaving = false) }

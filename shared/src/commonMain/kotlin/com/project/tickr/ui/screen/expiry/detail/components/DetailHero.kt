@@ -16,9 +16,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.project.tickr.ui.theme.TickrTheme
 
 @Composable
@@ -36,8 +38,14 @@ fun DetailHero(
             .fillMaxWidth()
             .background(colors.primaryBrand.copy(alpha = 0.08f)),
     ) {
-        // Hero image — TODO(user): tambahkan Coil3 dependency dan AsyncImage saat aset siap
-        // imageUrl tersedia di parameter tapi belum dirender (placeholder box bg sudah tampil)
+        AsyncImage(
+            model = imageUrl,
+            contentDescription = "Foto $productName",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.Center),
+        )
 
         // Back button (kiri-atas)
         IconButton(
