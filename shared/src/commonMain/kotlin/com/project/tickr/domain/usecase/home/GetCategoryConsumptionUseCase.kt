@@ -13,16 +13,16 @@ class GetCategoryConsumptionUseCase(
         val itemsResult = itemRepository.getItemsByUser(userId)
         if (itemsResult is DataResult.Error) return itemsResult
 
-        val categoriesResult = categoryRepository.getCategoriesByUser(userId)
+        val categoriesResult = categoryRepository.getCategories()
         if (categoriesResult is DataResult.Error) return categoriesResult
 
-        val activeItems = (itemsResult as DataResult.Success).data.filter { !it.isConsumed }
+        val consumedItems = (itemsResult as DataResult.Success).data.filter { it.isConsumed }
         val categories = (categoriesResult as DataResult.Success).data
-        val total = activeItems.size
+        val total = consumedItems.size
 
         if (total == 0) return DataResult.Success(emptyList())
 
-        val grouped = activeItems.groupBy { it.categoryId }
+        val grouped = consumedItems.groupBy { it.categoryId }
         val slices = categories.mapNotNull { cat ->
             val count = grouped[cat.id]?.size ?: 0
             if (count == 0) null

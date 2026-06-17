@@ -22,6 +22,7 @@ import com.project.tickr.ui.screen.auth.RegisterFailedRoute
 import com.project.tickr.ui.screen.auth.RegisterRoute
 import com.project.tickr.ui.screen.auth.RegisterSuccessRoute
 import com.project.tickr.ui.screen.changepassword.ChangePasswordRoute
+import com.project.tickr.ui.screen.consumed.ConsumedItemsRoute
 import com.project.tickr.ui.screen.editprofile.EditProfileRoute
 import com.project.tickr.ui.screen.expiry.detail.ItemDetailRoute
 import com.project.tickr.ui.screen.help.HelpRoute
@@ -255,6 +256,36 @@ fun TickrNavGraph(
             },
         ) {
             HelpRoute(navigator = navigator)
+        }
+
+        // ─── Consumed Items ───────────────────────────────────────────────────
+        composable(
+            route = Destination.ConsumedItems.route,
+            enterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { it } + fadeIn(tween(TRANSITION_DURATION))
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { it } + fadeOut(tween(TRANSITION_DURATION))
+            },
+            popEnterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { -it / 3 } + fadeIn(tween(TRANSITION_DURATION))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { it } + fadeOut(tween(TRANSITION_DURATION))
+            },
+        ) {
+            ConsumedItemsRoute(
+                navigator = navigator,
+                viewModel = koinViewModel(),
+            )
         }
 
         // Legacy Auth route (kept untuk backward compat dengan kode lama)

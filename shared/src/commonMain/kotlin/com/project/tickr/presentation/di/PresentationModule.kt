@@ -18,6 +18,7 @@ import com.project.tickr.presentation.profile.ProfileViewModel
 import com.project.tickr.presentation.editprofile.EditProfileViewModel
 import com.project.tickr.presentation.changepassword.ChangePasswordViewModel
 import com.project.tickr.presentation.help.HelpViewModel
+import com.project.tickr.presentation.consumed.ConsumedItemsViewModel
 import org.koin.dsl.module
 
 val presentationModule = module {
@@ -39,4 +40,5 @@ val presentationModule = module {
     factory { EditProfileViewModel(get(), get(), get(), get(), get()) }
     factory { ChangePasswordViewModel(get(), get()) }
     factory { HelpViewModel() }
+    factory { ConsumedItemsViewModel(get(), get()) }
 }

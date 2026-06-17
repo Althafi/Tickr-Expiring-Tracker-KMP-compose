@@ -51,7 +51,9 @@ class HomeViewModel(
             HomeAction.OpenAddItem -> viewModelScope.launch {
                 _events.send(HomeEvent.ShowAddItemSheet)
             }
-            HomeAction.SeeAllCategories -> { /* navigate to categories — TODO */ }
+            HomeAction.SeeAllCategories -> viewModelScope.launch {
+                _events.send(HomeEvent.NavigateToConsumedItems)
+            }
             is HomeAction.ClickItem -> viewModelScope.launch {
                 _events.send(HomeEvent.NavigateToItemDetail(Destination.ItemDetail(action.id)))
             }

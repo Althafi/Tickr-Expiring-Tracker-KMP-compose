@@ -43,6 +43,7 @@ import com.project.tickr.domain.usecase.home.GetExpiringItemsGroupedUseCase
 import com.project.tickr.domain.usecase.home.GetWasteTrendUseCase
 import com.project.tickr.domain.usecase.expiry.GetExpiryListItemsUseCase
 import com.project.tickr.domain.usecase.expiry.GetConsumptionStatsUseCase
+import com.project.tickr.domain.usecase.consumed.GetConsumedItemsUseCase
 import org.koin.dsl.module
 
 val domainModule = module {
@@ -100,4 +101,7 @@ val domainModule = module {
     // Phase 3.5 Expiry screen use cases
     factory { GetExpiryListItemsUseCase(get(), get(), get()) }
     factory { GetConsumptionStatsUseCase(get(), get()) }
+
+    // Consumed items
+    factory { GetConsumedItemsUseCase(get(), get(), get()) }
 }

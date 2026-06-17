@@ -32,4 +32,5 @@ sealed interface Destination {
     data object EditProfile : Destination { override val route = "edit_profile" }
     data object ChangePassword : Destination { override val route = "change_password" }
     data object Help : Destination { override val route = "help" }
+    data object ConsumedItems : Destination { override val route = "consumed_items" }
 }

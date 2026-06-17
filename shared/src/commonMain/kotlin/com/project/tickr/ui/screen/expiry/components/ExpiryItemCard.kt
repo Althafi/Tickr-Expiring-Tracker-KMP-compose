@@ -42,6 +42,7 @@ fun ExpiryItemCard(
     item: ExpiringItem,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    consumed: Boolean = false,
 ) {
     val colors = TickrTheme.colors
     val typography = TickrTheme.typography
@@ -100,21 +101,33 @@ fun ExpiryItemCard(
             )
         }
 
-        // Countdown badge
-        val (badgeBg, badgeText) = when (item.urgency) {
-            Urgency.CRITICAL -> colors.criticalContainer to colors.critical
-            Urgency.WARNING -> colors.warningContainer to colors.warning
-            Urgency.SAFE -> colors.safeContainer to colors.safe
+        // Badge: "Habis" (abu-abu) untuk produk dikonsumsi, atau countdown urgency
+        if (consumed) {
+            Text(
+                text = "Habis",
+                style = typography.countdown,
+                color = colors.textSecondary,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(TickrCornerRadius.pill))
+                    .background(colors.textSecondary.copy(alpha = 0.12f))
+                    .padding(horizontal = 10.dp, vertical = 5.dp),
+            )
+        } else {
+            val (badgeBg, badgeText) = when (item.urgency) {
+                Urgency.CRITICAL -> colors.criticalContainer to colors.critical
+                Urgency.WARNING -> colors.warningContainer to colors.warning
+                Urgency.SAFE -> colors.safeContainer to colors.safe
+            }
+            Text(
+                text = item.daysUntilExpiry.toCountdownLabel(),
+                style = typography.countdown,
+                color = badgeText,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(TickrCornerRadius.pill))
+                    .background(badgeBg)
+                    .padding(horizontal = 10.dp, vertical = 5.dp),
+            )
         }
-        Text(
-            text = item.daysUntilExpiry.toCountdownLabel(),
-            style = typography.countdown,
-            color = badgeText,
-            modifier = Modifier
-                .clip(RoundedCornerShape(TickrCornerRadius.pill))
-                .background(badgeBg)
-                .padding(horizontal = 10.dp, vertical = 5.dp),
-        )
     }
 }
 

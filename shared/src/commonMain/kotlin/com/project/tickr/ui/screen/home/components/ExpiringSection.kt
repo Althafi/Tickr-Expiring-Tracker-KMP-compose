@@ -90,20 +90,28 @@ fun ExpiringSection(
 
         Spacer(Modifier.height(spacing.md))
 
-        groups.forEach { group ->
-            CategoryGroupHeader(
-                categoryName = group.categoryName,
-                colorHex = group.colorHex,
+        if (groups.isEmpty()) {
+            Text(
+                text = "Tidak ada produk yang perlu tindakan",
+                style = typography.body,
+                color = colors.textSecondary,
             )
-            Spacer(Modifier.height(spacing.sm))
-            group.items.forEach { item ->
-                ExpiringItemRow(
-                    item = item,
-                    onClick = { onItemClick(item.id) },
+        } else {
+            groups.forEach { group ->
+                CategoryGroupHeader(
+                    categoryName = group.categoryName,
+                    colorHex = group.colorHex,
                 )
                 Spacer(Modifier.height(spacing.sm))
+                group.items.forEach { item ->
+                    ExpiringItemRow(
+                        item = item,
+                        onClick = { onItemClick(item.id) },
+                    )
+                    Spacer(Modifier.height(spacing.sm))
+                }
+                Spacer(Modifier.height(spacing.md))
             }
-            Spacer(Modifier.height(spacing.md))
         }
     }
 }

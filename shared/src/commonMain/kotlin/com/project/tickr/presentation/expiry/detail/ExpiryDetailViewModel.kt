@@ -8,7 +8,7 @@ import com.project.tickr.core.util.DateTimeUtil
 import com.project.tickr.domain.error.ErrorMessageProvider
 import com.project.tickr.domain.model.daysToUrgency
 import com.project.tickr.domain.usecase.auth.GetCurrentUserIdUseCase
-import com.project.tickr.domain.usecase.category.GetCategoriesByUserUseCase
+import com.project.tickr.domain.usecase.category.GetCategoriesUseCase
 import com.project.tickr.domain.usecase.item.DeleteItemUseCase
 import com.project.tickr.domain.usecase.item.GetItemUseCase
 import com.project.tickr.domain.usecase.item.MarkItemConsumedUseCase
@@ -25,7 +25,7 @@ class ExpiryDetailViewModel(
     private val deleteItem: DeleteItemUseCase,
     private val markItemConsumed: MarkItemConsumedUseCase,
     private val getCurrentUserId: GetCurrentUserIdUseCase,
-    private val getCategoriesByUser: GetCategoriesByUserUseCase,
+    private val getCategories: GetCategoriesUseCase,
     private val dateTime: DateTimeUtil,
     private val errorMessages: ErrorMessageProvider,
 ) : ViewModel() {
@@ -57,7 +57,7 @@ class ExpiryDetailViewModel(
         viewModelScope.launch {
             getItem(id)
                 .onSuccess { item ->
-                    val categoryName = when (val r = getCategoriesByUser(userId)) {
+                    val categoryName = when (val r = getCategories()) {
                         is com.project.tickr.core.result.DataResult.Success ->
                             r.data.find { it.id == item.categoryId }?.name ?: "Lainnya"
                         is com.project.tickr.core.result.DataResult.Error -> "Lainnya"
