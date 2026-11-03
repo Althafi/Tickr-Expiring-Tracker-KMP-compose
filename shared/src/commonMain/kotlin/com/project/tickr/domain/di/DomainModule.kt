@@ -2,18 +2,15 @@ package com.project.tickr.domain.di
 
 import com.project.tickr.core.util.DateTimeUtil
 import com.project.tickr.core.util.DateTimeUtilImpl
-import com.project.tickr.domain.usecase.auth.GetCurrentUserIdUseCase
 import com.project.tickr.domain.usecase.category.CreateCategoryUseCase
 import com.project.tickr.domain.usecase.category.DeleteCategoryUseCase
 import com.project.tickr.domain.usecase.category.GetCategoriesUseCase
-import com.project.tickr.domain.usecase.category.GetCategoriesByUserUseCase
 import com.project.tickr.domain.usecase.category.GetCategoryUseCase
 import com.project.tickr.domain.usecase.category.UpdateCategoryUseCase
 import com.project.tickr.domain.usecase.item.CreateItemUseCase
 import com.project.tickr.domain.usecase.item.DeleteItemUseCase
 import com.project.tickr.domain.usecase.item.GetExpiringItemsUseCase
 import com.project.tickr.domain.usecase.item.GetItemUseCase
-import com.project.tickr.domain.usecase.item.GetItemsByUserUseCase
 import com.project.tickr.domain.usecase.item.GetItemsUseCase
 import com.project.tickr.domain.usecase.item.ObserveItemsUseCase
 import com.project.tickr.domain.usecase.item.MarkItemConsumedUseCase
@@ -48,11 +45,8 @@ import org.koin.dsl.module
 val domainModule = module {
     single<DateTimeUtil> { DateTimeUtilImpl() }
 
-    factory { GetCurrentUserIdUseCase() }
-
 
     factory { GetCategoriesUseCase(get()) }
-    factory { GetCategoriesByUserUseCase(get()) }
     factory { GetCategoryUseCase(get()) }
     factory { CreateCategoryUseCase(get()) }
     factory { UpdateCategoryUseCase(get()) }
@@ -60,7 +54,6 @@ val domainModule = module {
 
     factory { GetItemsUseCase(get()) }
     factory { ObserveItemsUseCase(get()) }
-    factory { GetItemsByUserUseCase(get()) }
     factory { GetItemUseCase(get()) }
     factory { CreateItemUseCase(get()) }
     factory { UpdateItemUseCase(get()) }

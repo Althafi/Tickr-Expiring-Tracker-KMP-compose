@@ -60,7 +60,6 @@
     <string name="date_short">%1$d %2$s %3$d</string>
     <string name="error_generic">Terjadi kesalahan. Coba lagi.</string>
     <string name="error_not_found">Data tidak ditemukan.</string>
-    <string name="error_process_data">Gagal memproses data.</string>
     <string name="error_invalid_data">Data tidak valid.</string>
     <string name="error_validation_name">Nama produk wajib diisi.</string>
     <string name="error_validation_expiry">Tanggal kedaluwarsa tidak valid.</string>

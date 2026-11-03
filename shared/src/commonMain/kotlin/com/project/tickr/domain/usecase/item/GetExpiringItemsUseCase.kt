@@ -10,8 +10,8 @@ class GetExpiringItemsUseCase(
     private val repository: ItemRepository,
     private val dateTime: DateTimeUtil
 ) {
-    suspend operator fun invoke(userId: String, withinDays: Int = 7): DataResult<List<Item>> =
-        repository.getItemsByUser(userId).mapData { items ->
+    suspend operator fun invoke(withinDays: Int = 7): DataResult<List<Item>> =
+        repository.getItems().mapData { items ->
             items.filter { !it.isConsumed && dateTime.isWithinDays(it.expiryDate, withinDays) }
                  .sortedBy { it.expiryDate }
         }

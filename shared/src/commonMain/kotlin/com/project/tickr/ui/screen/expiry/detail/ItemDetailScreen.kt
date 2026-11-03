@@ -234,7 +234,7 @@ fun ItemDetailScreen(
 // ─── Previews ─────────────────────────────────────────────────────────────────
 
 private val sampleItem = Item(
-    id = 1, userId = "u1", categoryId = 1,
+    id = 1, categoryId = 1,
     name = "Susu UHT Full Cream", barcode = null,
     expiryDate = "2026-06-11", imageUrl = null,
     notes = "Simpan di kulkas bagian bawah. Konsumsi sebelum tanggal tertera.",

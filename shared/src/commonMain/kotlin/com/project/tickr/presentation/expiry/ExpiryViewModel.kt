@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.project.tickr.core.result.onError
 import com.project.tickr.core.result.onSuccess
 import com.project.tickr.core.util.DateTimeUtil
-import com.project.tickr.domain.usecase.auth.GetCurrentUserIdUseCase
 import com.project.tickr.domain.usecase.expiry.GetConsumptionStatsUseCase
 import com.project.tickr.domain.usecase.expiry.GetExpiryListItemsUseCase
 import com.project.tickr.domain.usecase.item.ObserveItemsUseCase
@@ -27,7 +26,6 @@ class ExpiryViewModel(
     private val observeItems: ObserveItemsUseCase,
     private val getExpiryItems: GetExpiryListItemsUseCase,
     private val getConsumptionStats: GetConsumptionStatsUseCase,
-    private val getCurrentUserId: GetCurrentUserIdUseCase,
     private val dateTime: DateTimeUtil,
     private val errorMessages: ErrorMessageProvider,
 ) : ViewModel() {
@@ -148,7 +146,6 @@ class ExpiryViewModel(
     }
 
     private fun load(isRefresh: Boolean, silent: Boolean = false) {
-        val userId = getCurrentUserId()
 
         if (!silent) {
             _state.update {
@@ -165,12 +162,12 @@ class ExpiryViewModel(
             val filter = _state.value.activeFilter
             coroutineScope {
                 launch {
-                    getConsumptionStats(userId).onSuccess { stats ->
+                    getConsumptionStats().onSuccess { stats ->
                         _state.update { it.copy(stats = stats) }
                     }
                 }
                 launch {
-                    getExpiryItems(userId, filter)
+                    getExpiryItems(filter)
                         .onSuccess { items ->
                             _state.update {
                                 it.copy(

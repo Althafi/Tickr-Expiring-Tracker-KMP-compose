@@ -6,7 +6,6 @@ import com.project.tickr.core.result.onError
 import com.project.tickr.core.result.onSuccess
 import com.project.tickr.core.util.DateTimeUtil
 import com.project.tickr.domain.model.Urgency
-import com.project.tickr.domain.usecase.auth.GetCurrentUserIdUseCase
 import com.project.tickr.domain.usecase.home.GetCategoryConsumptionUseCase
 import com.project.tickr.domain.usecase.home.GetExpiringItemsGroupedUseCase
 import com.project.tickr.domain.usecase.home.GetWasteTrendUseCase
@@ -30,7 +29,6 @@ class HomeViewModel(
     private val getExpiringGrouped: GetExpiringItemsGroupedUseCase,
     private val getCategoryConsumption: GetCategoryConsumptionUseCase,
     private val getWasteTrend: GetWasteTrendUseCase,
-    private val getCurrentUserId: GetCurrentUserIdUseCase,
     private val dateTime: DateTimeUtil,
     private val errorMessages: ErrorMessageProvider,
 ) : ViewModel() {
@@ -98,7 +96,6 @@ class HomeViewModel(
     }
 
     private fun load(showLoading: Boolean) {
-        val userId = getCurrentUserId()
         if (showLoading) _state.update { it.copy(isLoading = true, error = null) }
 
         // A newer load supersedes an older one, so a slow earlier result can't overwrite fresher data.
@@ -107,7 +104,7 @@ class HomeViewModel(
             // isLoading is cleared only after every fetch completes.
             coroutineScope {
                 launch {
-                    getExpiringGrouped(userId).onSuccess { groups ->
+                    getExpiringGrouped().onSuccess { groups ->
                         val criticalCount = groups.sumOf { g ->
                             g.items.count { it.urgency == Urgency.CRITICAL }
                         }
@@ -119,13 +116,13 @@ class HomeViewModel(
                     }
                 }
                 launch {
-                    getCategoryConsumption(userId).onSuccess { slices ->
+                    getCategoryConsumption().onSuccess { slices ->
                         val total = slices.sumOf { it.count }
                         _state.update { it.copy(slices = slices, totalItems = total) }
                     }
                 }
                 launch {
-                    getWasteTrend(userId).onSuccess { trend ->
+                    getWasteTrend().onSuccess { trend ->
                         _state.update { it.copy(wasteTrend = trend) }
                     }
                 }

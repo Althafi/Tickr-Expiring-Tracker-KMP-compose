@@ -1,14 +1,10 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import java.util.Properties
-import com.codingfeline.buildkonfig.compiler.FieldSpec.Type
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.buildKonfig)
     alias(libs.plugins.sqldelight)
 }
 
@@ -51,12 +47,6 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
 
-            //Ekosistem Supabase & Ktor (Core)
-            implementation(libs.supabase.postgrest)
-            implementation(libs.supabase.auth)
-            implementation(libs.supabase.storage)
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.logging)
             implementation(libs.kotlinx.datetime)
 
             //coroutines
@@ -70,9 +60,8 @@ kotlin {
             // Navigation
             implementation(libs.navigation.compose)
 
-            // Coil — image loading (avatar)
+            // Coil — foto produk dari penyimpanan lokal
             implementation(libs.coil.compose)
-            implementation(libs.coil.network.ktor)
 
             // SQLDelight
             implementation(libs.sqldelight.runtime)
@@ -81,14 +70,11 @@ kotlin {
         }
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
-            implementation(libs.ktor.client.okhttp)
-            implementation(libs.chucker)
             implementation(libs.androidx.activity.compose)
             implementation(libs.sqldelight.android.driver)
             implementation(libs.androidx.work.runtime)
         }
         iosMain.dependencies {
-            implementation(libs.ktor.client.darwin)
             implementation(libs.sqldelight.native.driver)
         }
         commonTest.dependencies {
@@ -106,20 +92,6 @@ sqldelight {
             packageName.set("com.project.tickr.db")
             schemaOutputDirectory.set(file("schemas"))
         }
-    }
-}
-
-val localProperties = Properties().apply {
-    val file = rootProject.file("local.properties")
-    if (file.exists()) load(file.inputStream())
-}
-
-buildkonfig {
-    packageName = "com.project.tickr"
-
-    defaultConfigs {
-        buildConfigField(Type.STRING, "SUPABASE_URL", localProperties.getProperty("tickr.supabase.url"))
-        buildConfigField(Type.STRING, "SUPABASE_KEY", localProperties.getProperty("tickr.supabase.key"))
     }
 }
 

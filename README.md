@@ -1,56 +1,59 @@
 # Tickr App
 
-Tickr adalah aplikasi manajemen barang kadaluarsa berbasis **Kotlin Multiplatform (KMP)** dengan UI **Compose Multiplatform**, menargetkan Android dan iOS dari satu codebase. Aplikasi ini membantu pengguna melacak tanggal kedaluwarsa produk, mendapat peringatan dini, dan memantau statistik konsumsi.
+Tickr adalah aplikasi pencatat barang kedaluwarsa berbasis **Kotlin Multiplatform (KMP)** dengan UI **Compose Multiplatform**, untuk Android dan iOS dari satu codebase. Pengguna mencatat barang beserta tanggal kedaluwarsanya, lalu Tickr mengingatkan sebelum barang itu terbuang.
+
+Tickr bersifat **offline-first**: semua data tersimpan di perangkat. Tidak ada akun, login, server, atau koneksi internet yang dibutuhkan.
 
 ---
 
 ## Daftar Isi
 
-- [Fitur Utama](#fitur-utama)
+- [Fitur](#fitur)
 - [Arsitektur](#arsitektur)
 - [Struktur Proyek](#struktur-proyek)
-- [Tech Stack & Dependensi](#tech-stack--dependensi)
+- [Tech Stack](#tech-stack)
+- [Data Lokal](#data-lokal)
+- [Pengingat Kedaluwarsa](#pengingat-kedaluwarsa)
+- [Bahasa dan Tema](#bahasa-dan-tema)
 - [Alur Navigasi](#alur-navigasi)
-- [Layer Detail](#layer-detail)
-  - [Data Layer](#data-layer)
-  - [Domain Layer](#domain-layer)
-  - [Presentation Layer (MVI)](#presentation-layer-mvi)
-  - [UI Layer](#ui-layer)
-- [Setup & Menjalankan](#setup--menjalankan)
-- [Konfigurasi Supabase](#konfigurasi-supabase)
+- [Setup dan Menjalankan](#setup-dan-menjalankan)
+- [Tes](#tes)
+- [Keterbatasan yang Diketahui](#keterbatasan-yang-diketahui)
+- [Dokumentasi Lain](#dokumentasi-lain)
 
 ---
 
-## Fitur Utama
+## Fitur
 
-| Fitur | Status |
+| Fitur | Keterangan |
 |---|---|
-| Onboarding carousel (3 layar, swipe animasi) | Selesai |
-| Autentikasi — Login, Register, Lupa Password | Selesai |
-| Beranda — ringkasan item mendekati kedaluarsa + statistik | Selesai |
-| Tambah Barang — bottom sheet dengan upload foto, kategori, satuan | Selesai |
-| Kadaluwarsa — daftar item dengan filter, search, urgency badge | Selesai |
-| Detail Produk — hero image, info box, urgency banner | Selesai |
-| Profil — lihat & edit profil, ganti password | Selesai |
-| Riwayat Konsumsi | Selesai |
-| Wawasan / Insight | Coming soon |
+| Onboarding | Carousel 3 layar, tampil sekali |
+| Beranda | Barang yang akan kedaluwarsa per kategori, donat konsumsi, tren barang terbuang |
+| Tambah barang | Nama, kategori, jumlah, satuan, tanggal kedaluwarsa, foto dari galeri |
+| Kedaluwarsa | Daftar dengan pencarian, filter kategori, tingkat urgensi, dan rentang waktu |
+| Detail barang | Foto, sisa hari, tandai sudah dikonsumsi, hapus |
+| Riwayat konsumsi | Barang yang sudah dikonsumsi |
+| Notifikasi | Pengingat lokal H-7, H-3, H-1, dan hari-H, plus riwayatnya |
+| Pengaturan | Tema (Sistem / Terang / Gelap), bahasa (Sistem / Indonesia / English), Bantuan, Tentang |
+| Wawasan | Belum tersedia |
+
+Daftar barang di Beranda, Kedaluwarsa, dan Riwayat konsumsi diperbarui otomatis ketika data berubah, tanpa perlu menarik untuk memuat ulang.
 
 ---
 
 ## Arsitektur
 
-Proyek mengikuti **Clean Architecture** dengan 4 layer yang jelas:
+**Clean Architecture** dengan pola **MVI** di lapisan presentasi.
 
 ```
-UI Layer  ──►  Presentation Layer (MVI)  ──►  Domain Layer  ──►  Data Layer
- Compose          ViewModel + State            Use Cases         Repository + Remote
- Screens          Action / Event / UiState     Domain Models     Supabase / Ktor
+UI (Compose)  ──►  Presentation (ViewModel, MVI)  ──►  Domain (use case, model, interface)  ──►  Data (SQLDelight, file, platform)
 ```
 
-**Prinsip utama:**
-- **Unidirectional Data Flow** — UI mengirim `Action`, ViewModel merespons dengan `UiState` baru dan `Event` sekali-pakai.
-- **Dependency Inversion** — Domain layer hanya bergantung pada interface (`Repository`), tidak tahu implementasi.
-- **KMP-first** — Semua logika bisnis, ViewModel, dan Use Case ada di `commonMain` dan berjalan di Android maupun iOS.
+- **Aliran data satu arah.** UI mengirim `Action`, ViewModel menghasilkan `UiState` baru dan `Event` sekali pakai.
+- **Domain tidak mengenal implementasi.** Domain hanya memakai interface (`ItemRepository`, `ImageStorage`, `ReminderScheduler`, `SettingsRepository`, dan sebagainya).
+- **KMP-first.** Logika bisnis, ViewModel, dan UI berada di `commonMain`. Kode platform hanya untuk database driver, penyimpanan foto, notifikasi, pengaturan bahasa, dan tema sistem.
+- **Reaktif.** Repository mengekspos `Flow` dari SQLDelight, sehingga layar ikut berubah ketika barang ditambah, diubah, dikonsumsi, atau dihapus dari mana pun.
+- **Injeksi dependensi** dengan Koin.
 
 ---
 
@@ -58,270 +61,173 @@ UI Layer  ──►  Presentation Layer (MVI)  ──►  Domain Layer  ──�
 
 ```
 Tickr App/
-├── androidApp/             # Entry point Android (Activity, Application, Koin init)
-├── iosApp/                 # Entry point iOS (SwiftUI wrapper)
+├── androidApp/              # Entry point Android (Activity, Application, tema, manifest)
+├── iosApp/                  # Entry point iOS (SwiftUI wrapper)
 ├── shared/
+│   ├── schemas/             # Snapshot skema SQLDelight (untuk migrasi)
 │   └── src/
-│       ├── commonMain/     # Semua kode KMP (data, domain, presentation, ui)
-│       ├── androidMain/    # Implementasi platform Android (HttpEngine, DateUtils, ImagePicker)
-│       └── iosMain/        # Implementasi platform iOS
-└── gradle/
-    └── libs.versions.toml  # Version catalog semua dependensi
+│       ├── commonMain/      # Kode bersama + sqldelight/ + composeResources/ (string id/en)
+│       ├── androidMain/     # Aktual Android (driver DB, foto, WorkManager, izin, locale)
+│       ├── iosMain/         # Aktual iOS (driver DB, foto, UNUserNotificationCenter, locale)
+│       └── androidHostTest/ # Tes JVM (database, repository, i18n, pengingat)
+└── gradle/libs.versions.toml
 ```
 
-### Layout `commonMain`
+Isi `commonMain/kotlin/com/project/tickr/`:
 
 ```
-com.project.tickr/
-├── App.kt                          # Root @Composable, routing gate (Onboarding → Login → Home)
-├── core/
-│   ├── network/                    # SupabaseProvider, HttpEngineFactory (expect/actual)
-│   ├── platform/                   # ImageReader, PlatformInitializer (expect/actual)
-│   ├── result/                     # DataResult<T>, AppError (sealed class)
-│   ├── util/                       # DateTimeUtil (expect/actual)
-│   └── validation/                 # ValidationResult, Validators
+├── App.kt                  # Root composable: tema, bahasa, onboarding gate, navigasi
+├── core/                   # DataResult/AppError, DateTimeUtil, validator
 ├── data/
-│   ├── di/                         # DataModule (Koin)
-│   ├── mapper/                     # DTO → Domain model mappers
-│   ├── remote/
-│   │   ├── datasource/             # RemoteDataSource per entitas (Item, Category, Profile, Storage)
-│   │   └── dto/                    # Data Transfer Objects (Supabase JSON)
-│   └── repository/                 # RepositoryImpl + FakeAuthRepository (untuk testing)
+│   ├── di/                 # DataModule, LocalModule (Koin)
+│   ├── local/              # datasource, db (driver + seeder), image, reminder, settings
+│   ├── mapper/             # Baris SQLDelight -> model domain
+│   └── repository/         # Local*Repository, SettingsRepositoryImpl
 ├── domain/
-│   ├── di/                         # DomainModule (Koin)
-│   ├── model/                      # Domain models: Item, Category, Profile, Urgency, dll.
-│   ├── repository/                 # Repository interfaces
-│   └── usecase/                    # Use cases per fitur (auth, item, expiry, home, profile, dll.)
-├── presentation/
-│   ├── di/                         # PresentationModule (Koin)
-│   ├── common/                     # UiText, AuthErrorStore, MVI interfaces
-│   ├── navigation/                 # Destination (sealed interface), Navigator interface
-│   └── [feature]/                  # Satu folder per fitur: Action, Event, UiState, ViewModel
+│   ├── model/              # Item, Category, ExpiringItem, Urgency, AppSettings, Reminder, ...
+│   ├── reminder/           # ReminderRules (aturan jadwal, murni dan teruji)
+│   ├── repository/         # Interface repository
+│   ├── scheduler/          # ReminderScheduler (interface)
+│   ├── storage/            # ImageStorage (interface)
+│   └── usecase/            # Per fitur: item, category, home, expiry, consumed, reminder, settings, ...
+├── presentation/           # Per fitur: Action, Event, UiState, ViewModel
 └── ui/
-    ├── navigation/                 # TickrNavGraph, MainShell (bottom nav + FAB)
-    ├── screen/                     # Layar-layar Compose per fitur
-    │   ├── auth/                   # Login, Register, RegisterSuccess, RegisterFailed
-    │   ├── onboarding/
-    │   ├── home/                   # HomeScreen + AddItemSheet
-    │   ├── expiry/                 # ExpiryScreen + detail/
-    │   ├── profile/
-    │   ├── editprofile/
-    │   ├── changepassword/
-    │   ├── consumed/
-    │   └── help/
-    ├── common/                     # ImagePickerLauncher, PlatformDatePicker (expect/actual)
-    └── theme/                      # TickrTheme, TickrColors, Typography, Spacing, Shapes
+    ├── i18n/               # Penerapan bahasa pilihan pengguna
+    ├── navigation/         # TickrNavGraph, MainShell (bottom nav + FAB)
+    ├── screen/             # Layar per fitur
+    ├── common/             # ProductImage, picker foto/tanggal, izin notifikasi, tema platform
+    └── theme/              # TickrTheme, TickrColors, tipografi
 ```
 
 ---
 
-## Tech Stack & Dependensi
+## Tech Stack
 
-| Kategori | Library | Versi |
-|---|---|---|
-| Language | Kotlin Multiplatform | 2.4.0 |
-| UI | Compose Multiplatform | 1.11.1 |
-| UI Components | Material 3 | 1.11.0-alpha07 |
-| Navigation | Navigation Compose (KMP) | 2.9.2 |
-| Backend / Auth | Supabase KMP (postgrest, auth, storage) | 3.6.0 |
-| HTTP Client | Ktor (OkHttp Android, Darwin iOS) | 3.5.0 |
-| DI | Koin | 4.2.1 |
-| Async | Kotlin Coroutines | 1.11.0 |
-| Date & Time | kotlinx-datetime | 0.8.0 |
-| Image Loading | Coil 3 + Ktor network fetcher | 3.1.0 |
-| Debug (HTTP) | Chucker (Android only, no-op release) | 4.0.0 |
-| Build Config | BuildKonfig (inject env keys) | 0.21.2 |
+| Bagian | Teknologi |
+|---|---|
+| Bahasa | Kotlin 2.4.0 (Multiplatform) |
+| UI | Compose Multiplatform 1.11.1, Material 3 |
+| Navigasi | navigation-compose |
+| DI | Koin 4.2.1 |
+| Database | SQLDelight 2.4.1 (SQLite) |
+| Gambar | Coil 3 (memuat file lokal) |
+| Tanggal | kotlinx-datetime |
+| Notifikasi Android | WorkManager 2.12.0 |
+| Notifikasi iOS | UNUserNotificationCenter |
+| Build | AGP 9.2.1, Gradle version catalog |
 
-**Platform targets:**
-- Android: minSdk 26, compileSdk 37, targetSdk 36
-- iOS: via Kotlin/Native (iosSimulatorArm64, iosArm64)
+Tidak ada dependensi jaringan. Aplikasi tidak meminta izin `INTERNET`.
+
+---
+
+## Data Lokal
+
+Database SQLite dikelola SQLDelight. Skema ada di `shared/src/commonMain/sqldelight/com/project/tickr/db/` dan snapshot-nya di `shared/schemas/`.
+
+| Tabel | Isi |
+|---|---|
+| `item` | Barang: nama, kategori, jumlah, satuan, tanggal kedaluwarsa (ISO), path foto, status konsumsi |
+| `category` | Empat kategori bawaan (Makanan, Kecantikan, Obat, Lainnya) diisi saat pertama kali dijalankan |
+| `notification_log` | Riwayat pengingat yang sudah jatuh tempo, unik per (barang, tanggal) |
+
+Hal yang perlu diketahui:
+
+- **Kategori dan satuan disimpan sebagai key** (`food`, `beauty`, `medicine`, `other`; `PCS`, `DOZEN`, dan seterusnya), lalu ditampilkan lewat string resource. Karena itu ganti bahasa tidak mengubah data.
+- **Foto produk** disalin ke penyimpanan privat aplikasi dan diperkecil (maksimal 1280 px, JPEG). Database hanya menyimpan path relatif `product_images/<uuid>.jpg`. Foto dihapus ketika barang dihapus atau fotonya diganti.
+- **Pengaturan** (tema, bahasa, status onboarding) disimpan di `SharedPreferences` (Android) dan `NSUserDefaults` (iOS).
+- Perubahan skema harus lewat migrasi `.sqm`, bukan mengedit file `.sq` begitu saja, supaya data pengguna lama tidak hilang.
+
+---
+
+## Pengingat Kedaluwarsa
+
+Aturan ada di `domain/reminder/ReminderRules`: untuk tiap barang yang belum dikonsumsi, pengingat dikirim pada **H-7, H-3, H-1, dan hari kedaluwarsa pukul 08:00 waktu lokal**. Pengingat yang waktunya sudah lewat dilewati.
+
+| Platform | Mekanisme |
+|---|---|
+| Android | `WorkManager` periodik harian pukul 08:00 membaca database dan menampilkan pengingat hari itu. Tetap jalan setelah app ditutup dan setelah reboot. |
+| iOS | `UNCalendarNotificationTrigger`. Maksimal 60 pengingat terdekat dijadwalkan (batas sistem 64) dan dibangun ulang setiap app dibuka atau data berubah. |
+
+Satu jalur pemrosesan (`ProcessDueRemindersUseCase`) dipakai kedua platform, dan `notification_log` mencatat setiap pengingat tepat sekali. Izin notifikasi diminta sekali, setelah barang pertama berhasil disimpan.
+
+---
+
+## Bahasa dan Tema
+
+- **Bahasa:** Indonesia dan English lewat Compose Resources (`composeResources/values/` dan `values-en/`). Pilihan "Sistem" mengikuti bahasa perangkat; jika bahasa perangkat tidak didukung, English dipakai. Teks notifikasi juga mengikuti pilihan ini.
+- **Tema:** Sistem, Terang, atau Gelap. Warna diakses lewat token semantik di `TickrColors` (termasuk `onBrand` dan `onCritical`).
+
+Menambah string: tambahkan di **kedua** file `strings.xml`. Tes `StringResourcesTest` memastikan kunci id dan en sama, placeholder cocok, dan tidak ada string yang tidak terpakai.
 
 ---
 
 ## Alur Navigasi
 
 ```
-App Start
-   │
-   ├── Onboarding belum dilihat ──► OnboardingScreen
-   │                                      │ selesai
-   │                                      ▼
-   ├── Belum login ─────────────────► LoginScreen
-   │                                  │         │
-   │                             sukses     daftar baru
-   │                                │         │
-   │                            HomeScreen  RegisterScreen
-   │                                         │
-   │                                   RegisterSuccessScreen
-   │
-   └── Sudah login ─────────────────► HomeScreen (MainShell)
-                                            │
-                                    ┌───────┴────────────────────┐
-                                    │                            │
-                              BottomNav                      BottomNav
-                          ┌─────────────────────┐            (Profile)
-                          │                     │               │
-                      Beranda             Kadaluwarsa      ProfileScreen
-                          │                     │               ├── EditProfile
-                    AddItemSheet          ItemDetailScreen      ├── ChangePassword
-                                                                └── Help / ConsumedItems
+Onboarding (sekali) ──► Home (MainShell)
+                          ├── Tab Beranda ──► Notifikasi, Riwayat konsumsi, Detail barang
+                          ├── Tab Kedaluwarsa ──► Detail barang
+                          ├── Tab Wawasan (belum tersedia)
+                          ├── Tab Pengaturan ──► Bantuan, Tentang
+                          └── FAB ──► Sheet Tambah Barang
 ```
 
-`MainShell` mengelola 4 tab (Beranda, Kadaluwarsa, Wawasan, Profil) dan satu **FAB notch** di tengah bottom bar untuk membuka `AddItemSheet`.
+Rute didefinisikan di `presentation/navigation/Destination.kt`.
 
 ---
 
-## Layer Detail
-
-### Data Layer
-
-**Remote Data Sources** berkomunikasi langsung ke Supabase menggunakan `supabase-kt`:
-
-| DataSource | Tabel Supabase |
-|---|---|
-| `ItemRemoteDataSource` | `items` |
-| `CategoryRemoteDataSource` | `categories` |
-| `ProfileRemoteDataSource` | `profiles` |
-| `NotificationRemoteDataSource` | `notification_logs` |
-| `StorageRemoteDataSource` | Supabase Storage bucket `product-images` |
-
-**Repository Implementations** membungkus data source dan memetakan DTO → Domain model via mapper.  
-`FakeAuthRepository` tersedia untuk keperluan testing/preview tanpa koneksi ke Supabase.
-
-**DI** disediakan via `DataModule` (Koin), dimuat di `initKoin()` bersama `domainModule` dan `presentationModule`.
-
----
-
-### Domain Layer
-
-Domain layer **tidak bergantung** pada implementasi apapun — hanya berisi interface, model, dan use case murni.
-
-**Domain Models utama:**
-
-| Model | Keterangan |
-|---|---|
-| `Item` | Entitas produk: nama, tanggal kedaluarsa, kategori, jumlah, satuan, URL gambar |
-| `Category` | Kategori produk milik user |
-| `Profile` | Data profil pengguna |
-| `ExpiringItem` | Item yang mendekati kedaluarsa, lengkap dengan `daysUntil` |
-| `Urgency` | `CRITICAL` (≤3 hari), `WARNING` (4–7 hari), `SAFE` (>7 hari) |
-| `ConsumptionStats` | Statistik: total item, item dikonsumsi, item kedaluarsa |
-| `UserSession` | Sesi login aktif |
-
-**Use Cases dikelompokkan per fitur:**
-
-```
-auth/       → Login, Register, SignOut, ObserveSession, ChangePassword, ValidateEmail/Name/Password
-item/       → GetItems, GetItem, CreateItem, UpdateItem, DeleteItem, MarkConsumed, UploadProductImage
-category/   → GetCategories, CreateCategory, UpdateCategory, DeleteCategory
-home/       → GetExpiringItemsGrouped, GetCategoryConsumption, GetWasteTrend, AddItem
-expiry/     → GetExpiryListItems, GetConsumptionStats
-profile/    → GetProfile, UpsertProfile
-onboarding/ → GetOnboardingSeen, CompleteOnboarding
-notification/ → GetNotifications, ScheduleNotification, DeleteNotification
-consumed/   → GetConsumedItems
-```
-
----
-
-### Presentation Layer (MVI)
-
-Setiap fitur memiliki tiga file kontrak MVI:
-
-- **`[Feature]Action`** — intent dari UI ke ViewModel (sealed interface)
-- **`[Feature]UiState`** — state yang di-render UI (data class)
-- **`[Feature]Event`** — efek sekali-pakai (navigasi, snackbar, dll.)
-
-`ViewModel` mengekspos `uiState: StateFlow<UiState>` dan `events: SharedFlow<Event>`, menerima `onAction(action)`.
-
-Contoh pola untuk `HomeViewModel`:
-```
-UI kirim HomeAction.Refresh
-  → ViewModel update state ke Loading
-  → panggil use case
-  → emit HomeUiState(items = ..., stats = ...)
-```
-
-`AuthErrorStore` adalah shared singleton untuk propagasi error auth lintas ViewModel.
-
----
-
-### UI Layer
-
-Setiap screen terdiri dari dua file:
-
-- **`[Screen]Route`** — mengambil ViewModel dari Koin, menghubungkan state & event ke composable
-- **`[Screen]Screen`** — composable murni, hanya menerima state & callback
-
-**Komponen per fitur:**
-
-| Layar | Komponen utama |
-|---|---|
-| Home | `GreetingHeader`, `ExpiringSection`, `ConsumptionDonutCard`, `WasteInsightCard`, `HomeSkeletonContent` |
-| Kadaluwarsa | `ExpiryItemCard`, `ExpirySearchBar`, `CategoryFilterRow`, `UrgencyLegend`, `ExpiryFilterSheet`, `StatCardPair`, `ExpirySkeletonContent` |
-| Detail Produk | `DetailHero`, `UrgencyBanner`, `InfoBoxPair`, `StorageNoteBox`, `DetailSkeletonContent` |
-| Auth | `TickrTextField`, `PasswordTextField`, `PasswordStrengthMeter`, `SuccessAnimation` |
-| Profile | `ProfileHeader`, `ProfileMenuItem` |
-| Edit Profile | `AvatarPickerSheet` |
-
-**Tema** (`ui/theme/`):  
-`TickrTheme` menyediakan `TickrColors` (semantic color tokens), `TickrTypography`, `TickrSpacing`, dan `TickrShapes` yang diakses via `TickrTheme.colors`, `.typography`, dll.
-
-**Transisi navigasi** semuanya dikonfigurasi di `TickrNavGraph` dengan durasi 300 ms menggunakan `slideIn/Out` + `fadeIn/Out`.
-
----
-
-## Setup & Menjalankan
+## Setup dan Menjalankan
 
 ### Prasyarat
 
-- Android Studio Meerkat atau lebih baru (dengan plugin KMP)
-- Xcode 15+ (untuk target iOS)
+- Android Studio dengan plugin Kotlin Multiplatform
 - JDK 17+
+- Xcode 15+ untuk target iOS
 
-### Clone & Konfigurasi
+Tidak ada kunci API, `local.properties` khusus, atau akun layanan yang perlu disiapkan. Cukup clone lalu build.
 
 ```bash
 git clone <repo-url>
 cd "Tickr App"
-```
 
-Buat file `local.properties` di root proyek dan tambahkan kunci Supabase (lihat bagian bawah):
-
-```properties
-SUPABASE_URL=https://xxxx.supabase.co
-SUPABASE_ANON_KEY=eyJ...
-```
-
-### Menjalankan App
-
-```bash
 # Android
 ./gradlew :androidApp:assembleDebug
 
-# iOS — buka folder iosApp di Xcode, lalu Run
+# iOS: buka proyek di Xcode lalu Run
 open iosApp/iosApp.xcodeproj
 ```
 
-### Menjalankan Tes
+Untuk memeriksa kompilasi iOS tanpa Xcode:
 
 ```bash
-# Android host tests
-./gradlew :shared:testAndroidHostTest
-
-# iOS simulator tests
-./gradlew :shared:iosSimulatorArm64Test
+./gradlew :shared:compileKotlinIosSimulatorArm64
 ```
 
 ---
 
-## Konfigurasi Supabase
+## Tes
 
-Aplikasi menggunakan Supabase sebagai backend. Berikut yang perlu disiapkan:
+```bash
+./gradlew :shared:testAndroidHostTest
+```
 
-1. **Autentikasi** — aktifkan Email/Password Auth di dashboard Supabase.
-2. **Tabel database** — buat tabel `items`, `categories`, `profiles`, `notification_logs` dengan skema yang sesuai dengan DTO di `data/remote/dto/`.
-3. **Storage bucket** — buat bucket bernama `product-images` dengan akses **public** untuk upload dan tampil gambar produk.
-4. **Row Level Security (RLS)** — pastikan policy RLS sudah diset agar setiap user hanya bisa mengakses data miliknya sendiri.
+Tes JVM mencakup database (SQLDelight di memori), repository, penyimpanan dan perkecilan gambar, pengaturan, i18n (paritas string dan resolusi bahasa), aturan pengingat, dan pemrosesan pengingat.
 
-Kunci `SUPABASE_URL` dan `SUPABASE_ANON_KEY` diinjeksikan ke build via **BuildKonfig** dari `local.properties` dan tersedia sebagai konstanta di `BuildConfig` pada runtime.
+Yang belum bisa diuji otomatis dan perlu dicek manual di perangkat: ganti bahasa saat app berjalan (terutama iOS), tampilan tema gelap, notifikasi yang benar-benar muncul pukul 08:00, dan alur izin notifikasi.
+
+---
+
+## Keterbatasan yang Diketahui
+
+- Data hanya ada di satu perangkat. Tidak ada sinkronisasi atau cadangan antar perangkat.
+- iOS: picker foto dan date picker masih berupa stub.
+- iOS: notifikasi tidak tampil saat app sedang terbuka (belum ada `UNUserNotificationCenterDelegate`), dan riwayat baru tercatat saat app dibuka berikutnya.
+- Android: waktu notifikasi dapat bergeser beberapa menit karena WorkManager dan Doze.
+- Belum ada pengaturan jam atau saklar untuk pengingat.
+
+---
+
+## Dokumentasi Lain
+
+- [`TICKR_OFFLINE_FIRST_MIGRATION.md`](TICKR_OFFLINE_FIRST_MIGRATION.md): rencana dan keputusan migrasi ke offline-first.
+- [`docs/archive/`](docs/archive): dokumen desain fase lama saat Tickr masih memakai Supabase. Disimpan sebagai arsip dan **tidak lagi menggambarkan kode saat ini**.

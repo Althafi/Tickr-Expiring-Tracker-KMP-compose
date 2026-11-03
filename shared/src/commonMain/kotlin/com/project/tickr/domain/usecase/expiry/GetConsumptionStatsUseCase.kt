@@ -10,8 +10,8 @@ class GetConsumptionStatsUseCase(
     private val itemRepository: ItemRepository,
     private val dateTime: DateTimeUtil,
 ) {
-    suspend operator fun invoke(userId: String): DataResult<ConsumptionStats> =
-        itemRepository.getItemsByUser(userId).mapData { items ->
+    suspend operator fun invoke(): DataResult<ConsumptionStats> =
+        itemRepository.getItems().mapData { items ->
             ConsumptionStats(
                 consumed = items.count { it.isConsumed },
                 wasted = items.count { !it.isConsumed && dateTime.daysUntil(it.expiryDate) < 0 },

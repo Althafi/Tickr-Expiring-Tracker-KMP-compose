@@ -10,7 +10,6 @@ interface ItemRepository {
     /** Emits the current items right away, then again after every change to the item table. */
     fun observeItems(): Flow<List<Item>>
 
-    suspend fun getItemsByUser(userId: String): DataResult<List<Item>>
     suspend fun getItem(id: Long): DataResult<Item>
     suspend fun createItem(item: Item): DataResult<Item>
     suspend fun updateItem(item: Item): DataResult<Item>

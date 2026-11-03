@@ -10,8 +10,8 @@ class GetWasteTrendUseCase(
     private val itemRepository: ItemRepository,
     private val dateTime: DateTimeUtil,
 ) {
-    suspend operator fun invoke(userId: String): DataResult<WasteTrend?> =
-        itemRepository.getItemsByUser(userId).mapData { items ->
+    suspend operator fun invoke(): DataResult<WasteTrend?> =
+        itemRepository.getItems().mapData { items ->
             val today = dateTime.today() // "YYYY-MM-DD"
             val parts = today.split("-")
             val year = parts[0].toInt()

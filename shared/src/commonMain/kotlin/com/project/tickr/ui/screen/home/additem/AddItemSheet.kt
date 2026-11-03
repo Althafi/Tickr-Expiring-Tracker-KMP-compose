@@ -619,10 +619,10 @@ private fun AddItemContentPreview() {
         AddItemContent(
             state = AddItemUiState(
                 dbCategories = listOf(
-                    Category(1, null, "Makanan & Minuman", "ic_food", "#0D6759", ""),
-                    Category(2, null, "Kecantikan", "ic_beauty", "#FA9A08", ""),
-                    Category(3, null, "Obat & Vitamin", "ic_med", "#5EC9B7", ""),
-                    Category(4, null, "Lainnya", "ic_other", "#6B7280", ""),
+                    Category(1, "Makanan & Minuman", "ic_food", "#0D6759", ""),
+                    Category(2, "Kecantikan", "ic_beauty", "#FA9A08", ""),
+                    Category(3, "Obat & Vitamin", "ic_med", "#5EC9B7", ""),
+                    Category(4, "Lainnya", "ic_other", "#6B7280", ""),
                 ),
                 selectedCategoryId = 1,
                 quantity = 2,

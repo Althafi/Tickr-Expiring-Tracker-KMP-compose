@@ -7,7 +7,6 @@ import com.project.tickr.core.result.onSuccess
 import com.project.tickr.core.util.DateTimeUtil
 import com.project.tickr.presentation.common.ErrorMessageProvider
 import com.project.tickr.domain.model.daysToUrgency
-import com.project.tickr.domain.usecase.auth.GetCurrentUserIdUseCase
 import com.project.tickr.domain.usecase.category.GetCategoriesUseCase
 import com.project.tickr.domain.usecase.item.DeleteItemUseCase
 import com.project.tickr.domain.usecase.item.GetItemUseCase
@@ -26,7 +25,6 @@ class ExpiryDetailViewModel(
     private val getItem: GetItemUseCase,
     private val deleteItem: DeleteItemUseCase,
     private val markItemConsumed: MarkItemConsumedUseCase,
-    private val getCurrentUserId: GetCurrentUserIdUseCase,
     private val getCategories: GetCategoriesUseCase,
     private val dateTime: DateTimeUtil,
     private val errorMessages: ErrorMessageProvider,
@@ -52,7 +50,6 @@ class ExpiryDetailViewModel(
 
     private fun load(id: Long) {
         _state.update { it.copy(loadState = ExpiryDetailLoadState.Loading) }
-        getCurrentUserId()
 
         viewModelScope.launch {
             getItem(id)

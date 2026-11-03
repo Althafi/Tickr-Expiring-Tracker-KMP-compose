@@ -16,10 +16,9 @@ class GetExpiryListItemsUseCase(
     private val dateTime: DateTimeUtil,
 ) {
     suspend operator fun invoke(
-        userId: String,
         filter: ExpiryFilter = ExpiryFilter(),
     ): DataResult<List<ExpiringItem>> {
-        val itemsResult = itemRepository.getItemsByUser(userId)
+        val itemsResult = itemRepository.getItems()
         if (itemsResult is DataResult.Error) return itemsResult
 
         val categoryMap = when (val r = categoryRepository.getCategories()) {

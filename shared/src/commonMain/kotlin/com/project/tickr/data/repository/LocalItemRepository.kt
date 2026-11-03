@@ -23,9 +23,6 @@ internal class LocalItemRepository(
     override fun observeItems(): Flow<List<Item>> =
         local.observeAll().map { rows -> rows.map { it.toDomain() } }
 
-    // Tidak ada konsep user: parameter diabaikan, semua barang dikembalikan.
-    override suspend fun getItemsByUser(userId: String): DataResult<List<Item>> = getItems()
-
     override suspend fun getItem(id: Long): DataResult<Item> =
         local.getById(id).mapData { it.toDomain() }
 

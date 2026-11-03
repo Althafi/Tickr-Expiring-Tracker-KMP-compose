@@ -54,7 +54,7 @@ class LocalRepositoriesTest {
     private val notifications = LocalNotificationRepository(NotificationLocalDataSource(db, now))
 
     private fun newItem(name: String = "Susu", expiry: String = "2026-12-01", categoryId: Long? = null) = Item(
-        id = 0, userId = "ignored", categoryId = categoryId, name = name, barcode = null,
+        id = 0, categoryId = categoryId, name = name, barcode = null,
         expiryDate = expiry, imageUrl = null, notes = null, isConsumed = false,
         quantity = 2, unit = "Pcs", createdAt = "", updatedAt = "",
     )
@@ -74,11 +74,10 @@ class LocalRepositoriesTest {
     }
 
     @Test
-    fun getItems_sorted_by_expiry_and_ignores_userId() = runBlocking<Unit> {
+    fun getItems_sorted_by_expiry() = runBlocking<Unit> {
         items.createItem(newItem("B", "2026-12-10"))
         items.createItem(newItem("A", "2026-12-01"))
         assertEquals(listOf("A", "B"), items.getItems().ok().map { it.name })
-        assertEquals(2, items.getItemsByUser("anyone").ok().size)
     }
 
     @Test
@@ -117,15 +116,14 @@ class LocalRepositoriesTest {
     }
 
     @Test
-    fun categories_seeded_with_keys_and_userId_ignored() = runBlocking<Unit> {
+    fun categories_seeded_with_keys() = runBlocking<Unit> {
         val all = categories.getCategories().ok()
         assertEquals(listOf("food", "beauty", "medicine", "other"), all.map { it.key })
-        assertEquals(4, categories.getCategoriesByUser("anyone").ok().size)
     }
 
     @Test
     fun custom_category_crud_has_null_key() = runBlocking<Unit> {
-        val created = categories.createCategory(Category(0, null, "Hewan", "ic_pet", "#112233", "")).ok()
+        val created = categories.createCategory(Category(0, "Hewan", "ic_pet", "#112233", "")).ok()
         assertNull(created.key)
         val renamed = categories.updateCategory(created.copy(name = "Peliharaan")).ok()
         assertEquals("Peliharaan", renamed.name)

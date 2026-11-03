@@ -2,7 +2,6 @@ package com.project.tickr.domain.model
 
 data class Item(
     val id: Long,
-    val userId: String,
     val categoryId: Long?,
     val name: String,
     val barcode: String?,

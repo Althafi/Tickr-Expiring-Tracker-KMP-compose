@@ -13,8 +13,8 @@ class GetConsumedItemsUseCase(
     private val categoryRepository: CategoryRepository,
     private val dateTime: DateTimeUtil,
 ) {
-    suspend operator fun invoke(userId: String): DataResult<List<ExpiringItem>> {
-        val itemsResult = itemRepository.getItemsByUser(userId)
+    suspend operator fun invoke(): DataResult<List<ExpiringItem>> {
+        val itemsResult = itemRepository.getItems()
         if (itemsResult is DataResult.Error) return itemsResult
 
         val categoryMap = when (val r = categoryRepository.getCategories()) {

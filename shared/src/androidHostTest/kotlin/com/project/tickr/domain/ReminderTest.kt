@@ -104,7 +104,7 @@ class ProcessDueRemindersTest {
 
     private suspend fun add(name: String, expiry: String, consumed: Boolean = false): Item =
         (items.createItem(
-            Item(0, "x", null, name, null, expiry, null, null, consumed, 1, "PCS", "", ""),
+            Item(0, null, name, null, expiry, null, null, consumed, 1, "PCS", "", ""),
         ) as DataResult.Success).data
 
     private fun due() = runBlocking { (process() as DataResult.Success).data }

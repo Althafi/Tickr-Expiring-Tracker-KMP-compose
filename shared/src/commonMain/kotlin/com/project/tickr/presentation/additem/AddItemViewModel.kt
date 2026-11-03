@@ -6,7 +6,6 @@ import com.project.tickr.core.result.onError
 import com.project.tickr.core.result.onSuccess
 import com.project.tickr.core.util.DateTimeUtil
 import com.project.tickr.core.result.DataResult
-import com.project.tickr.domain.usecase.auth.GetCurrentUserIdUseCase
 import com.project.tickr.domain.usecase.category.GetCategoriesUseCase
 import com.project.tickr.domain.usecase.home.AddItemParams
 import com.project.tickr.domain.usecase.home.AddItemUseCase
@@ -27,7 +26,6 @@ import com.project.tickr.domain.usecase.reminder.SyncRemindersUseCase
 class AddItemViewModel(
     private val addItem: AddItemUseCase,
     private val getCategories: GetCategoriesUseCase,
-    private val getCurrentUserId: GetCurrentUserIdUseCase,
     private val dateTime: DateTimeUtil,
     private val saveProductImage: SaveProductImageUseCase,
     private val discardProductImage: DiscardProductImageUseCase,
@@ -132,7 +130,6 @@ class AddItemViewModel(
     }
 
     private fun save() {
-        val userId = getCurrentUserId()
         val s = _state.value
         if (!s.canSave) return
 
@@ -147,7 +144,6 @@ class AddItemViewModel(
 
             addItem(
                 AddItemParams(
-                    userId = userId,
                     name = s.name.trim(),
                     categoryId = s.selectedCategoryId,
                     quantity = s.quantity,

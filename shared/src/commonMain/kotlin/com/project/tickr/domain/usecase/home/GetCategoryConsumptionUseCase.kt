@@ -9,8 +9,8 @@ class GetCategoryConsumptionUseCase(
     private val itemRepository: ItemRepository,
     private val categoryRepository: CategoryRepository,
 ) {
-    suspend operator fun invoke(userId: String): DataResult<List<CategorySlice>> {
-        val itemsResult = itemRepository.getItemsByUser(userId)
+    suspend operator fun invoke(): DataResult<List<CategorySlice>> {
+        val itemsResult = itemRepository.getItems()
         if (itemsResult is DataResult.Error) return itemsResult
 
         val categoriesResult = categoryRepository.getCategories()

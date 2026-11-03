@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.project.tickr.core.result.onError
 import com.project.tickr.core.result.onSuccess
-import com.project.tickr.domain.usecase.auth.GetCurrentUserIdUseCase
 import com.project.tickr.domain.usecase.consumed.GetConsumedItemsUseCase
 import com.project.tickr.domain.usecase.item.ObserveItemsUseCase
 import kotlinx.coroutines.channels.Channel
@@ -21,7 +20,6 @@ import com.project.tickr.presentation.common.ErrorMessageProvider
 class ConsumedItemsViewModel(
     private val observeItems: ObserveItemsUseCase,
     private val getConsumedItems: GetConsumedItemsUseCase,
-    private val getCurrentUserId: GetCurrentUserIdUseCase,
     private val errorMessages: ErrorMessageProvider,
 ) : ViewModel() {
 
@@ -61,12 +59,11 @@ class ConsumedItemsViewModel(
     }
 
     private fun load(isRefresh: Boolean, silent: Boolean) {
-        val userId = getCurrentUserId()
         if (!silent) _state.update { it.copy(loadState = ConsumedItemsLoadState.Loading) }
         if (isRefresh) _state.update { it.copy(isRefreshing = true) }
         loadJob?.cancel()
         loadJob = viewModelScope.launch {
-            getConsumedItems(userId)
+            getConsumedItems()
                 .onSuccess { items ->
                     _state.update {
                         it.copy(loadState = ConsumedItemsLoadState.Content, items = items, isRefreshing = false)

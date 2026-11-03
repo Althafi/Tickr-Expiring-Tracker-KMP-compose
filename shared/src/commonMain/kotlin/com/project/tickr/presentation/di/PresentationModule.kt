@@ -17,14 +17,14 @@ import com.project.tickr.presentation.notifications.NotificationsViewModel
 val presentationModule = module {
     single { ErrorMessageProvider() }
     factory { OnboardingViewModel(get()) }
-    factory { HomeViewModel(get(), get(), get(), get(), get(), get(), get()) }
-    factory { AddItemViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
-    factory { ExpiryViewModel(get(), get(), get(), get(), get(), get()) }
-    factory { ExpiryDetailViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+    factory { HomeViewModel(get(), get(), get(), get(), get(), get()) }
+    factory { AddItemViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    factory { ExpiryViewModel(get(), get(), get(), get(), get()) }
+    factory { ExpiryDetailViewModel(get(), get(), get(), get(), get(), get(), get()) }
     factory { HelpViewModel() }
     factory { MainShellViewModel(get(), get(), get()) }
     factory { SettingsViewModel(get(), get(), get(), get(), get()) }
     factory { AboutViewModel(get()) }
     factory { NotificationsViewModel(get(), get()) }
-    factory { ConsumedItemsViewModel(get(), get(), get(), get()) }
+    factory { ConsumedItemsViewModel(get(), get(), get()) }
 }

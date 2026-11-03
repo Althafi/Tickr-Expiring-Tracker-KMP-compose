@@ -8,7 +8,6 @@ import com.project.tickr.domain.model.Item
 import com.project.tickr.domain.repository.ItemRepository
 
 data class AddItemParams(
-    val userId: String,
     val name: String,
     val categoryId: Long?,
     val quantity: Int,
@@ -36,7 +35,6 @@ class AddItemUseCase(
 
         val item = Item(
             id = 0L,
-            userId = params.userId,
             categoryId = params.categoryId,
             name = params.name.trim(),
             barcode = null,

@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <uses-permission android:name="android.permission.INTERNET"/>
     <!-- Android 13+: izin menampilkan notifikasi pengingat kedaluwarsa (notifikasi lokal, tanpa server) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-    <!-- API 33+ image access -->
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
-    <!-- API 26-32 image access -->
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32"/>
     <application
         android:name=".TickrApplication"
         android:allowBackup="true"

@@ -14,9 +14,6 @@ internal class LocalCategoryRepository(
     override suspend fun getCategories(): DataResult<List<Category>> =
         local.getAll().mapData { rows -> rows.map { it.toDomain() } }
 
-    // Tidak ada konsep user: parameter diabaikan.
-    override suspend fun getCategoriesByUser(userId: String): DataResult<List<Category>> = getCategories()
-
     override suspend fun getCategory(id: Long): DataResult<Category> =
         local.getById(id).mapData { it.toDomain() }
 
