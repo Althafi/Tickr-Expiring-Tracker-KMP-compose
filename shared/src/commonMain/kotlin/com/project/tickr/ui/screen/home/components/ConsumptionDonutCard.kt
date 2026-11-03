@@ -155,7 +155,9 @@ private fun DonutChart(
 
             slices.forEachIndexed { i, slice ->
                 val sweepFull = slice.percentage * 3.6f
-                val sweep = (sweepFull - gap).coerceAtLeast(0f) * animProgress
+                // Satu segmen penuh (100%) tidak butuh celah pemisah.
+                val segmentGap = if (slices.size > 1) gap else 0f
+                val sweep = (sweepFull - segmentGap).coerceAtLeast(0f) * animProgress
                 drawArc(
                     color = sliceColors[i],
                     startAngle = startAngle,

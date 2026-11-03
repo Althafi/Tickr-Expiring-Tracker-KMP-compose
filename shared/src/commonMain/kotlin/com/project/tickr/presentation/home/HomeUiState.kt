@@ -7,7 +7,8 @@ import com.project.tickr.core.util.DateParts
 import com.project.tickr.presentation.common.UiText
 
 data class HomeUiState(
-    val isLoading: Boolean = false,
+    // true sejak awal: sebelum emisi pertama Flow, daftar kosong ≠ "belum ada barang" (hindari kilatan empty state).
+    val isLoading: Boolean = true,
     val nowEpochMillis: Long = 0L,
     val date: DateParts? = null,
     val displayTime: String = "",

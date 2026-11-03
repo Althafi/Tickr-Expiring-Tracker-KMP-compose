@@ -136,6 +136,7 @@ private fun HomeScreenPreviewFilled() {
     TickrTheme {
         HomeScreen(
             state = HomeUiState(
+                isLoading = false,
                 nowEpochMillis = 1749470828000L,
                 wasteTrend = WasteTrend(deltaPercent = 12, isImproving = true),
                 slices = listOf(
@@ -165,7 +166,7 @@ private fun HomeScreenPreviewFilled() {
 private fun HomeScreenPreviewEmpty() {
     TickrTheme {
         HomeScreen(
-            state = HomeUiState(nowEpochMillis = 1749470828000L),
+            state = HomeUiState(isLoading = false, nowEpochMillis = 1749470828000L),
             onAction = {},
         )
     }
@@ -176,7 +177,7 @@ private fun HomeScreenPreviewEmpty() {
 private fun HomeScreenPreviewEmptyDark() {
     TickrTheme(darkTheme = true) {
         HomeScreen(
-            state = HomeUiState(nowEpochMillis = 1749470828000L),
+            state = HomeUiState(isLoading = false, nowEpochMillis = 1749470828000L),
             onAction = {},
         )
     }

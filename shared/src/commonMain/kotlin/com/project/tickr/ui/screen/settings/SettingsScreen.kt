@@ -145,6 +145,8 @@ fun SettingsScreen(
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth(),
         )
+        // FAB tab bar menonjol di atas bilah dan menutupi footer bila tak ada ruang tambahan.
+        Spacer(Modifier.height(40.dp))
     }
 
     if (showImportConfirm) {
