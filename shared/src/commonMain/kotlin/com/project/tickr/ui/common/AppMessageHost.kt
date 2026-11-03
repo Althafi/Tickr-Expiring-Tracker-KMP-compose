@@ -1,6 +1,15 @@
 package com.project.tickr.ui.common
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.TextButton
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -30,6 +39,9 @@ import com.project.tickr.presentation.common.resolve
 import com.project.tickr.ui.theme.TickrTheme
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
+import tickrapp.shared.generated.resources.Res
+import tickrapp.shared.generated.resources.cd_close
 
 /**
  * Jarak bawah yang harus disisakan snackbar. Layar dengan bilah bawah (MainShell) mengisinya
@@ -80,13 +92,42 @@ fun AppMessageHost(
         SnackbarHost(hostState = hostState, modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) { data ->
             val colors = TickrTheme.colors
             val isError = current?.kind == MessageKind.ERROR
+            val contentColor = if (isError) colors.onCritical else colors.background
+            val actionLabel = data.visuals.actionLabel
             Snackbar(
-                snackbarData = data,
                 containerColor = if (isError) colors.critical else colors.textPrimary,
-                contentColor = if (isError) colors.onCritical else colors.background,
-                actionColor = if (isError) colors.onCritical else colors.background,
-                dismissActionContentColor = if (isError) colors.onCritical else colors.background,
-            )
+                contentColor = contentColor,
+                action = actionLabel?.let {
+                    {
+                        TextButton(
+                            onClick = { data.performAction() },
+                            colors = ButtonDefaults.textButtonColors(contentColor = contentColor),
+                        ) { Text(it) }
+                    }
+                },
+                dismissAction = if (data.visuals.withDismissAction) {
+                    {
+                        IconButton(onClick = { data.dismiss() }) {
+                            Icon(
+                                imageVector = Icons.Filled.Close,
+                                contentDescription = stringResource(Res.string.cd_close),
+                                tint = contentColor,
+                            )
+                        }
+                    }
+                } else null,
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    // playKey = data: setiap pesan baru memutar ulang animasi centang/silang.
+                    AnimatedStatusIcon(
+                        kind = if (isError) MessageKind.ERROR else MessageKind.SUCCESS,
+                        size = 28.dp,
+                        playKey = data,
+                    )
+                    Spacer(Modifier.width(12.dp))
+                    Text(data.visuals.message)
+                }
+            }
         }
     }
 }

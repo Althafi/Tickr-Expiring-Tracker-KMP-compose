@@ -1,6 +1,12 @@
 package com.project.tickr.ui.screen.onboarding
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -28,12 +34,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
+import kotlin.math.abs
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.ContentScale
@@ -115,6 +125,10 @@ fun OnboardingScreen(
                 OnboardingPageItem(
                     page = state.pages[pageIndex],
                     imageRes = pageImages[pageIndex],
+                    pageOffset = {
+                        // 0 = halaman ini di tengah; ±1 = satu halaman di kiri/kanan.
+                        (pagerState.currentPage - pageIndex) + pagerState.currentPageOffsetFraction
+                    },
                 )
             }
 
@@ -173,7 +187,26 @@ fun OnboardingScreen(
 private fun OnboardingPageItem(
     page: OnboardingPage,
     imageRes: DrawableResource,
+    pageOffset: () -> Float,
 ) {
+    // Masuk saat layar pertama kali muncul: ilustrasi membal naik, teks menyusul.
+    val intro = remember { Animatable(0f) }
+    LaunchedEffect(Unit) {
+        intro.animateTo(1f, tween(durationMillis = 700, easing = FastOutSlowInEasing))
+    }
+
+    // Napas halus yang berulang: melayang naik-turun dan goyang sangat kecil.
+    val idle = rememberInfiniteTransition(label = "onboarding-idle")
+    val sway by idle.animateFloat(
+        initialValue = -1f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 2600, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse,
+        ),
+        label = "sway",
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -188,7 +221,21 @@ private fun OnboardingPageItem(
             contentDescription = stringResource(page.contentDescription),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(360.dp),
+                .height(360.dp)
+                .graphicsLayer {
+                    val offset = pageOffset()
+                    val distance = abs(offset).coerceIn(0f, 1f)
+                    val enter = intro.value
+                    // Parallax: ilustrasi bergeser lebih jauh dari halamannya (kesan kedalaman).
+                    translationX = offset * size.width * 0.35f
+                    translationY = sway * 6.dp.toPx() + (1f - enter) * 40.dp.toPx()
+                    val s = (1f - 0.18f * distance) * (0.8f + 0.2f * enter)
+                    scaleX = s
+                    scaleY = s
+                    rotationZ = sway * 1.2f + offset * -6f
+                    transformOrigin = TransformOrigin(0.5f, 1f)
+                    alpha = (1f - distance) * enter
+                },
             contentScale = ContentScale.Fit,
         )
 
@@ -202,7 +249,17 @@ private fun OnboardingPageItem(
             ),
             color = TickrTheme.colors.textPrimary,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .graphicsLayer {
+                    val offset = pageOffset()
+                    val distance = abs(offset).coerceIn(0f, 1f)
+                    // Teks menyusul ilustrasi: telat sedikit saat intro, memudar lebih cepat saat digeser.
+                    val enter = ((intro.value - 0.3f) / 0.7f).coerceIn(0f, 1f)
+                    translationX = offset * size.width * 0.12f
+                    translationY = (1f - enter) * 16.dp.toPx() + distance * 8.dp.toPx()
+                    alpha = (1f - distance * 1.4f).coerceIn(0f, 1f) * enter
+                },
             maxLines = 3,
             overflow = TextOverflow.Ellipsis,
         )
