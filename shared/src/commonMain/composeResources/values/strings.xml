@@ -164,7 +164,7 @@
     <string name="help_faq_q2">Kapan saya menerima pengingat kedaluwarsa?</string>
     <string name="help_faq_a2">Tickr mengirim pengingat 7 hari, 3 hari, dan 1 hari sebelum kedaluwarsa, lalu di hari kedaluwarsa pukul 08.00. Pastikan notifikasi diizinkan di pengaturan perangkat.</string>
     <string name="help_faq_q3">Apakah data saya tersimpan aman?</string>
-    <string name="help_faq_a3">Semua data tersimpan di perangkat Anda dan tidak dikirim ke server mana pun. Jika aplikasi dihapus, datanya ikut terhapus.</string>
+    <string name="help_faq_a3">Semua data tersimpan di perangkat Anda dan tidak dikirim ke server mana pun. Jika aplikasi dihapus, datanya ikut terhapus kecuali Anda punya cadangan. Simpan cadangan lewat Pengaturan, Ekspor data.</string>
     <string name="settings_title">Pengaturan</string>
     <string name="settings_section_display">TAMPILAN</string>
     <string name="settings_theme">Tema</string>
@@ -192,6 +192,24 @@
     <string name="notif_entry_today">Kedaluwarsa hari ini</string>
     <string name="notif_permission_off">Notifikasi dinonaktifkan. Aktifkan di pengaturan perangkat agar pengingat muncul.</string>
     <string name="notif_permission_action">Buka Pengaturan</string>
+    <string name="msg_item_saved">Barang disimpan</string>
+    <string name="msg_item_saved_photo_failed">Barang disimpan, tetapi fotonya gagal disimpan</string>
+    <string name="msg_item_consumed">Ditandai sudah dikonsumsi</string>
+    <string name="msg_item_deleted">Barang dihapus</string>
+    <string name="msg_undo">Urungkan</string>
+    <string name="settings_section_data">DATA</string>
+    <string name="settings_export">Ekspor data</string>
+    <string name="settings_export_desc">Simpan semua barang dan foto ke satu file</string>
+    <string name="settings_import">Impor data</string>
+    <string name="settings_import_desc">Pulihkan dari file cadangan Tickr</string>
+    <string name="import_confirm_title">Impor data?</string>
+    <string name="import_confirm_message">Semua barang yang ada sekarang akan diganti dengan isi file cadangan. Tindakan ini tidak dapat dibatalkan.</string>
+    <string name="import_confirm_action">Pilih file</string>
+    <string name="backup_exported">Cadangan disimpan</string>
+    <string name="error_backup_invalid">File ini bukan cadangan Tickr yang valid</string>
+    <string name="error_backup_newer">Cadangan ini dibuat oleh versi Tickr yang lebih baru. Perbarui aplikasi terlebih dahulu</string>
+    <string name="error_backup_write">Gagal menyimpan file cadangan</string>
+    <string name="error_backup_read">Gagal membaca file cadangan</string>
     <plurals name="countdown_overdue">
         <item quantity="one">Lewat %1$d hari</item>
         <item quantity="other">Lewat %1$d hari</item>
@@ -219,5 +237,9 @@
     <plurals name="notif_entry_days">
         <item quantity="one">Kedaluwarsa %1$d hari lagi</item>
         <item quantity="other">Kedaluwarsa %1$d hari lagi</item>
+    </plurals>
+    <plurals name="backup_imported">
+        <item quantity="one">%1$d barang dipulihkan</item>
+        <item quantity="other">%1$d barang dipulihkan</item>
     </plurals>
 </resources>

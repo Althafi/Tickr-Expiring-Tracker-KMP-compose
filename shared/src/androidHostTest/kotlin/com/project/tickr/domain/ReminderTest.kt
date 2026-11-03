@@ -85,6 +85,8 @@ private class FixedClock(private var millis: Long) : DateTimeUtil by DateTimeUti
 }
 
 private class NoopImages : ImageStorage {
+    override suspend fun saveBytes(bytes: ByteArray): DataResult<String> = DataResult.Success("x")
+    override suspend fun readBytes(path: String): ByteArray? = null
     override suspend fun saveProductImage(sourcePath: String) = DataResult.Success(sourcePath)
     override suspend fun delete(path: String) = DataResult.Success(Unit)
     override fun resolve(path: String) = path

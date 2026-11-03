@@ -25,7 +25,6 @@ fun ItemDetailRoute(
             when (event) {
                 ExpiryDetailEvent.NavigateBack -> navigator.back()
                 ExpiryDetailEvent.ItemRemoved -> navigator.back()
-                is ExpiryDetailEvent.ShowError -> { /* TODO: show snackbar */ }
             }
         }
     }

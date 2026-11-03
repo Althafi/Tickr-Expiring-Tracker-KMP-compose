@@ -35,9 +35,12 @@ Tickr bersifat **offline-first**: semua data tersimpan di perangkat. Tidak ada a
 | Riwayat konsumsi | Barang yang sudah dikonsumsi |
 | Notifikasi | Pengingat lokal H-7, H-3, H-1, dan hari-H, plus riwayatnya |
 | Pengaturan | Tema (Sistem / Terang / Gelap), bahasa (Sistem / Indonesia / English), Bantuan, Tentang |
+| Ekspor dan impor data | Simpan semua barang dan foto ke satu file JSON, pulihkan dari file itu |
 | Wawasan | Belum tersedia |
 
 Daftar barang di Beranda, Kedaluwarsa, dan Riwayat konsumsi diperbarui otomatis ketika data berubah, tanpa perlu menarik untuk memuat ulang.
+
+Setiap aksi memberi umpan balik lewat snackbar: barang disimpan, ditandai dikonsumsi (dengan tombol **Urungkan**), dihapus, serta pesan error bila gagal. Kegagalan menyimpan barang tampil di dalam sheet Tambah Barang, karena snackbar tertutup oleh sheet.
 
 ---
 
@@ -111,6 +114,7 @@ Isi `commonMain/kotlin/com/project/tickr/`:
 | DI | Koin 4.2.1 |
 | Database | SQLDelight 2.4.1 (SQLite) |
 | Gambar | Coil 3 (memuat file lokal) |
+| Serialisasi | kotlinx-serialization-json (hanya untuk file cadangan) |
 | Tanggal | kotlinx-datetime |
 | Notifikasi Android | WorkManager 2.12.0 |
 | Notifikasi iOS | UNUserNotificationCenter |
@@ -136,6 +140,15 @@ Hal yang perlu diketahui:
 - **Foto produk** disalin ke penyimpanan privat aplikasi dan diperkecil (maksimal 1280 px, JPEG). Database hanya menyimpan path relatif `product_images/<uuid>.jpg`. Foto dihapus ketika barang dihapus atau fotonya diganti.
 - **Pengaturan** (tema, bahasa, status onboarding) disimpan di `SharedPreferences` (Android) dan `NSUserDefaults` (iOS).
 - Perubahan skema harus lewat migrasi `.sqm`, bukan mengedit file `.sq` begitu saja, supaya data pengguna lama tidak hilang.
+
+### Cadangan data
+
+Karena tidak ada server, menghapus aplikasi berarti menghapus datanya. Ada dua lapis perlindungan:
+
+1. **Cadangan otomatis sistem.** Android: Auto Backup ke Google Drive pengguna (`allowBackup="true"`), berlaku bila pengguna mengaktifkannya di perangkat. iOS: ikut cadangan iCloud atau perangkat. Ini tidak dapat dijamin dari sisi aplikasi.
+2. **Ekspor dan impor manual** di Pengaturan, bagian Data. Ekspor menghasilkan satu file `tickr-backup-YYYY-MM-DD.json` berisi kategori, semua barang, dan foto (base64). Pengguna memilih sendiri lokasinya (Android: pemilih file sistem, iOS: share sheet). Impor **mengganti seluruh data** setelah konfirmasi.
+
+Impor bersifat aman: file divalidasi penuh dulu (identitas, versi, tanggal, jumlah, base64), foto ditulis ke lokasi baru, lalu database diganti dalam satu transaksi. Bila ada langkah yang gagal, data lama dan fotonya tidak berubah. File dari versi Tickr yang lebih baru ditolak dengan pesan khusus. Format didefinisikan di `data/backup/BackupFormat.kt`; naikkan `CURRENT_VERSION` bila bentuknya berubah.
 
 ---
 
@@ -211,7 +224,7 @@ Untuk memeriksa kompilasi iOS tanpa Xcode:
 ./gradlew :shared:testAndroidHostTest
 ```
 
-Tes JVM mencakup database (SQLDelight di memori), repository, penyimpanan dan perkecilan gambar, pengaturan, i18n (paritas string dan resolusi bahasa), aturan pengingat, dan pemrosesan pengingat.
+Tes JVM mencakup database (SQLDelight di memori), repository, ekspor/impor cadangan (termasuk file rusak, versi lebih baru, dan rollback), penyimpanan dan perkecilan gambar, pengaturan, i18n (paritas string dan resolusi bahasa), aturan pengingat, pemrosesan pengingat, antrean pesan snackbar, dan **graf DI** (semua ViewModel diselesaikan dari modul Koin asli).
 
 Yang belum bisa diuji otomatis dan perlu dicek manual di perangkat: ganti bahasa saat app berjalan (terutama iOS), tampilan tema gelap, notifikasi yang benar-benar muncul pukul 08:00, dan alur izin notifikasi.
 
@@ -219,7 +232,9 @@ Yang belum bisa diuji otomatis dan perlu dicek manual di perangkat: ganti bahasa
 
 ## Keterbatasan yang Diketahui
 
-- Data hanya ada di satu perangkat. Tidak ada sinkronisasi atau cadangan antar perangkat.
+- Data hanya ada di satu perangkat. Tidak ada sinkronisasi; pindah perangkat lewat ekspor dan impor.
+- File cadangan memuat semua foto dalam satu file, jadi ukurannya bisa besar bila barangnya sangat banyak.
+- Ekspor dan impor di iOS (share sheet dan document picker) sudah dikompilasi tetapi belum pernah dijalankan di perangkat.
 - iOS: picker foto dan date picker masih berupa stub.
 - iOS: notifikasi tidak tampil saat app sedang terbuka (belum ada `UNUserNotificationCenterDelegate`), dan riwayat baru tercatat saat app dibuka berikutnya.
 - Android: waktu notifikasi dapat bergeser beberapa menit karena WorkManager dan Doze.

@@ -23,6 +23,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -59,6 +60,7 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.TrendingUp
 import tickrapp.shared.generated.resources.*
+import com.project.tickr.ui.common.LocalSnackbarInset
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.StringResource
 import com.project.tickr.presentation.navigation.MainShellViewModel
@@ -126,6 +128,13 @@ fun MainShell(navigator: Navigator) {
             )
         },
     ) { innerPadding ->
+        // Snackbar global harus muncul di atas bilah bawah, bukan menimpanya.
+        val snackbarInset = LocalSnackbarInset.current
+        val bottomInset = innerPadding.calculateBottomPadding()
+        DisposableEffect(bottomInset) {
+            snackbarInset.bottom = bottomInset
+            onDispose { snackbarInset.bottom = 0.dp }
+        }
         Box(Modifier.fillMaxSize().padding(innerPadding)) {
             when (selectedTab) {
                 BottomTab.HOME -> HomeRoute(navigator = navigator, viewModel = homeVm)

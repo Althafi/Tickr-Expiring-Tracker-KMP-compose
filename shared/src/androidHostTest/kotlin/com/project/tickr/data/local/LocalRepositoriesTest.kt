@@ -28,10 +28,18 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-private class FakeImageStorage : ImageStorage {
+internal class FakeImageStorage : ImageStorage {
     val deleted = mutableListOf<String>()
+    val files = mutableMapOf<String, ByteArray>()
+    private var counter = 0
     override suspend fun saveProductImage(sourcePath: String): DataResult<String> = DataResult.Success(sourcePath)
-    override suspend fun delete(path: String): DataResult<Unit> { deleted += path; return DataResult.Success(Unit) }
+    override suspend fun saveBytes(bytes: ByteArray): DataResult<String> {
+        val path = "product_images/${++counter}.jpg"
+        files[path] = bytes
+        return DataResult.Success(path)
+    }
+    override suspend fun readBytes(path: String): ByteArray? = files[path]
+    override suspend fun delete(path: String): DataResult<Unit> { deleted += path; files.remove(path); return DataResult.Success(Unit) }
     override fun resolve(path: String): String = "/abs/$path"
 }
 

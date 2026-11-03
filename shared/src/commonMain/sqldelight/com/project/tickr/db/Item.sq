@@ -48,3 +48,6 @@ DELETE FROM item WHERE id = ?;
 
 lastInsertRowId:
 SELECT last_insert_rowid();
+
+deleteAll:
+DELETE FROM item;

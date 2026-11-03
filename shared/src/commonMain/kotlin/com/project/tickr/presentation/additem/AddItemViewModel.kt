@@ -18,7 +18,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.project.tickr.presentation.common.AppMessenger
 import com.project.tickr.presentation.common.ErrorMessageProvider
+import com.project.tickr.presentation.common.asUiText
 import com.project.tickr.presentation.common.UiText
 import tickrapp.shared.generated.resources.*
 import com.project.tickr.domain.usecase.reminder.SyncRemindersUseCase
@@ -31,6 +33,7 @@ class AddItemViewModel(
     private val discardProductImage: DiscardProductImageUseCase,
     private val errorMessages: ErrorMessageProvider,
     private val syncReminders: SyncRemindersUseCase,
+    private val messenger: AppMessenger,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AddItemUiState())
@@ -133,12 +136,13 @@ class AddItemViewModel(
         val s = _state.value
         if (!s.canSave) return
 
-        _state.update { it.copy(isSaving = true) }
+        _state.update { it.copy(isSaving = true, saveError = null) }
         viewModelScope.launch {
+            var photoFailed = false
             val savedImagePath: String? = if (s.photoPath != null) {
                 when (val r = saveProductImage(s.photoPath)) {
                     is DataResult.Success -> r.data
-                    is DataResult.Error -> null
+                    is DataResult.Error -> { photoFailed = true; null }
                 }
             } else null
 
@@ -162,12 +166,13 @@ class AddItemViewModel(
                     )
                 }
                 syncReminders.requestSync()
+                if (photoFailed) messenger.error(Res.string.msg_item_saved_photo_failed.asUiText())
+                else messenger.success(Res.string.msg_item_saved.asUiText())
                 _events.send(AddItemEvent.Saved)
             }.onError { err ->
                 // Barang gagal disimpan: jangan biarkan foto yatim di penyimpanan.
                 savedImagePath?.let { discardProductImage(it) }
-                _state.update { it.copy(isSaving = false) }
-                _events.send(AddItemEvent.ShowError(errorMessages.provide(err)))
+                _state.update { it.copy(isSaving = false, saveError = errorMessages.provide(err)) }
             }
         }
     }

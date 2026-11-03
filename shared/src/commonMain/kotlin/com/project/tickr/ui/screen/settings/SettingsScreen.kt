@@ -18,7 +18,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
@@ -75,6 +78,7 @@ fun SettingsScreen(
     val colors = TickrTheme.colors
     val spacing = TickrTheme.spacing
     var openSheet by rememberSaveable { mutableStateOf(OpenSheet.NONE) }
+    var showImportConfirm by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -107,6 +111,25 @@ fun SettingsScreen(
         }
 
         Spacer(Modifier.height(spacing.md))
+        SectionLabel(stringResource(Res.string.settings_section_data))
+        SettingsCard {
+            SettingsRow(
+                title = stringResource(Res.string.settings_export),
+                subtitle = stringResource(Res.string.settings_export_desc),
+                enabled = !state.isBackupBusy,
+                busy = state.isBackupBusy,
+                onClick = { onAction(SettingsAction.ExportData) },
+            )
+            HorizontalDivider(color = colors.textSecondary.copy(alpha = 0.12f))
+            SettingsRow(
+                title = stringResource(Res.string.settings_import),
+                subtitle = stringResource(Res.string.settings_import_desc),
+                enabled = !state.isBackupBusy,
+                onClick = { showImportConfirm = true },
+            )
+        }
+
+        Spacer(Modifier.height(spacing.md))
         SectionLabel(stringResource(Res.string.settings_section_help))
         SettingsCard {
             SettingsRow(title = stringResource(Res.string.settings_help), onClick = { onAction(SettingsAction.OpenHelp) })
@@ -121,6 +144,23 @@ fun SettingsScreen(
             color = colors.textSecondary,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth(),
+        )
+    }
+
+    if (showImportConfirm) {
+        AlertDialog(
+            onDismissRequest = { showImportConfirm = false },
+            title = { Text(stringResource(Res.string.import_confirm_title)) },
+            text = { Text(stringResource(Res.string.import_confirm_message)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    showImportConfirm = false
+                    onAction(SettingsAction.ImportData)
+                }) { Text(stringResource(Res.string.import_confirm_action), color = colors.critical) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showImportConfirm = false }) { Text(stringResource(Res.string.action_cancel)) }
+            },
         )
     }
 
@@ -172,30 +212,45 @@ private fun SettingsRow(
     title: String,
     onClick: () -> Unit,
     value: String? = null,
+    subtitle: String? = null,
+    enabled: Boolean = true,
+    busy: Boolean = false,
 ) {
     val colors = TickrTheme.colors
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(role = Role.Button, onClick = onClick)
+            .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
             .padding(horizontal = TickrTheme.spacing.cardInner, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            text = title,
-            style = TickrTheme.typography.body,
-            color = colors.textPrimary,
-            modifier = Modifier.weight(1f),
-        )
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                style = TickrTheme.typography.body,
+                color = if (enabled) colors.textPrimary else colors.textSecondary,
+            )
+            if (subtitle != null) {
+                Text(text = subtitle, style = TickrTheme.typography.caption, color = colors.textSecondary)
+            }
+        }
         if (value != null) {
             Text(text = value, style = TickrTheme.typography.body, color = colors.textSecondary)
         }
-        Icon(
-            Icons.AutoMirrored.Outlined.KeyboardArrowRight,
-            contentDescription = null,
-            tint = colors.textSecondary,
-            modifier = Modifier.padding(start = TickrTheme.spacing.xs).size(20.dp),
-        )
+        if (busy) {
+            CircularProgressIndicator(
+                modifier = Modifier.padding(start = TickrTheme.spacing.xs).size(18.dp),
+                strokeWidth = 2.dp,
+                color = colors.primaryBrand,
+            )
+        } else {
+            Icon(
+                Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                contentDescription = null,
+                tint = colors.textSecondary,
+                modifier = Modifier.padding(start = TickrTheme.spacing.xs).size(20.dp),
+            )
+        }
     }
 }
 

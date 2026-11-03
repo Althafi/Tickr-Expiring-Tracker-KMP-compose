@@ -5,7 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.project.tickr.core.result.onError
 import com.project.tickr.core.result.onSuccess
 import com.project.tickr.core.util.DateTimeUtil
+import com.project.tickr.presentation.common.AppMessenger
 import com.project.tickr.presentation.common.ErrorMessageProvider
+import com.project.tickr.presentation.common.asUiText
+import tickrapp.shared.generated.resources.*
 import com.project.tickr.domain.model.daysToUrgency
 import com.project.tickr.domain.usecase.category.GetCategoriesUseCase
 import com.project.tickr.domain.usecase.item.DeleteItemUseCase
@@ -29,6 +32,7 @@ class ExpiryDetailViewModel(
     private val dateTime: DateTimeUtil,
     private val errorMessages: ErrorMessageProvider,
     private val syncReminders: SyncRemindersUseCase,
+    private val messenger: AppMessenger,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ExpiryDetailUiState())
@@ -83,11 +87,21 @@ class ExpiryDetailViewModel(
             markItemConsumed(item, true)
                 .onSuccess {
                     syncReminders.requestSync(cancelItemId = item.id)
+                    // Aksi urungkan berdiri sendiri: layar ini sudah tertutup saat snackbar masih tampil.
+                    messenger.success(
+                        text = Res.string.msg_item_consumed.asUiText(),
+                        actionLabel = Res.string.msg_undo.asUiText(),
+                        onAction = {
+                            markItemConsumed(item, false)
+                                .onSuccess { syncReminders.requestSync() }
+                                .onError { err -> messenger.error(errorMessages.provide(err)) }
+                        },
+                    )
                     _events.send(ExpiryDetailEvent.ItemRemoved)
                 }
                 .onError { err ->
                     _state.update { it.copy(isProcessing = false) }
-                    _events.send(ExpiryDetailEvent.ShowError(errorMessages.provide(err)))
+                    messenger.error(errorMessages.provide(err))
                 }
         }
     }
@@ -99,11 +113,12 @@ class ExpiryDetailViewModel(
             deleteItem(item.id)
                 .onSuccess {
                     syncReminders.requestSync(cancelItemId = item.id)
+                    messenger.success(Res.string.msg_item_deleted.asUiText())
                     _events.send(ExpiryDetailEvent.NavigateBack)
                 }
                 .onError { err ->
                     _state.update { it.copy(isProcessing = false) }
-                    _events.send(ExpiryDetailEvent.ShowError(errorMessages.provide(err)))
+                    messenger.error(errorMessages.provide(err))
                 }
         }
     }

@@ -1,6 +1,7 @@
 package com.project.tickr
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -11,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
@@ -19,7 +21,11 @@ import com.project.tickr.domain.provider.AppInfoProvider
 import com.project.tickr.domain.storage.ImageStorage
 import com.project.tickr.domain.usecase.onboarding.GetOnboardingSeenUseCase
 import com.project.tickr.domain.usecase.settings.ObserveSettingsUseCase
+import com.project.tickr.presentation.common.AppMessenger
 import com.project.tickr.presentation.navigation.Destination
+import com.project.tickr.ui.common.AppMessageHost
+import com.project.tickr.ui.common.LocalSnackbarInset
+import com.project.tickr.ui.common.SnackbarInset
 import com.project.tickr.ui.common.ApplyPlatformTheme
 import com.project.tickr.ui.common.ProvideProductImageResolver
 import com.project.tickr.ui.i18n.AppLocaleProvider
@@ -60,19 +66,32 @@ fun App() {
     val imageStorage: ImageStorage = koinInject()
     val appInfoProvider: AppInfoProvider = koinInject()
     val appInfo = remember(appInfoProvider) { appInfoProvider.getAppInfo() }
+    val messenger: AppMessenger = koinInject()
+    val snackbarInset = remember { SnackbarInset() }
 
     AppLocaleProvider(language = settings.language) {
         TickrTheme(darkTheme = darkTheme) {
             Surface(modifier = Modifier.fillMaxSize()) {
-                CompositionLocalProvider(LocalAppInfo provides appInfo) {
-                    // null = sedang menentukan start destination; hindari NavHost sebelum siap
-                    startDestination?.let { start ->
-                        ProvideProductImageResolver(imageStorage) {
-                            TickrNavGraph(
-                                navController = navController,
-                                startDestination = start,
-                            )
+                CompositionLocalProvider(
+                    LocalAppInfo provides appInfo,
+                    LocalSnackbarInset provides snackbarInset,
+                ) {
+                    Box(Modifier.fillMaxSize()) {
+                        // null = sedang menentukan start destination; hindari NavHost sebelum siap
+                        startDestination?.let { start ->
+                            ProvideProductImageResolver(imageStorage) {
+                                TickrNavGraph(
+                                    navController = navController,
+                                    startDestination = start,
+                                )
+                            }
                         }
+                        // Satu host untuk semua layar; pesan bertahan walau layar pengirimnya sudah tertutup.
+                        AppMessageHost(
+                            messenger = messenger,
+                            inset = snackbarInset,
+                            modifier = Modifier.align(Alignment.BottomCenter),
+                        )
                     }
                 }
             }

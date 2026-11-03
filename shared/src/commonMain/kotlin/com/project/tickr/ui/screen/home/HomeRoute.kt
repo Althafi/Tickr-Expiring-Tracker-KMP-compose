@@ -22,7 +22,6 @@ fun HomeRoute(
                 HomeEvent.NavigateToNotifications -> navigator.navigate(Destination.Notifications)
                 HomeEvent.ShowAddItemSheet -> { /* handled by MainShell */ }
                 HomeEvent.NavigateToConsumedItems -> navigator.navigate(Destination.ConsumedItems)
-                is HomeEvent.ShowError -> { /* TODO: show snackbar */ }
             }
         }
     }

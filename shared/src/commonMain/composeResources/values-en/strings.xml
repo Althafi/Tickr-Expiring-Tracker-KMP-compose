@@ -164,7 +164,7 @@
     <string name="help_faq_q2">When will I get expiry reminders?</string>
     <string name="help_faq_a2">Tickr sends reminders 7 days, 3 days, and 1 day before an item expires, and again on the expiry day at 8:00 AM. Make sure notifications are allowed in your device settings.</string>
     <string name="help_faq_q3">Is my data safe?</string>
-    <string name="help_faq_a3">All data stays on your device and is never sent to any server. If you delete the app, your data is deleted too.</string>
+    <string name="help_faq_a3">All data stays on your device and is never sent to any server. If you delete the app, your data is deleted too unless you have a backup. Save one from Settings, Export data.</string>
     <string name="settings_title">Settings</string>
     <string name="settings_section_display">DISPLAY</string>
     <string name="settings_theme">Theme</string>
@@ -192,6 +192,24 @@
     <string name="notif_entry_today">Expires today</string>
     <string name="notif_permission_off">Notifications are turned off. Enable them in device settings to receive reminders.</string>
     <string name="notif_permission_action">Open Settings</string>
+    <string name="msg_item_saved">Item saved</string>
+    <string name="msg_item_saved_photo_failed">Item saved, but its photo could not be saved</string>
+    <string name="msg_item_consumed">Marked as consumed</string>
+    <string name="msg_item_deleted">Item deleted</string>
+    <string name="msg_undo">Undo</string>
+    <string name="settings_section_data">DATA</string>
+    <string name="settings_export">Export data</string>
+    <string name="settings_export_desc">Save all items and photos to a single file</string>
+    <string name="settings_import">Import data</string>
+    <string name="settings_import_desc">Restore from a Tickr backup file</string>
+    <string name="import_confirm_title">Import data?</string>
+    <string name="import_confirm_message">All items currently in the app will be replaced by the contents of the backup file. This cannot be undone.</string>
+    <string name="import_confirm_action">Choose file</string>
+    <string name="backup_exported">Backup saved</string>
+    <string name="error_backup_invalid">This file is not a valid Tickr backup</string>
+    <string name="error_backup_newer">This backup was made by a newer version of Tickr. Please update the app first</string>
+    <string name="error_backup_write">Could not save the backup file</string>
+    <string name="error_backup_read">Could not read the backup file</string>
     <plurals name="countdown_overdue">
         <item quantity="one">%1$d day overdue</item>
         <item quantity="other">%1$d days overdue</item>
@@ -219,5 +237,9 @@
     <plurals name="notif_entry_days">
         <item quantity="one">Expires in %1$d day</item>
         <item quantity="other">Expires in %1$d days</item>
+    </plurals>
+    <plurals name="backup_imported">
+        <item quantity="one">%1$d item restored</item>
+        <item quantity="other">%1$d items restored</item>
     </plurals>
 </resources>

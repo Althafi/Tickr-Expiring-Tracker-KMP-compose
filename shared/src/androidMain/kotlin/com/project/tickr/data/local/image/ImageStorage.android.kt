@@ -45,6 +45,29 @@ internal class AndroidImageStorage : ImageStorage {
             }
         }
 
+    override suspend fun saveBytes(bytes: ByteArray): DataResult<String> = withContext(Dispatchers.IO) {
+        try {
+            val relative = "${ImageScaling.DIRECTORY}/${UUID.randomUUID()}.jpg"
+            File(filesDir, relative).also { it.parentFile?.mkdirs() }.writeBytes(bytes)
+            DataResult.Success(relative)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            DataResult.Error(AppError.Unknown("Gagal menyimpan gambar: ${e.message}"))
+        }
+    }
+
+    override suspend fun readBytes(path: String): ByteArray? = withContext(Dispatchers.IO) {
+        try {
+            if (!ImageScaling.isManagedPath(path)) return@withContext null
+            File(filesDir, path).takeIf { it.isFile }?.readBytes()
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            null
+        }
+    }
+
     override suspend fun delete(path: String): DataResult<Unit> = withContext(Dispatchers.IO) {
         try {
             if (ImageScaling.isManagedPath(path)) File(filesDir, path).delete()

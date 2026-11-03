@@ -205,6 +205,14 @@ fun AddItemContent(
         )
 
         // ── 7. CTA ──────────────────────────────────────────────────
+        state.saveError?.let { error ->
+            Text(
+                text = error.asString(),
+                style = typography.caption,
+                color = colors.critical,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
         Button(
             onClick = { onAction(AddItemAction.Save) },
             enabled = state.canSave,

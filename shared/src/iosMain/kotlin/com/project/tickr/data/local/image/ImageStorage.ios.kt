@@ -75,6 +75,29 @@ internal class IosImageStorage : ImageStorage {
             }
         }
 
+    override suspend fun saveBytes(bytes: ByteArray): DataResult<String> = withContext(Dispatchers.Default) {
+        try {
+            val relative = "${ImageScaling.DIRECTORY}/${NSUUID().UUIDString}.jpg"
+            fileManager.createDirectoryAtPath(
+                "$baseDir/${ImageScaling.DIRECTORY}", withIntermediateDirectories = true,
+                attributes = null, error = null,
+            )
+            if (!bytes.toNSData().writeToFile("$baseDir/$relative", atomically = true)) {
+                return@withContext DataResult.Error(AppError.Unknown("Gagal menulis file gambar"))
+            }
+            DataResult.Success(relative)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            DataResult.Error(AppError.Unknown("Gagal menyimpan gambar: ${e.message}"))
+        }
+    }
+
+    override suspend fun readBytes(path: String): ByteArray? = withContext(Dispatchers.Default) {
+        if (!ImageScaling.isManagedPath(path)) return@withContext null
+        NSData.dataWithContentsOfFile("$baseDir/$path")?.toByteArray()
+    }
+
     override suspend fun delete(path: String): DataResult<Unit> = withContext(Dispatchers.Default) {
         try {
             if (ImageScaling.isManagedPath(path)) fileManager.removeItemAtPath("$baseDir/$path", error = null)

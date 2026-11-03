@@ -22,6 +22,8 @@ data class AddItemUiState(
     val isSaving: Boolean = false,
     val nameError: UiText? = null,
     val expiryError: UiText? = null,
+    /** Gagal menyimpan; ditampilkan di dalam sheet karena snackbar tertutup sheet. */
+    val saveError: UiText? = null,
 ) {
     val canSave: Boolean
         get() = name.isNotBlank() && expiryDateMillis != null && quantity >= 1 &&

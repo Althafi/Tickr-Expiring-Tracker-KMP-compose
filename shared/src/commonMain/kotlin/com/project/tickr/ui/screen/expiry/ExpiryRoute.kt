@@ -22,7 +22,6 @@ fun ExpiryRoute(
                 is ExpiryEvent.NavigateToDetail ->
                     navigator.navigate(Destination.ItemDetail(event.id))
                 ExpiryEvent.NavigateToAddItem -> onAddItemRequest()
-                is ExpiryEvent.ShowError -> { /* TODO: show snackbar */ }
             }
         }
     }

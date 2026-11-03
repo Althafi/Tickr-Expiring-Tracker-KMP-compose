@@ -19,10 +19,12 @@ import com.project.tickr.domain.storage.ImageStorage
 import com.project.tickr.data.local.datasource.CategoryLocalDataSource
 import com.project.tickr.data.local.datasource.ItemLocalDataSource
 import com.project.tickr.data.local.datasource.NotificationLocalDataSource
+import com.project.tickr.data.repository.LocalBackupRepository
 import com.project.tickr.data.repository.LocalCategoryRepository
 import com.project.tickr.data.repository.LocalItemRepository
 import com.project.tickr.data.repository.LocalNotificationRepository
 import com.project.tickr.db.TickrDatabase
+import com.project.tickr.domain.repository.BackupRepository
 import com.project.tickr.domain.repository.CategoryRepository
 import com.project.tickr.domain.repository.ItemRepository
 import com.project.tickr.domain.repository.NotificationRepository
@@ -45,6 +47,7 @@ val localModule = module {
     single<ItemRepository> { LocalItemRepository(get(), get()) }
     single<CategoryRepository> { LocalCategoryRepository(get()) }
     single<NotificationRepository> { LocalNotificationRepository(get()) }
+    single<BackupRepository> { LocalBackupRepository(get(), get(), get()) }
 
     single<KeyValueStore> { createKeyValueStore() }
     single<SettingsRepository> { SettingsRepositoryImpl(get()) }
