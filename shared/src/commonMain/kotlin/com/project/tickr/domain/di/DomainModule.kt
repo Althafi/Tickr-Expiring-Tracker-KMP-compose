@@ -15,6 +15,7 @@ import com.project.tickr.domain.usecase.item.GetExpiringItemsUseCase
 import com.project.tickr.domain.usecase.item.GetItemUseCase
 import com.project.tickr.domain.usecase.item.GetItemsByUserUseCase
 import com.project.tickr.domain.usecase.item.GetItemsUseCase
+import com.project.tickr.domain.usecase.item.ObserveItemsUseCase
 import com.project.tickr.domain.usecase.item.MarkItemConsumedUseCase
 import com.project.tickr.domain.usecase.item.UpdateItemUseCase
 import com.project.tickr.domain.usecase.item.DiscardProductImageUseCase
@@ -58,6 +59,7 @@ val domainModule = module {
     factory { DeleteCategoryUseCase(get()) }
 
     factory { GetItemsUseCase(get()) }
+    factory { ObserveItemsUseCase(get()) }
     factory { GetItemsByUserUseCase(get()) }
     factory { GetItemUseCase(get()) }
     factory { CreateItemUseCase(get()) }

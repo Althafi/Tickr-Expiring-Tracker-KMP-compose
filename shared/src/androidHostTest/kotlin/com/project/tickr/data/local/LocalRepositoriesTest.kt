@@ -15,7 +15,11 @@ import com.project.tickr.domain.model.Category
 import com.project.tickr.domain.model.Item
 import com.project.tickr.domain.model.NotificationLog
 import com.project.tickr.domain.storage.ImageStorage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import java.util.Properties
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -173,5 +177,30 @@ class LocalRepositoriesTest {
         val saved = items.createItem(newItem().copy(imageUrl = "product_images/a.jpg")).ok()
         items.updateItem(saved.copy(imageUrl = null)).ok()
         assertEquals(listOf("product_images/a.jpg"), images.deleted)
+    }
+
+    private suspend fun awaitUntil(condition: () -> Boolean) = withTimeout(5_000) {
+        while (!condition()) delay(10)
+    }
+
+    @Test
+    fun observeItems_emits_current_state_then_every_change() = runBlocking<Unit> {
+        val seen = java.util.concurrent.CopyOnWriteArrayList<List<String>>()
+        val job = launch(Dispatchers.Default) {
+            items.observeItems().collect { list -> seen += list.map { it.name } }
+        }
+        awaitUntil { seen.size >= 1 }
+        assertEquals(listOf(emptyList()), seen.toList())
+
+        val saved = items.createItem(newItem("Susu")).ok()
+        awaitUntil { seen.size >= 2 }
+        assertEquals(listOf("Susu"), seen.last())
+
+        items.updateItem(saved.copy(isConsumed = true))
+        awaitUntil { seen.size >= 3 }
+        items.deleteItem(saved.id)
+        awaitUntil { seen.size >= 4 }
+        assertEquals(emptyList(), seen.last())
+        job.cancel()
     }
 }

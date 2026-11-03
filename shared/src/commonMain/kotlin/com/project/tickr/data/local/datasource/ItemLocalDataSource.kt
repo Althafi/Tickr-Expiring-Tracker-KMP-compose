@@ -1,9 +1,13 @@
 package com.project.tickr.data.local.datasource
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
 import com.project.tickr.core.result.DataResult
 import com.project.tickr.db.Item as ItemRow
 import com.project.tickr.db.TickrDatabase
 import com.project.tickr.domain.model.Item
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 
 internal class ItemLocalDataSource(
     private val db: TickrDatabase,
@@ -13,6 +17,9 @@ internal class ItemLocalDataSource(
 
     suspend fun getAll(): DataResult<List<ItemRow>> =
         safeDbCall { queries.selectAll().executeAsList() }
+
+    fun observeAll(): Flow<List<ItemRow>> =
+        queries.selectAll().asFlow().mapToList(Dispatchers.Default)
 
     suspend fun getById(id: Long): DataResult<ItemRow> =
         safeDbCall { queries.selectById(id).executeAsOneOrNull() ?: throw EntityNotFoundException("item") }

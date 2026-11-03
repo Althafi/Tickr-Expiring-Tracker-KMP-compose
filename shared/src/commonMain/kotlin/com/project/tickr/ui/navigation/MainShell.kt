@@ -106,8 +106,6 @@ fun MainShell(navigator: Navigator) {
                 AddItemEvent.Saved -> {
                     showAddItem = false
                     if (shellViewModel.consumeNotificationPermissionPrompt()) requestNotificationPermission()
-                    homeVm.onAction(com.project.tickr.presentation.home.HomeAction.Refresh)
-                    expiryVm.onAction(com.project.tickr.presentation.expiry.ExpiryAction.Refresh)
                 }
                 else -> Unit
             }

@@ -8,6 +8,7 @@ import com.project.tickr.core.util.DateTimeUtil
 import com.project.tickr.domain.usecase.auth.GetCurrentUserIdUseCase
 import com.project.tickr.domain.usecase.expiry.GetConsumptionStatsUseCase
 import com.project.tickr.domain.usecase.expiry.GetExpiryListItemsUseCase
+import com.project.tickr.domain.usecase.item.ObserveItemsUseCase
 import com.project.tickr.presentation.navigation.Destination
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -16,11 +17,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import com.project.tickr.presentation.common.ErrorMessageProvider
 
 class ExpiryViewModel(
+    private val observeItems: ObserveItemsUseCase,
     private val getExpiryItems: GetExpiryListItemsUseCase,
     private val getConsumptionStats: GetConsumptionStatsUseCase,
     private val getCurrentUserId: GetCurrentUserIdUseCase,
@@ -34,9 +38,11 @@ class ExpiryViewModel(
     private val _events = Channel<ExpiryEvent>(Channel.BUFFERED)
     val events = _events.receiveAsFlow()
 
+    private var loadJob: Job? = null
+
     init {
         startClockTicker()
-        load(isRefresh = false)
+        observeChanges()
     }
 
     fun onAction(action: ExpiryAction) {
@@ -127,24 +133,42 @@ class ExpiryViewModel(
         }
     }
 
-    private fun load(isRefresh: Boolean) {
+    // The first emission is the initial load (with skeleton). Later emissions mean an item changed,
+    // so reload quietly and keep the current list on screen meanwhile.
+    private fun observeChanges() {
+        viewModelScope.launch {
+            var first = true
+            observeItems()
+                .catch { /* pull-to-refresh still works */ }
+                .collect {
+                    load(isRefresh = false, silent = !first)
+                    first = false
+                }
+        }
+    }
+
+    private fun load(isRefresh: Boolean, silent: Boolean = false) {
         val userId = getCurrentUserId()
 
-        _state.update {
-            it.copy(
-                loadState = ExpiryLoadState.Loading,
-                isRefreshing = isRefresh,
-            )
+        if (!silent) {
+            _state.update {
+                it.copy(
+                    loadState = ExpiryLoadState.Loading,
+                    isRefreshing = isRefresh,
+                )
+            }
         }
 
-        viewModelScope.launch {
+        // A newer load supersedes an older one (fast typing in search, filter changes, DB changes).
+        loadJob?.cancel()
+        loadJob = viewModelScope.launch {
             val filter = _state.value.activeFilter
-            val jobs = listOf(
+            coroutineScope {
                 launch {
                     getConsumptionStats(userId).onSuccess { stats ->
                         _state.update { it.copy(stats = stats) }
                     }
-                },
+                }
                 launch {
                     getExpiryItems(userId, filter)
                         .onSuccess { items ->
@@ -159,9 +183,8 @@ class ExpiryViewModel(
                         .onError { err ->
                             _state.update { it.copy(loadState = ExpiryLoadState.Error(errorMessages.provide(err))) }
                         }
-                },
-            )
-            jobs.joinAll()
+                }
+            }
             _state.update { it.copy(isRefreshing = false) }
         }
     }

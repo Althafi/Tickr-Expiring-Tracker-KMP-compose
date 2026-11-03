@@ -9,6 +9,8 @@ import com.project.tickr.data.mapper.toDomain
 import com.project.tickr.domain.model.Item
 import com.project.tickr.domain.repository.ItemRepository
 import com.project.tickr.domain.storage.ImageStorage
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 internal class LocalItemRepository(
     private val local: ItemLocalDataSource,
@@ -17,6 +19,9 @@ internal class LocalItemRepository(
 
     override suspend fun getItems(): DataResult<List<Item>> =
         local.getAll().mapData { rows -> rows.map { it.toDomain() } }
+
+    override fun observeItems(): Flow<List<Item>> =
+        local.observeAll().map { rows -> rows.map { it.toDomain() } }
 
     // Tidak ada konsep user: parameter diabaikan, semua barang dikembalikan.
     override suspend fun getItemsByUser(userId: String): DataResult<List<Item>> = getItems()
