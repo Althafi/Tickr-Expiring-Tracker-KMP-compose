@@ -3,20 +3,16 @@ package com.project.tickr.ui.screen.onboarding
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -42,11 +38,9 @@ import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,22 +52,12 @@ import com.project.tickr.presentation.onboarding.OnboardingPage
 import com.project.tickr.presentation.onboarding.OnboardingUiState
 import com.project.tickr.ui.theme.TickrCornerRadius
 import com.project.tickr.ui.theme.TickrTheme
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import tickrapp.shared.generated.resources.Res
 import tickrapp.shared.generated.resources.ic_arrow_right
-import tickrapp.shared.generated.resources.splashscreen_1
-import tickrapp.shared.generated.resources.splashscreen_2
-import tickrapp.shared.generated.resources.splashscreen_3
 import org.jetbrains.compose.resources.stringResource
 import com.project.tickr.ui.i18n.LocalAppInfo
 import tickrapp.shared.generated.resources.*
-
-private val pageImages: List<DrawableResource> = listOf(
-    Res.drawable.splashscreen_1,
-    Res.drawable.splashscreen_2,
-    Res.drawable.splashscreen_3,
-)
 
 @Composable
 fun OnboardingScreen(
@@ -124,7 +108,8 @@ fun OnboardingScreen(
             ) { pageIndex ->
                 OnboardingPageItem(
                     page = state.pages[pageIndex],
-                    imageRes = pageImages[pageIndex],
+                    pageIndex = pageIndex,
+                    isActive = pagerState.currentPage == pageIndex,
                     pageOffset = {
                         // 0 = halaman ini di tengah; ±1 = satu halaman di kiri/kanan.
                         (pagerState.currentPage - pageIndex) + pagerState.currentPageOffsetFraction
@@ -186,26 +171,15 @@ fun OnboardingScreen(
 @Composable
 private fun OnboardingPageItem(
     page: OnboardingPage,
-    imageRes: DrawableResource,
+    pageIndex: Int,
+    isActive: Boolean,
     pageOffset: () -> Float,
 ) {
-    // Masuk saat layar pertama kali muncul: ilustrasi membal naik, teks menyusul.
+    // Teks menyusul saat halaman pertama kali tampil; gerak ilustrasi ada di OnboardingIllustration.
     val intro = remember { Animatable(0f) }
     LaunchedEffect(Unit) {
         intro.animateTo(1f, tween(durationMillis = 700, easing = FastOutSlowInEasing))
     }
-
-    // Napas halus yang berulang: melayang naik-turun dan goyang sangat kecil.
-    val idle = rememberInfiniteTransition(label = "onboarding-idle")
-    val sway by idle.animateFloat(
-        initialValue = -1f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 2600, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse,
-        ),
-        label = "sway",
-    )
 
     Column(
         modifier = Modifier
@@ -216,28 +190,28 @@ private fun OnboardingPageItem(
         // Lebih banyak ruang di atas → konten turun mendekati tengah
         Spacer(modifier = Modifier.weight(0.55f))
 
-        Image(
-            painter = painterResource(imageRes),
-            contentDescription = stringResource(page.contentDescription),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(360.dp)
-                .graphicsLayer {
-                    val offset = pageOffset()
-                    val distance = abs(offset).coerceIn(0f, 1f)
-                    val enter = intro.value
-                    // Parallax: ilustrasi bergeser lebih jauh dari halamannya (kesan kedalaman).
-                    translationX = offset * size.width * 0.35f
-                    translationY = sway * 6.dp.toPx() + (1f - enter) * 40.dp.toPx()
-                    val s = (1f - 0.18f * distance) * (0.8f + 0.2f * enter)
-                    scaleX = s
-                    scaleY = s
-                    rotationZ = sway * 1.2f + offset * -6f
-                    transformOrigin = TransformOrigin(0.5f, 1f)
-                    alpha = (1f - distance) * enter
-                },
-            contentScale = ContentScale.Fit,
-        )
+        // Slot 360dp; ilustrasi persegi (pivot animasinya memakai ruang 500x500) di tengahnya.
+        Box(
+            modifier = Modifier.fillMaxWidth().height(360.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            OnboardingIllustration(
+                page = pageIndex,
+                active = isActive,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .graphicsLayer {
+                        val offset = pageOffset()
+                        val distance = abs(offset).coerceIn(0f, 1f)
+                        // Parallax saat digeser: ilustrasi bergeser lebih jauh dari halamannya, mengecil dan memudar.
+                        translationX = offset * size.width * 0.35f
+                        val s = 1f - 0.18f * distance
+                        scaleX = s
+                        scaleY = s
+                        alpha = 1f - distance
+                    },
+            )
+        }
 
         Spacer(modifier = Modifier.height(TickrTheme.spacing.lg))
 
