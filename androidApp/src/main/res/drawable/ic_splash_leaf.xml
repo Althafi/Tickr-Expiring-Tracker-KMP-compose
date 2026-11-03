@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Daun Tickr untuk splash sistem (mode terang). Geometri sama dengan ic_launcher_foreground. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <path
+        android:fillColor="#0D6759"
+        android:pathData="M54,22 C54,22 35,40 35,58 C35,68.5 43.5,77 54,77 C64.5,77 73,68.5 73,58 C73,40 54,22 54,22 Z"/>
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#0D6759"
+        android:strokeWidth="2.4"
+        android:strokeLineCap="round"
+        android:pathData="M54,77 L54,83"/>
+    <path
+        android:fillColor="#0D6759"
+        android:pathData="M54,82 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0"/>
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#F2A22E"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M54,32 L54,72
+                          M54,45 L47,38 M54,45 L61,38
+                          M54,54 L44,46 M54,54 L64,46
+                          M54,63 L44,55 M54,63 L64,55
+                          M54,71 L47,64 M54,71 L61,64"/>
+</vector>

@@ -15,7 +15,8 @@
         android:theme="@style/Theme.Tickr">
         <activity
             android:exported="true"
-            android:name=".MainActivity">
+            android:name=".MainActivity"
+            android:theme="@style/Theme.Tickr.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

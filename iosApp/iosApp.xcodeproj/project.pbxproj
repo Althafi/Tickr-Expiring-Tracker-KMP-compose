@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		0DF0C841C8ADBD39D0EE472D /* Tickr App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Tickr App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		0DF0C841C8ADBD39D0EE472D /* Tickr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Tickr.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -59,7 +59,7 @@
 		D4724EB9722DC2ABD457E55B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				0DF0C841C8ADBD39D0EE472D /* Tickr App.app */,
+				0DF0C841C8ADBD39D0EE472D /* Tickr.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -87,7 +87,7 @@
 			packageProductDependencies = (
 			);
 			productName = iosApp;
-			productReference = 0DF0C841C8ADBD39D0EE472D /* Tickr App.app */;
+			productReference = 0DF0C841C8ADBD39D0EE472D /* Tickr.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */

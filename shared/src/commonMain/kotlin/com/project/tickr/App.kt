@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +32,7 @@ import com.project.tickr.ui.common.ProvideProductImageResolver
 import com.project.tickr.ui.i18n.AppLocaleProvider
 import com.project.tickr.ui.i18n.LocalAppInfo
 import com.project.tickr.ui.navigation.TickrNavGraph
+import com.project.tickr.ui.screen.splash.TickrSplash
 import com.project.tickr.ui.theme.TickrTheme
 import kotlinx.coroutines.flow.first
 import org.koin.compose.koinInject
@@ -55,6 +57,9 @@ fun App() {
     val navController = rememberNavController()
     val getOnboardingSeen: GetOnboardingSeenUseCase = koinInject()
     var startDestination by remember { mutableStateOf<Destination?>(null) }
+    // Splash hanya sekali per proses/aktivitas; rememberSaveable agar rotasi/ganti tema tidak memutarnya lagi.
+    var splashIntroDone by rememberSaveable { mutableStateOf(false) }
+    var splashVisible by rememberSaveable { mutableStateOf(true) }
     LaunchedEffect(Unit) {
         startDestination = if (getOnboardingSeen().first()) Destination.Home else Destination.Onboarding
     }
@@ -77,8 +82,9 @@ fun App() {
                     LocalSnackbarInset provides snackbarInset,
                 ) {
                     Box(Modifier.fillMaxSize()) {
-                        // null = sedang menentukan start destination; hindari NavHost sebelum siap
-                        startDestination?.let { start ->
+                        // null = sedang menentukan start destination; hindari NavHost sebelum siap.
+                        // Juga menunggu intro splash selesai agar animasi masuk layar pertama tidak terlewat.
+                        startDestination?.takeIf { splashIntroDone }?.let { start ->
                             ProvideProductImageResolver(imageStorage) {
                                 TickrNavGraph(
                                     navController = navController,
@@ -92,6 +98,13 @@ fun App() {
                             inset = snackbarInset,
                             modifier = Modifier.align(Alignment.BottomCenter),
                         )
+                        if (splashVisible) {
+                            TickrSplash(
+                                canExit = startDestination != null,
+                                onIntroFinished = { splashIntroDone = true },
+                                onExited = { splashVisible = false },
+                            )
+                        }
                     }
                 }
             }

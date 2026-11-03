@@ -5,4 +5,10 @@
     <style name="Theme.Tickr" parent="@android:style/Theme.Material.NoActionBar">
         <item name="android:windowBackground">@color/tickr_window_background</item>
     </style>
+
+    <style name="Theme.Tickr.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/tickr_window_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_leaf</item>
+        <item name="postSplashScreenTheme">@style/Theme.Tickr</item>
+    </style>
 </resources>
