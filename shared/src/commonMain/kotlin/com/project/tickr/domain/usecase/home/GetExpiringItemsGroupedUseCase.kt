@@ -8,6 +8,7 @@ import com.project.tickr.domain.model.Urgency
 import com.project.tickr.domain.model.daysToUrgency
 import com.project.tickr.domain.repository.CategoryRepository
 import com.project.tickr.domain.repository.ItemRepository
+import com.project.tickr.domain.model.CategoryKeys
 
 class GetExpiringItemsGroupedUseCase(
     private val itemRepository: ItemRepository,
@@ -32,7 +33,8 @@ class GetExpiringItemsGroupedUseCase(
                 id = item.id,
                 name = item.name,
                 categoryId = item.categoryId,
-                categoryName = cat?.name ?: "Lainnya",
+                categoryName = cat?.name ?: CategoryKeys.FALLBACK_NAME,
+                categoryKey = cat?.key ?: if (cat == null) CategoryKeys.OTHER else null,
                 categoryColorHex = cat?.colorHex ?: "#6B7280",
                 expiryDate = item.expiryDate,
                 imageUrl = item.imageUrl,
@@ -50,6 +52,7 @@ class GetExpiringItemsGroupedUseCase(
             .map { (catName, groupItems) ->
                 CategoryGroup(
                     categoryName = catName,
+                    categoryKey = groupItems.first().categoryKey,
                     colorHex = groupItems.first().categoryColorHex,
                     items = groupItems,
                 )

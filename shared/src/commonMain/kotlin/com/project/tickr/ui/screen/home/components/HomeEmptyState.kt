@@ -20,6 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.project.tickr.ui.theme.TickrCornerRadius
 import com.project.tickr.ui.theme.TickrTheme
+import tickrapp.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun HomeEmptyState(
@@ -53,7 +55,7 @@ fun HomeEmptyState(
         Spacer(Modifier.height(spacing.lg))
 
         Text(
-            text = "Belum ada barang", // TODO(user): pakai stringResource
+            text = stringResource(Res.string.home_empty_title),
             style = typography.sectionTitle,
             color = colors.textPrimary,
             textAlign = TextAlign.Center,
@@ -62,7 +64,7 @@ fun HomeEmptyState(
         Spacer(Modifier.height(spacing.sm))
 
         Text(
-            text = "Mulai catat barangmu agar tak ada yang kedaluwarsa terlewat.", // TODO(user): pakai stringResource
+            text = stringResource(Res.string.home_empty_body),
             style = typography.body,
             color = colors.textSecondary,
             textAlign = TextAlign.Center,
@@ -80,9 +82,9 @@ fun HomeEmptyState(
             colors = ButtonDefaults.buttonColors(containerColor = colors.primaryBrand),
         ) {
             Text(
-                text = "Tambah Barang Pertama", // TODO(user): pakai stringResource
+                text = stringResource(Res.string.home_empty_cta),
                 style = typography.body,
-                color = androidx.compose.ui.graphics.Color.White,
+                color = TickrTheme.colors.onBrand,
             )
         }
     }

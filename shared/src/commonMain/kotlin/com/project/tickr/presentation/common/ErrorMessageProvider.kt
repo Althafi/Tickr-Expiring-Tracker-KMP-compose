@@ -1,0 +1,27 @@
+package com.project.tickr.presentation.common
+
+import com.project.tickr.core.result.AppError
+import tickrapp.shared.generated.resources.Res
+import tickrapp.shared.generated.resources.error_generic
+import tickrapp.shared.generated.resources.error_invalid_data
+import tickrapp.shared.generated.resources.error_not_found
+import tickrapp.shared.generated.resources.error_process_data
+import tickrapp.shared.generated.resources.error_validation_expiry
+import tickrapp.shared.generated.resources.error_validation_name
+import tickrapp.shared.generated.resources.error_validation_quantity
+
+/** Memetakan [AppError] (pesan developer) menjadi teks untuk pengguna. */
+class ErrorMessageProvider {
+    fun provide(error: AppError): UiText = when (error) {
+        is AppError.NotFound -> UiText.Res(Res.string.error_not_found)
+        is AppError.Serialization -> UiText.Res(Res.string.error_process_data)
+        is AppError.Validation -> when (error.field) {
+            "name" -> UiText.Res(Res.string.error_validation_name)
+            "expiry_date" -> UiText.Res(Res.string.error_validation_expiry)
+            "quantity" -> UiText.Res(Res.string.error_validation_quantity)
+            else -> UiText.Res(Res.string.error_invalid_data)
+        }
+        // Network/Unauthorized sudah tidak mungkin terjadi (offline-first, tanpa akun); dihapus di Fase 9.
+        is AppError.Network, is AppError.Unauthorized, is AppError.Unknown -> UiText.Res(Res.string.error_generic)
+    }
+}

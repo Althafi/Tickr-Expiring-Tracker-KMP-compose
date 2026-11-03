@@ -31,6 +31,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.project.tickr.ui.theme.TickrCornerRadius
 import com.project.tickr.ui.theme.TickrTheme
+import tickrapp.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ExpirySearchBar(
@@ -42,6 +44,8 @@ fun ExpirySearchBar(
     val colors = TickrTheme.colors
     val typography = TickrTheme.typography
     val spacing = TickrTheme.spacing
+    val searchDescription = stringResource(Res.string.cd_search_items)
+    val filterDescription = stringResource(Res.string.cd_open_filter)
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -61,7 +65,7 @@ fun ExpirySearchBar(
                 Icons.Outlined.Search,
                 contentDescription = null,
                 tint = colors.textSecondary,
-                modifier = Modifier.size(20.dp).semantics { contentDescription = "Cari barang" }, // TODO(user): pakai stringResource
+                modifier = Modifier.size(20.dp).semantics { contentDescription = searchDescription },
             )
             Spacer(Modifier.width(spacing.sm))
             BasicTextField(
@@ -76,7 +80,7 @@ fun ExpirySearchBar(
                 decorationBox = { inner ->
                     if (query.isEmpty()) {
                         Text(
-                            "Cari barang…", // TODO(user): pakai stringResource
+                            stringResource(Res.string.expiry_search_hint),
                             style = typography.body,
                             color = colors.textSecondary,
                         )
@@ -95,7 +99,7 @@ fun ExpirySearchBar(
                 .clip(RoundedCornerShape(TickrCornerRadius.button))
                 .background(colors.surface)
                 .border(1.dp, colors.textSecondary.copy(alpha = 0.18f), RoundedCornerShape(TickrCornerRadius.button))
-                .semantics { contentDescription = "Buka filter status" }, // TODO(user): pakai stringResource
+                .semantics { contentDescription = filterDescription },
         ) {
             Icon(
                 Icons.Outlined.Tune,

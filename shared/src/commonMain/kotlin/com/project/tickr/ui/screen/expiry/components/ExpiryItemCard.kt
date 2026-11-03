@@ -32,10 +32,16 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.project.tickr.ui.common.rememberProductImageModel
 import com.project.tickr.domain.model.ExpiringItem
 import com.project.tickr.domain.model.Urgency
 import com.project.tickr.ui.theme.TickrCornerRadius
 import com.project.tickr.ui.theme.TickrTheme
+import tickrapp.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import com.project.tickr.ui.i18n.categoryLabel
+import com.project.tickr.ui.i18n.countdownText
+import com.project.tickr.ui.i18n.formatShortDate
 
 @Composable
 fun ExpiryItemCard(
@@ -68,8 +74,8 @@ fun ExpiryItemCard(
         horizontalArrangement = Arrangement.spacedBy(spacing.md),
     ) {
         AsyncImage(
-            model = item.imageUrl,
-            contentDescription = "Foto produk ${item.name}",
+            model = rememberProductImageModel(item.imageUrl),
+            contentDescription = stringResource(Res.string.cd_product_photo, item.name),
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(56.dp)
@@ -87,14 +93,14 @@ fun ExpiryItemCard(
             )
             Spacer(Modifier.height(2.dp))
             Text(
-                text = item.categoryName,
+                text = categoryLabel(item.categoryKey, item.categoryName),
                 style = typography.body,
                 color = colors.textSecondary,
                 maxLines = 1,
             )
             Spacer(Modifier.height(2.dp))
             Text(
-                text = "Kedaluwarsa: ${item.expiryDate.toExpiryDisplayDate()}", // TODO(user): stringResource
+                text = stringResource(Res.string.expiry_card_date, formatShortDate(item.expiryDate)),
                 style = typography.caption,
                 color = colors.textSecondary,
                 maxLines = 1,
@@ -104,7 +110,7 @@ fun ExpiryItemCard(
         // Badge: "Habis" (abu-abu) untuk produk dikonsumsi, atau countdown urgency
         if (consumed) {
             Text(
-                text = "Habis",
+                text = stringResource(Res.string.expiry_card_consumed),
                 style = typography.countdown,
                 color = colors.textSecondary,
                 modifier = Modifier
@@ -119,7 +125,7 @@ fun ExpiryItemCard(
                 Urgency.SAFE -> colors.safeContainer to colors.safe
             }
             Text(
-                text = item.daysUntilExpiry.toCountdownLabel(),
+                text = countdownText(item.daysUntilExpiry),
                 style = typography.countdown,
                 color = badgeText,
                 modifier = Modifier
@@ -129,26 +135,6 @@ fun ExpiryItemCard(
             )
         }
     }
-}
-
-// Formatting helpers (presentation layer — no locale dependency for now)
-internal fun Int.toCountdownLabel(): String = when {
-    this <= 0 -> "0 hari"          // TODO(user): finalkan threshold & format
-    this < 30 -> "$this hari"
-    else -> {
-        val months = this / 30
-        val days = this % 30
-        if (days == 0) "$months bulan" else "$months bulan $days hari"
-    }
-}
-
-internal fun String.toExpiryDisplayDate(): String {
-    val parts = split("-")
-    if (parts.size != 3) return this
-    val monthNames = listOf("Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des") // TODO(user): sesuaikan
-    val idx = (parts[1].toIntOrNull() ?: 0) - 1
-    val month = monthNames.getOrNull(idx) ?: parts[1]
-    return "${parts[2]} $month ${parts[0]}"
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFFFAFAFA)

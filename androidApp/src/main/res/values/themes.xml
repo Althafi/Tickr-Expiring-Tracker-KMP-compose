@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="tickr_window_background">#FFFAFAFA</color>
+
+    <!-- Hanya mengatur latar jendela sebelum Compose menggambar; tema UI sebenarnya ada di TickrTheme. -->
+    <style name="Theme.Tickr" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/tickr_window_background</item>
+    </style>
+</resources>

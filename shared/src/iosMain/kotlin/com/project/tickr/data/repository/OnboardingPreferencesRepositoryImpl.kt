@@ -8,11 +8,11 @@ import platform.Foundation.NSUserDefaults
 actual class OnboardingPreferencesRepositoryImpl : OnboardingPreferencesRepository {
     private val defaults = NSUserDefaults.standardUserDefaults()
 
-    override fun hasSeenOnboarding(): Flow<Boolean> = flowOf(
+    actual override fun hasSeenOnboarding(): Flow<Boolean> = flowOf(
         defaults.boolForKey(KEY_HAS_SEEN_ONBOARDING)
     )
 
-    override suspend fun setSeen() {
+    actual override suspend fun setSeen() {
         defaults.setBool(true, forKey = KEY_HAS_SEEN_ONBOARDING)
     }
 

@@ -21,7 +21,10 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.project.tickr.ui.common.rememberProductImageModel
 import com.project.tickr.ui.theme.TickrTheme
+import tickrapp.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun DetailHero(
@@ -32,6 +35,8 @@ fun DetailHero(
     modifier: Modifier = Modifier,
 ) {
     val colors = TickrTheme.colors
+    val backDescription = stringResource(Res.string.cd_back)
+    val deleteDescription = stringResource(Res.string.cd_detail_delete)
 
     Box(
         modifier = modifier
@@ -39,8 +44,8 @@ fun DetailHero(
             .background(colors.primaryBrand.copy(alpha = 0.08f)),
     ) {
         AsyncImage(
-            model = imageUrl,
-            contentDescription = "Foto $productName",
+            model = rememberProductImageModel(imageUrl),
+            contentDescription = stringResource(Res.string.cd_detail_photo, productName),
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
@@ -57,7 +62,7 @@ fun DetailHero(
                 .size(44.dp)
                 .clip(CircleShape)
                 .background(colors.surface.copy(alpha = 0.88f))
-                .semantics { contentDescription = "Kembali" }, // TODO(user): stringResource cd_detail_back
+                .semantics { contentDescription = backDescription },
         ) {
             Icon(
                 Icons.Outlined.ArrowBack,
@@ -77,7 +82,7 @@ fun DetailHero(
                 .size(44.dp)
                 .clip(CircleShape)
                 .background(colors.criticalContainer.copy(alpha = 0.9f))
-                .semantics { contentDescription = "Hapus barang" }, // TODO(user): stringResource cd_detail_delete
+                .semantics { contentDescription = deleteDescription },
         ) {
             Icon(
                 Icons.Outlined.Delete,

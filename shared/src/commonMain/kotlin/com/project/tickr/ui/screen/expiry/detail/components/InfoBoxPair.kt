@@ -25,10 +25,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.project.tickr.ui.theme.TickrCornerRadius
 import com.project.tickr.ui.theme.TickrTheme
+import tickrapp.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import com.project.tickr.ui.i18n.categoryLabel
+import com.project.tickr.ui.i18n.unitLabel
 
 @Composable
 fun InfoBoxPair(
     categoryName: String,
+    categoryKey: String?,
     quantity: Int,
     unit: String,
     modifier: Modifier = Modifier,
@@ -40,15 +45,15 @@ fun InfoBoxPair(
         horizontalArrangement = Arrangement.spacedBy(spacing.md),
     ) {
         InfoBox(
-            label = "KATEGORI", // TODO(user): stringResource detail_label_category
+            label = stringResource(Res.string.detail_label_category),
             icon = { Icon(Icons.Outlined.Category, contentDescription = null, tint = TickrTheme.colors.primaryBrand, modifier = Modifier.size(18.dp)) },
-            value = categoryName,
+            value = categoryLabel(categoryKey, categoryName),
             modifier = Modifier.weight(1f),
         )
         InfoBox(
-            label = "JUMLAH", // TODO(user): stringResource detail_label_quantity
+            label = stringResource(Res.string.detail_label_quantity),
             icon = { Icon(Icons.Outlined.Inventory2, contentDescription = null, tint = TickrTheme.colors.primaryBrand, modifier = Modifier.size(18.dp)) },
-            value = "$quantity $unit", // TODO(user): stringResource detail_quantity_format
+            value = stringResource(Res.string.detail_quantity_format, quantity, unitLabel(unit)),
             modifier = Modifier.weight(1f),
         )
     }
@@ -94,8 +99,9 @@ private fun InfoBoxPairPreview() {
     TickrTheme {
         InfoBoxPair(
             categoryName = "Makanan & Minuman",
+            categoryKey = "food",
             quantity = 1,
-            unit = "Karton",
+            unit = "PACK",
             modifier = Modifier.padding(16.dp),
         )
     }

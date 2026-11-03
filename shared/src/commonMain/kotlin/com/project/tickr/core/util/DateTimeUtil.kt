@@ -6,7 +6,10 @@ interface DateTimeUtil {
     fun today(): String
     fun daysUntil(isoDate: String): Int
     fun nowEpochMillis(): Long
-    fun formatDisplayDate(epochMillis: Long): String
+    /** Komponen tanggal lokal (tanpa teks); pemformatan/terjemahan dilakukan di lapisan UI. */
+    fun dateParts(epochMillis: Long): DateParts
+    /** Komponen dari tanggal ISO "YYYY-MM-DD", atau null bila tidak valid. */
+    fun datePartsFromIso(isoDate: String): DateParts?
     fun formatDisplayTime(epochMillis: Long): String
     fun isoDateFromMillis(epochMillis: Long): String
     /** Returns ISO "YYYY-MM-DD" if valid date, null if invalid (e.g. 31/02) */

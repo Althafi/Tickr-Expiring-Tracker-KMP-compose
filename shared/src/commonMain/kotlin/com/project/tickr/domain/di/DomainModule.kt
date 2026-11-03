@@ -2,18 +2,7 @@ package com.project.tickr.domain.di
 
 import com.project.tickr.core.util.DateTimeUtil
 import com.project.tickr.core.util.DateTimeUtilImpl
-import com.project.tickr.domain.error.ErrorMessageProvider
 import com.project.tickr.domain.usecase.auth.GetCurrentUserIdUseCase
-import com.project.tickr.domain.usecase.auth.LoginUseCase
-import com.project.tickr.domain.usecase.auth.ObserveSessionUseCase
-import com.project.tickr.domain.usecase.auth.RegisterUseCase
-import com.project.tickr.domain.usecase.auth.ResetPasswordUseCase
-import com.project.tickr.domain.usecase.auth.SignInUseCase
-import com.project.tickr.domain.usecase.auth.SignOutUseCase
-import com.project.tickr.domain.usecase.auth.SignUpUseCase
-import com.project.tickr.domain.usecase.auth.ValidateEmailUseCase
-import com.project.tickr.domain.usecase.auth.ValidateNameUseCase
-import com.project.tickr.domain.usecase.auth.ValidatePasswordUseCase
 import com.project.tickr.domain.usecase.category.CreateCategoryUseCase
 import com.project.tickr.domain.usecase.category.DeleteCategoryUseCase
 import com.project.tickr.domain.usecase.category.GetCategoriesUseCase
@@ -28,13 +17,12 @@ import com.project.tickr.domain.usecase.item.GetItemsByUserUseCase
 import com.project.tickr.domain.usecase.item.GetItemsUseCase
 import com.project.tickr.domain.usecase.item.MarkItemConsumedUseCase
 import com.project.tickr.domain.usecase.item.UpdateItemUseCase
-import com.project.tickr.domain.usecase.item.UploadProductImageUseCase
+import com.project.tickr.domain.usecase.item.DiscardProductImageUseCase
+import com.project.tickr.domain.usecase.item.SaveProductImageUseCase
 import com.project.tickr.domain.usecase.notification.DeleteNotificationUseCase
 import com.project.tickr.domain.usecase.notification.GetNotificationsByItemUseCase
 import com.project.tickr.domain.usecase.notification.GetNotificationsUseCase
 import com.project.tickr.domain.usecase.notification.ScheduleNotificationUseCase
-import com.project.tickr.domain.usecase.profile.GetProfileUseCase
-import com.project.tickr.domain.usecase.profile.UpsertProfileUseCase
 import com.project.tickr.domain.usecase.onboarding.GetOnboardingSeenUseCase
 import com.project.tickr.domain.usecase.onboarding.CompleteOnboardingUseCase
 import com.project.tickr.domain.usecase.home.AddItemUseCase
@@ -44,28 +32,23 @@ import com.project.tickr.domain.usecase.home.GetWasteTrendUseCase
 import com.project.tickr.domain.usecase.expiry.GetExpiryListItemsUseCase
 import com.project.tickr.domain.usecase.expiry.GetConsumptionStatsUseCase
 import com.project.tickr.domain.usecase.consumed.GetConsumedItemsUseCase
+import com.project.tickr.domain.usecase.settings.GetAppInfoUseCase
+import com.project.tickr.domain.usecase.settings.ObserveSettingsUseCase
+import com.project.tickr.domain.usecase.settings.SetLanguageUseCase
+import com.project.tickr.domain.usecase.settings.SetThemeModeUseCase
+import com.project.tickr.domain.usecase.reminder.GetNotificationHistoryUseCase
+import com.project.tickr.domain.usecase.reminder.HasNotificationPermissionUseCase
+import com.project.tickr.domain.usecase.reminder.MarkNotificationPermissionAskedUseCase
+import com.project.tickr.domain.usecase.reminder.ProcessDueRemindersUseCase
+import com.project.tickr.domain.usecase.reminder.ShouldRequestNotificationPermissionUseCase
+import com.project.tickr.domain.usecase.reminder.SyncRemindersUseCase
 import org.koin.dsl.module
 
 val domainModule = module {
     single<DateTimeUtil> { DateTimeUtilImpl() }
-    single { ErrorMessageProvider() }
 
-    factory { SignUpUseCase(get()) }
-    factory { SignInUseCase(get()) }
-    factory { SignOutUseCase(get()) }
-    factory { ObserveSessionUseCase(get()) }
-    factory { GetCurrentUserIdUseCase(get()) }
-    factory { ResetPasswordUseCase(get()) }
-    // Phase 3.5 Auth use cases
-    factory { LoginUseCase(get()) }
-    factory { RegisterUseCase(get()) }
-    factory { ValidateEmailUseCase() }
-    factory { ValidatePasswordUseCase() }
-    factory { ValidateNameUseCase() }
-    factory { com.project.tickr.domain.usecase.auth.ChangePasswordUseCase(get()) }
+    factory { GetCurrentUserIdUseCase() }
 
-    factory { GetProfileUseCase(get()) }
-    factory { UpsertProfileUseCase(get()) }
 
     factory { GetCategoriesUseCase(get()) }
     factory { GetCategoriesByUserUseCase(get()) }
@@ -82,7 +65,8 @@ val domainModule = module {
     factory { DeleteItemUseCase(get()) }
     factory { MarkItemConsumedUseCase(get()) }
     factory { GetExpiringItemsUseCase(get(), get()) }
-    factory { UploadProductImageUseCase(get()) }
+    factory { SaveProductImageUseCase(get()) }
+    factory { DiscardProductImageUseCase(get()) }
 
     factory { GetNotificationsUseCase(get()) }
     factory { GetNotificationsByItemUseCase(get()) }
@@ -104,4 +88,18 @@ val domainModule = module {
 
     // Consumed items
     factory { GetConsumedItemsUseCase(get(), get(), get()) }
+
+    // Settings
+    factory { ObserveSettingsUseCase(get()) }
+    factory { SetThemeModeUseCase(get()) }
+    factory { SetLanguageUseCase(get()) }
+    factory { GetAppInfoUseCase(get()) }
+
+    // Reminders
+    factory { ProcessDueRemindersUseCase(get(), get(), get()) }
+    single { SyncRemindersUseCase(get(), get(), get()) }
+    factory { GetNotificationHistoryUseCase(get(), get()) }
+    factory { ShouldRequestNotificationPermissionUseCase(get(), get()) }
+    factory { MarkNotificationPermissionAskedUseCase(get()) }
+    factory { HasNotificationPermissionUseCase(get()) }
 }

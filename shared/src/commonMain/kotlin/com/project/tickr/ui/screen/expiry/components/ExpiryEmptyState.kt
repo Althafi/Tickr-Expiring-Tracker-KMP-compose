@@ -23,6 +23,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.project.tickr.ui.theme.TickrCornerRadius
 import com.project.tickr.ui.theme.TickrTheme
+import tickrapp.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ExpiryEmptyState(
@@ -53,14 +55,14 @@ fun ExpiryEmptyState(
         }
         Spacer(Modifier.height(spacing.lg))
         Text(
-            text = "Belum ada barang", // TODO(user): stringResource expiry_empty_title
+            text = stringResource(Res.string.expiry_empty_title),
             style = typography.sectionTitle,
             color = colors.textPrimary,
             textAlign = TextAlign.Center,
         )
         Spacer(Modifier.height(spacing.sm))
         Text(
-            text = "Tambahkan barang pertamamu untuk mulai memantau tanggal kedaluwarsa.", // TODO(user): stringResource expiry_empty_subtitle
+            text = stringResource(Res.string.expiry_empty_subtitle),
             style = typography.body,
             color = colors.textSecondary,
             textAlign = TextAlign.Center,
@@ -75,9 +77,9 @@ fun ExpiryEmptyState(
             colors = ButtonDefaults.buttonColors(containerColor = colors.primaryBrand),
         ) {
             Text(
-                text = "Tambah Barang", // TODO(user): stringResource expiry_empty_cta
+                text = stringResource(Res.string.expiry_empty_cta),
                 style = typography.productName,
-                color = androidx.compose.ui.graphics.Color.White,
+                color = TickrTheme.colors.onBrand,
             )
         }
     }

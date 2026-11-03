@@ -8,6 +8,7 @@ import com.project.tickr.domain.model.TimeRange
 import com.project.tickr.domain.model.daysToUrgency
 import com.project.tickr.domain.repository.CategoryRepository
 import com.project.tickr.domain.repository.ItemRepository
+import com.project.tickr.domain.model.CategoryKeys
 
 class GetExpiryListItemsUseCase(
     private val itemRepository: ItemRepository,
@@ -35,7 +36,8 @@ class GetExpiryListItemsUseCase(
                     id = item.id,
                     name = item.name,
                     categoryId = item.categoryId,
-                    categoryName = cat?.name ?: "Lainnya",
+                    categoryName = cat?.name ?: CategoryKeys.FALLBACK_NAME,
+                    categoryKey = cat?.key ?: if (cat == null) CategoryKeys.OTHER else null,
                     categoryColorHex = cat?.colorHex ?: "#6B7280",
                     expiryDate = item.expiryDate,
                     imageUrl = item.imageUrl,
@@ -49,7 +51,7 @@ class GetExpiryListItemsUseCase(
             .filter { item ->
                 (filter.urgencies.isEmpty() || item.urgency in filter.urgencies) &&
                     (filter.timeRange == null || matchesTimeRange(item.daysUntilExpiry, filter.timeRange)) &&
-                    (filter.categoryName == null || item.categoryName.equals(filter.categoryName, ignoreCase = true)) &&
+                    (filter.categoryKey == null || item.categoryKey == filter.categoryKey) &&
                     (filter.query.isBlank() || item.name.contains(filter.query, ignoreCase = true))
             }
 

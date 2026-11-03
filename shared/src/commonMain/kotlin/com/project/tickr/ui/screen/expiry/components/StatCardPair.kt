@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import com.project.tickr.domain.model.ConsumptionStats
 import com.project.tickr.ui.theme.TickrCornerRadius
 import com.project.tickr.ui.theme.TickrTheme
+import tickrapp.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun StatCardPair(
@@ -42,7 +44,7 @@ fun StatCardPair(
     ) {
         StatCard(
             value = stats?.consumed?.toString() ?: "–",
-            label = "Barang Dikonsumsi", // TODO(user): pakai stringResource
+            label = stringResource(Res.string.stat_consumed),
             icon = { Icon(Icons.Outlined.Check, contentDescription = null, tint = colors.safe, modifier = Modifier.size(20.dp)) },
             iconBg = colors.safeContainer,
             cardBg = colors.safeContainer.copy(alpha = 0.55f),
@@ -50,7 +52,7 @@ fun StatCardPair(
         )
         StatCard(
             value = stats?.wasted?.toString() ?: "–",
-            label = "Barang Mubazir", // TODO(user): pakai stringResource
+            label = stringResource(Res.string.stat_wasted),
             icon = { Icon(Icons.Outlined.Delete, contentDescription = null, tint = colors.critical, modifier = Modifier.size(20.dp)) },
             iconBg = colors.criticalContainer,
             cardBg = colors.criticalContainer.copy(alpha = 0.55f),

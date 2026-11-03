@@ -48,7 +48,7 @@ fun HomeScreen(
             item {
                 TickrTopBar(
                     nowEpochMillis = state.nowEpochMillis,
-                    displayDate = state.displayDate,
+                    date = state.date,
                     displayTime = state.displayTime,
                     onNotificationClick = { onAction(HomeAction.OpenNotifications) },
                 )
@@ -62,7 +62,6 @@ fun HomeScreen(
             } else {
                 item {
                     GreetingHeader(
-                        userName = state.userName,
                         modifier = Modifier.padding(horizontal = spacing.screen),
                     )
                     Spacer(Modifier.height(spacing.md))
@@ -137,7 +136,6 @@ private fun HomeScreenPreviewFilled() {
     TickrTheme {
         HomeScreen(
             state = HomeUiState(
-                userName = "Sarah",
                 nowEpochMillis = 1749470828000L,
                 wasteTrend = WasteTrend(deltaPercent = 12, isImproving = true),
                 slices = listOf(
@@ -167,7 +165,7 @@ private fun HomeScreenPreviewFilled() {
 private fun HomeScreenPreviewEmpty() {
     TickrTheme {
         HomeScreen(
-            state = HomeUiState(userName = "Sarah", nowEpochMillis = 1749470828000L),
+            state = HomeUiState(nowEpochMillis = 1749470828000L),
             onAction = {},
         )
     }
@@ -178,7 +176,7 @@ private fun HomeScreenPreviewEmpty() {
 private fun HomeScreenPreviewEmptyDark() {
     TickrTheme(darkTheme = true) {
         HomeScreen(
-            state = HomeUiState(userName = "Sarah", nowEpochMillis = 1749470828000L),
+            state = HomeUiState(nowEpochMillis = 1749470828000L),
             onAction = {},
         )
     }

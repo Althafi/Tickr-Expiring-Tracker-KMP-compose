@@ -1,0 +1,32 @@
+CREATE TABLE category (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    key        TEXT UNIQUE,
+    name       TEXT NOT NULL,
+    icon_name  TEXT NOT NULL,
+    color_hex  TEXT NOT NULL,
+    created_at TEXT NOT NULL
+);
+
+selectAll:
+SELECT * FROM category ORDER BY id;
+
+selectById:
+SELECT * FROM category WHERE id = ?;
+
+count:
+SELECT COUNT(*) FROM category;
+
+insert:
+INSERT INTO category (key, name, icon_name, color_hex, created_at)
+VALUES (?, ?, ?, ?, ?);
+
+update:
+UPDATE category
+SET name = ?, icon_name = ?, color_hex = ?
+WHERE id = ?;
+
+delete:
+DELETE FROM category WHERE id = ?;
+
+lastInsertRowId:
+SELECT last_insert_rowid();

@@ -25,12 +25,12 @@ class AddItemUseCase(
     suspend operator fun invoke(params: AddItemParams): DataResult<Unit> {
         Validators.requireNotBlank(params.name, "name")?.let { return DataResult.Error(it) }
         if (params.expiryDateMillis == null) {
-            return DataResult.Error(AppError.Validation("expiry_date", "Tanggal kedaluwarsa wajib diisi"))
+            return DataResult.Error(AppError.Validation("expiry_date", "must not be empty"))
         }
         val isoDate = dateTime.isoDateFromMillis(params.expiryDateMillis)
         Validators.requireIsoDate(isoDate, "expiry_date")?.let { return DataResult.Error(it) }
         if (params.quantity < 1) {
-            return DataResult.Error(AppError.Validation("quantity", "Jumlah minimal 1"))
+            return DataResult.Error(AppError.Validation("quantity", "must be at least 1"))
         }
         Validators.requireNotBlank(params.unit, "unit")?.let { return DataResult.Error(it) }
 

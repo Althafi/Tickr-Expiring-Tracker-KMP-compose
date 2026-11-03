@@ -6,4 +6,5 @@ data class CategorySlice(
     val colorHex: String,
     val count: Int,
     val percentage: Int,
+    val key: String? = null,
 )

@@ -55,6 +55,9 @@ import tickrapp.shared.generated.resources.ic_arrow_right
 import tickrapp.shared.generated.resources.splashscreen_1
 import tickrapp.shared.generated.resources.splashscreen_2
 import tickrapp.shared.generated.resources.splashscreen_3
+import org.jetbrains.compose.resources.stringResource
+import com.project.tickr.ui.i18n.LocalAppInfo
+import tickrapp.shared.generated.resources.*
 
 private val pageImages: List<DrawableResource> = listOf(
     Res.drawable.splashscreen_1,
@@ -143,8 +146,8 @@ fun OnboardingScreen(
                         elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
                     ) {
                         Text(
-                            text = "Lanjutkan", // TODO(user): gunakan resource string onboarding_continue
-                            color = Color.White,
+                            text = stringResource(Res.string.onboarding_continue),
+                            color = TickrTheme.colors.onBrand,
                             style = TickrTheme.typography.productName,
                         )
                     }
@@ -157,7 +160,7 @@ fun OnboardingScreen(
                 Spacer(modifier = Modifier.height(TickrTheme.spacing.lg))
 
                 Text(
-                    text = "Versi 1.0.4 • © 2024 Tickr Team", // TODO(user): gunakan resource string app_version_copyright
+                    text = stringResource(Res.string.app_version_footer, LocalAppInfo.current.versionName),
                     style = TickrTheme.typography.countdown.copy(fontSize = 12.sp),
                     color = TickrTheme.colors.textSecondary,
                 )
@@ -182,7 +185,7 @@ private fun OnboardingPageItem(
 
         Image(
             painter = painterResource(imageRes),
-            contentDescription = page.contentDescription,
+            contentDescription = stringResource(page.contentDescription),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(360.dp),
@@ -192,7 +195,7 @@ private fun OnboardingPageItem(
         Spacer(modifier = Modifier.height(TickrTheme.spacing.lg))
 
         Text(
-            text = page.title,
+            text = stringResource(page.title),
             style = TickrTheme.typography.onboardingTitle.copy(
                 fontSize = 15.sp,
                 lineHeight = 22.sp,
@@ -267,8 +270,8 @@ private fun CircleArrowButton(
     ) {
         Icon(
             painter = painterResource(Res.drawable.ic_arrow_right),
-            contentDescription = "Lanjut ke halaman berikutnya", // TODO(user): gunakan resource string cd_onboarding_next
-            tint = Color.White,
+            contentDescription = stringResource(Res.string.cd_onboarding_next),
+            tint = TickrTheme.colors.onBrand,
             modifier = Modifier.size(24.dp),
         )
     }

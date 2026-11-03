@@ -3,7 +3,7 @@ package com.project.tickr.domain.model
 data class ExpiryFilter(
     val urgencies: Set<Urgency> = emptySet(),
     val timeRange: TimeRange? = null,
-    val categoryName: String? = null,
+    val categoryKey: String? = null,
     val query: String = "",
 )
 

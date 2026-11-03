@@ -7,7 +7,7 @@ sealed interface ExpiryAction {
     object Load : ExpiryAction
     object Refresh : ExpiryAction
     data class QueryChanged(val query: String) : ExpiryAction
-    data class CategorySelected(val categoryName: String?) : ExpiryAction
+    data class CategorySelected(val categoryKey: String?) : ExpiryAction
     object OpenFilterSheet : ExpiryAction
     object DismissFilterSheet : ExpiryAction
     data class ToggleUrgency(val urgency: Urgency) : ExpiryAction

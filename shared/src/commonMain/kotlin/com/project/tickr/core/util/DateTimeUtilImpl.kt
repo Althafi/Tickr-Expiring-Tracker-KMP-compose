@@ -1,10 +1,11 @@
 package com.project.tickr.core.util
 
 import kotlinx.datetime.DatePeriod
-import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.isoDayNumber
+import kotlinx.datetime.number
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 
@@ -36,26 +37,23 @@ class DateTimeUtilImpl : DateTimeUtil {
 
     override fun nowEpochMillis(): Long = getNowEpochMillis()
 
-    override fun formatDisplayDate(epochMillis: Long): String = try {
-        val ldt = Instant.fromEpochMilliseconds(epochMillis)
+    override fun dateParts(epochMillis: Long): DateParts {
+        val date = Instant.fromEpochMilliseconds(epochMillis)
             .toLocalDateTime(TimeZone.currentSystemDefault())
-        val dayName = when (ldt.dayOfWeek) {
-            DayOfWeek.MONDAY -> "Senin"
-            DayOfWeek.TUESDAY -> "Selasa"
-            DayOfWeek.WEDNESDAY -> "Rabu"
-            DayOfWeek.THURSDAY -> "Kamis"
-            DayOfWeek.FRIDAY -> "Jumat"
-            DayOfWeek.SATURDAY -> "Sabtu"
-            else -> "Minggu"
-        }
-        val monthName = when (ldt.monthNumber) {
-            1 -> "Januari"; 2 -> "Februari"; 3 -> "Maret"; 4 -> "April"
-            5 -> "Mei"; 6 -> "Juni"; 7 -> "Juli"; 8 -> "Agustus"
-            9 -> "September"; 10 -> "Oktober"; 11 -> "November"
-            else -> "Desember"
-        }
-        "$dayName, ${ldt.dayOfMonth} $monthName ${ldt.year}"
-    } catch (_: Exception) { "" }
+            .date
+        return date.toParts()
+    }
+
+    override fun datePartsFromIso(isoDate: String): DateParts? = try {
+        LocalDate.parse(isoDate).toParts()
+    } catch (_: Exception) { null }
+
+    private fun LocalDate.toParts() = DateParts(
+        dayOfWeek = dayOfWeek.isoDayNumber,
+        day = day,
+        month = month.number,
+        year = year,
+    )
 
     override fun formatDisplayTime(epochMillis: Long): String = try {
         val ldt = Instant.fromEpochMilliseconds(epochMillis)

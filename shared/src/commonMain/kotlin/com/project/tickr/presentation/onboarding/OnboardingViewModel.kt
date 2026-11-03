@@ -46,7 +46,7 @@ class OnboardingViewModel(
     private fun finish() {
         viewModelScope.launch {
             completeOnboardingUseCase()
-            _events.send(OnboardingEvent.NavigateToAuth)
+            _events.send(OnboardingEvent.NavigateToHome)
         }
     }
 }

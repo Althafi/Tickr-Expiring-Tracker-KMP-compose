@@ -13,10 +13,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.project.tickr.presentation.common.ErrorMessageProvider
 
 class ConsumedItemsViewModel(
     private val getConsumedItems: GetConsumedItemsUseCase,
     private val getCurrentUserId: GetCurrentUserIdUseCase,
+    private val errorMessages: ErrorMessageProvider,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ConsumedItemsUiState())
@@ -40,10 +42,7 @@ class ConsumedItemsViewModel(
     }
 
     private fun load() {
-        val userId = getCurrentUserId() ?: run {
-            _state.update { it.copy(loadState = ConsumedItemsLoadState.Error("Sesi habis, silakan masuk kembali")) }
-            return
-        }
+        val userId = getCurrentUserId()
         _state.update { it.copy(loadState = ConsumedItemsLoadState.Loading) }
         viewModelScope.launch {
             getConsumedItems(userId)
@@ -51,13 +50,13 @@ class ConsumedItemsViewModel(
                     _state.update { it.copy(loadState = ConsumedItemsLoadState.Content, items = items) }
                 }
                 .onError { err ->
-                    _state.update { it.copy(loadState = ConsumedItemsLoadState.Error(err.message)) }
+                    _state.update { it.copy(loadState = ConsumedItemsLoadState.Error(errorMessages.provide(err))) }
                 }
         }
     }
 
     private fun refresh() {
-        val userId = getCurrentUserId() ?: return
+        val userId = getCurrentUserId()
         _state.update { it.copy(isRefreshing = true) }
         viewModelScope.launch {
             getConsumedItems(userId)

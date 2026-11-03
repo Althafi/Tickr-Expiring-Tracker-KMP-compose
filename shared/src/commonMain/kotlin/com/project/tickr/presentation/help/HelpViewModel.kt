@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import tickrapp.shared.generated.resources.*
 
 class HelpViewModel : ViewModel() {
 
@@ -17,23 +18,18 @@ class HelpViewModel : ViewModel() {
             faqs = listOf(
                 FaqItem(
                     id = "1",
-                    question = "Bagaimana cara menambahkan barang baru?", // TODO(user): gunakan string resource help_faq_q1
-                    answer = "Tekan tombol tambah (+) di bilah bawah, isi nama barang, kategori, dan tanggal kedaluwarsa, lalu simpan.", // TODO(user): help_faq_a1
+                    question = Res.string.help_faq_q1,
+                    answer = Res.string.help_faq_a1,
                 ),
                 FaqItem(
                     id = "2",
-                    question = "Kapan saya menerima pengingat kedaluwarsa?", // TODO(user): help_faq_q2
-                    answer = "Tickr mengirim notifikasi bertahap sesuai tingkat urgensi: aman, peringatan, dan kritis menjelang tanggal kedaluwarsa.", // TODO(user): help_faq_a2
+                    question = Res.string.help_faq_q2,
+                    answer = Res.string.help_faq_a2,
                 ),
                 FaqItem(
                     id = "3",
-                    question = "Apakah data saya tersimpan aman?", // TODO(user): help_faq_q3
-                    answer = "Data inventaris Anda tersimpan pada perangkat dan akun Anda. Perbarui kata sandi secara berkala lewat menu Keamanan Akun.", // TODO(user): help_faq_a3
-                ),
-                FaqItem(
-                    id = "4",
-                    question = "Bagaimana cara mengubah kata sandi?", // TODO(user): help_faq_q4
-                    answer = "Buka Profil, pilih Edit Profil, lalu tekan Ubah Kata Sandi dan ikuti instruksinya.", // TODO(user): help_faq_a4
+                    question = Res.string.help_faq_q3,
+                    answer = Res.string.help_faq_a3,
                 ),
             )
         )

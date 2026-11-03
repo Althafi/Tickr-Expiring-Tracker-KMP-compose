@@ -36,6 +36,9 @@ import com.project.tickr.domain.model.TimeRange
 import com.project.tickr.domain.model.Urgency
 import com.project.tickr.ui.theme.TickrCornerRadius
 import com.project.tickr.ui.theme.TickrTheme
+import tickrapp.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import com.project.tickr.ui.i18n.urgencyLabel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -66,7 +69,7 @@ fun ExpiryFilterSheet(
                 .navigationBarsPadding(),
         ) {
             Text(
-                text = "Filter Status", // TODO(user): stringResource filter_title
+                text = stringResource(Res.string.filter_title),
                 style = typography.sectionTitle,
                 color = colors.textPrimary,
             )
@@ -75,16 +78,16 @@ fun ExpiryFilterSheet(
 
             // ── Urgency group ────────────────────────────────────────────────
             Text(
-                text = "Status Urgensi", // TODO(user): stringResource
+                text = stringResource(Res.string.filter_urgency),
                 style = typography.body.copy(fontWeight = FontWeight.SemiBold),
                 color = colors.textPrimary,
             )
             Spacer(Modifier.height(spacing.sm))
             FlowRow(horizontalArrangement = Arrangement.spacedBy(spacing.md), verticalArrangement = Arrangement.spacedBy(spacing.sm)) {
                 val urgencyLabels = listOf(
-                    Urgency.SAFE to "Aman",        // TODO(user): stringResource
-                    Urgency.WARNING to "Waspada",
-                    Urgency.CRITICAL to "Kritis",
+                    Urgency.SAFE to urgencyLabel(Urgency.SAFE),
+                    Urgency.WARNING to urgencyLabel(Urgency.WARNING),
+                    Urgency.CRITICAL to urgencyLabel(Urgency.CRITICAL),
                 )
                 urgencyLabels.forEach { (urg, label) ->
                     FilterChip(
@@ -99,18 +102,18 @@ fun ExpiryFilterSheet(
 
             // ── Time range group ─────────────────────────────────────────────
             Text(
-                text = "Rentang Waktu", // TODO(user): stringResource
+                text = stringResource(Res.string.filter_time_range),
                 style = typography.body.copy(fontWeight = FontWeight.SemiBold),
                 color = colors.textPrimary,
             )
             Spacer(Modifier.height(spacing.sm))
             FlowRow(horizontalArrangement = Arrangement.spacedBy(spacing.md), verticalArrangement = Arrangement.spacedBy(spacing.sm)) {
                 val timeRangeLabels = listOf(
-                    TimeRange.GT_6M to ">6 Bulan",   // TODO(user): stringResource
-                    TimeRange.GT_3M to ">3 Bulan",
-                    TimeRange.GT_30D to ">30 Hari",
-                    TimeRange.GT_7D to ">7 Hari",
-                    TimeRange.D0 to "0 Hari",
+                    TimeRange.GT_6M to stringResource(Res.string.filter_range_gt_6m),
+                    TimeRange.GT_3M to stringResource(Res.string.filter_range_gt_3m),
+                    TimeRange.GT_30D to stringResource(Res.string.filter_range_gt_30d),
+                    TimeRange.GT_7D to stringResource(Res.string.filter_range_gt_7d),
+                    TimeRange.D0 to stringResource(Res.string.filter_range_d0),
                 )
                 timeRangeLabels.forEach { (range, label) ->
                     FilterChip(
@@ -134,7 +137,7 @@ fun ExpiryFilterSheet(
                     modifier = Modifier.weight(1f).height(56.dp),
                 ) {
                     Text(
-                        text = "Reset", // TODO(user): stringResource
+                        text = stringResource(Res.string.filter_reset),
                         style = typography.productName,
                         color = colors.textSecondary,
                     )
@@ -146,9 +149,9 @@ fun ExpiryFilterSheet(
                     colors = ButtonDefaults.buttonColors(containerColor = colors.primaryBrand),
                 ) {
                     Text(
-                        text = "Terapkan Filter", // TODO(user): stringResource filter_apply
+                        text = stringResource(Res.string.filter_apply),
                         style = typography.productName,
-                        color = Color.White,
+                        color = TickrTheme.colors.onBrand,
                     )
                 }
             }
@@ -164,7 +167,7 @@ private fun ExpiryFilterSheetPreview() {
     TickrTheme {
         // Preview as inline content (ModalBottomSheet doesn't preview well in isolation)
         Column(modifier = Modifier.background(TickrTheme.colors.surface).padding(20.dp)) {
-            Text("Filter Status", style = TickrTheme.typography.sectionTitle, color = TickrTheme.colors.textPrimary)
+            Text(stringResource(Res.string.filter_title), style = TickrTheme.typography.sectionTitle, color = TickrTheme.colors.textPrimary)
         }
     }
 }

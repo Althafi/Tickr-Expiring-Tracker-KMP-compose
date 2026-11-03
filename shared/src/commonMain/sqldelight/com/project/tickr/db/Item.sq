@@ -1,0 +1,50 @@
+CREATE TABLE item (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    category_id INTEGER REFERENCES category(id) ON DELETE SET NULL,
+    name        TEXT NOT NULL,
+    barcode     TEXT,
+    expiry_date TEXT NOT NULL,
+    image_url   TEXT,
+    notes       TEXT,
+    is_consumed INTEGER NOT NULL DEFAULT 0,
+    quantity    INTEGER NOT NULL DEFAULT 1,
+    unit        TEXT NOT NULL DEFAULT 'PCS',
+    created_at  TEXT NOT NULL,
+    updated_at  TEXT NOT NULL
+);
+
+CREATE INDEX item_expiry_idx   ON item(expiry_date);
+CREATE INDEX item_consumed_idx ON item(is_consumed);
+
+selectAll:
+SELECT * FROM item ORDER BY expiry_date ASC, id ASC;
+
+selectById:
+SELECT * FROM item WHERE id = ?;
+
+selectActive:
+SELECT * FROM item WHERE is_consumed = 0 ORDER BY expiry_date ASC, id ASC;
+
+count:
+SELECT COUNT(*) FROM item;
+
+insert:
+INSERT INTO item (
+    category_id, name, barcode, expiry_date, image_url, notes,
+    is_consumed, quantity, unit, created_at, updated_at
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE item
+SET category_id = ?, name = ?, barcode = ?, expiry_date = ?, image_url = ?,
+    notes = ?, is_consumed = ?, quantity = ?, unit = ?, updated_at = ?
+WHERE id = ?;
+
+markConsumed:
+UPDATE item SET is_consumed = ?, updated_at = ? WHERE id = ?;
+
+delete:
+DELETE FROM item WHERE id = ?;
+
+lastInsertRowId:
+SELECT last_insert_rowid();

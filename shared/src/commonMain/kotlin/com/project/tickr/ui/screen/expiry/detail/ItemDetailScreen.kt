@@ -44,6 +44,9 @@ import com.project.tickr.ui.screen.expiry.detail.components.StorageNoteBox
 import com.project.tickr.ui.screen.expiry.detail.components.UrgencyBanner
 import com.project.tickr.ui.theme.TickrCornerRadius
 import com.project.tickr.ui.theme.TickrTheme
+import tickrapp.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import com.project.tickr.presentation.common.asString
 
 @Composable
 fun ItemDetailScreen(
@@ -112,6 +115,7 @@ fun ItemDetailScreen(
                         // Info boxes: kategori + jumlah
                         InfoBoxPair(
                             categoryName = state.categoryName,
+                            categoryKey = state.categoryKey,
                             quantity = item.quantity,
                             unit = item.unit,
                         )
@@ -146,15 +150,15 @@ fun ItemDetailScreen(
                         ) {
                             if (state.isProcessing) {
                                 CircularProgressIndicator(
-                                    color = Color.White,
+                                    color = TickrTheme.colors.onBrand,
                                     strokeWidth = 2.dp,
                                     modifier = Modifier.size(20.dp),
                                 )
                             } else {
                                 Text(
-                                    text = "Tandai Sudah Habis Dikonsumsi", // TODO(user): stringResource detail_cta_consume
+                                    text = stringResource(Res.string.detail_cta_consume),
                                     style = typography.productName,
-                                    color = Color.White,
+                                    color = TickrTheme.colors.onBrand,
                                 )
                             }
                         }
@@ -173,7 +177,7 @@ fun ItemDetailScreen(
                 ) {
                     Spacer(Modifier.weight(1f))
                     Text(
-                        text = state.loadState.message,
+                        text = state.loadState.message.asString(),
                         style = typography.body,
                         color = colors.critical,
                         textAlign = TextAlign.Center,
@@ -184,7 +188,7 @@ fun ItemDetailScreen(
                         colors = ButtonDefaults.buttonColors(containerColor = colors.primaryBrand),
                         shape = RoundedCornerShape(TickrCornerRadius.button),
                     ) {
-                        Text("Kembali", color = Color.White)
+                        Text(stringResource(Res.string.cd_back), color = TickrTheme.colors.onBrand)
                     }
                     Spacer(Modifier.weight(1f))
                 }
@@ -198,13 +202,13 @@ fun ItemDetailScreen(
             onDismissRequest = { onAction(ExpiryDetailAction.DismissDeleteDialog) },
             title = {
                 Text(
-                    text = "Hapus barang ini?", // TODO(user): stringResource detail_delete_confirm_title
+                    text = stringResource(Res.string.detail_delete_title),
                     style = TickrTheme.typography.sectionTitle,
                 )
             },
             text = {
                 Text(
-                    text = "Tindakan ini tidak dapat dibatalkan.", // TODO(user): stringResource detail_delete_confirm_message
+                    text = stringResource(Res.string.detail_delete_message),
                     style = TickrTheme.typography.body,
                     color = TickrTheme.colors.textSecondary,
                 )
@@ -214,12 +218,12 @@ fun ItemDetailScreen(
                     onClick = { onAction(ExpiryDetailAction.ConfirmDelete) },
                     colors = ButtonDefaults.buttonColors(containerColor = TickrTheme.colors.critical),
                 ) {
-                    Text("Hapus", color = Color.White)
+                    Text(stringResource(Res.string.action_delete), color = TickrTheme.colors.onCritical)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { onAction(ExpiryDetailAction.DismissDeleteDialog) }) {
-                    Text("Batal", color = TickrTheme.colors.textSecondary)
+                    Text(stringResource(Res.string.action_cancel), color = TickrTheme.colors.textSecondary)
                 }
             },
             containerColor = TickrTheme.colors.surface,
@@ -234,7 +238,7 @@ private val sampleItem = Item(
     name = "Susu UHT Full Cream", barcode = null,
     expiryDate = "2026-06-11", imageUrl = null,
     notes = "Simpan di kulkas bagian bawah. Konsumsi sebelum tanggal tertera.",
-    isConsumed = false, quantity = 2, unit = "Karton",
+    isConsumed = false, quantity = 2, unit = "PACK",
     createdAt = "", updatedAt = "",
 )
 

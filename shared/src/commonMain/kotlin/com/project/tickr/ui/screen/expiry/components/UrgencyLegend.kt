@@ -17,6 +17,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.project.tickr.ui.theme.TickrTheme
+import com.project.tickr.domain.model.Urgency
+import com.project.tickr.ui.i18n.urgencyLabel
 
 @Composable
 fun UrgencyLegend(modifier: Modifier = Modifier) {
@@ -29,9 +31,9 @@ fun UrgencyLegend(modifier: Modifier = Modifier) {
         horizontalArrangement = Arrangement.spacedBy(spacing.lg),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        LegendItem(color = colors.critical, label = "Kritis")       // TODO(user): stringResource
-        LegendItem(color = colors.warning, label = "Waspada")
-        LegendItem(color = colors.safe, label = "Aman")
+        LegendItem(color = colors.critical, label = urgencyLabel(Urgency.CRITICAL))
+        LegendItem(color = colors.warning, label = urgencyLabel(Urgency.WARNING))
+        LegendItem(color = colors.safe, label = urgencyLabel(Urgency.SAFE))
     }
 }
 

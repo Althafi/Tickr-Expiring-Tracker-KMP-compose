@@ -23,10 +23,13 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.project.tickr.domain.model.Urgency
-import com.project.tickr.ui.screen.expiry.components.toCountdownLabel
-import com.project.tickr.ui.screen.expiry.components.toExpiryDisplayDate
 import com.project.tickr.ui.theme.TickrCornerRadius
 import com.project.tickr.ui.theme.TickrTheme
+import tickrapp.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.pluralStringResource
+import com.project.tickr.ui.i18n.countdownText
+import com.project.tickr.ui.i18n.formatShortDate
 
 @Composable
 fun UrgencyBanner(
@@ -38,27 +41,28 @@ fun UrgencyBanner(
     val colors = TickrTheme.colors
     val typography = TickrTheme.typography
 
+    val dateText = formatShortDate(expiryDate)
     val (bg, textColor, icon, bannerText) = when (urgency) {
         Urgency.CRITICAL -> BannerVariant(
             bg = colors.criticalContainer,
             textColor = colors.critical,
             icon = Icons.Outlined.Error,
             text = if (daysUntilExpiry <= 0)
-                "Kritis – Kedaluwarsa Hari Ini (${expiryDate.toExpiryDisplayDate()})" // TODO(user): stringResource
+                stringResource(Res.string.banner_critical_today, dateText)
             else
-                "Kritis – Kedaluwarsa $daysUntilExpiry Hari Lagi (${expiryDate.toExpiryDisplayDate()})",
+                pluralStringResource(Res.plurals.banner_critical_days, daysUntilExpiry, daysUntilExpiry, dateText),
         )
         Urgency.WARNING -> BannerVariant(
             bg = colors.warningContainer,
             textColor = colors.warning,
             icon = Icons.Outlined.Warning,
-            text = "Waspada – Kedaluwarsa ${daysUntilExpiry.toCountdownLabel()} (${expiryDate.toExpiryDisplayDate()})", // TODO(user): stringResource
+            text = stringResource(Res.string.banner_warning, countdownText(daysUntilExpiry), dateText),
         )
         Urgency.SAFE -> BannerVariant(
             bg = colors.safeContainer,
             textColor = colors.safe,
             icon = Icons.Outlined.CheckCircle,
-            text = "Aman – Kedaluwarsa ${daysUntilExpiry.toCountdownLabel()} (${expiryDate.toExpiryDisplayDate()})", // TODO(user): stringResource
+            text = stringResource(Res.string.banner_safe, countdownText(daysUntilExpiry), dateText),
         )
     }
 

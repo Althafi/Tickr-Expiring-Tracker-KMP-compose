@@ -70,6 +70,11 @@ import com.project.tickr.ui.common.rememberImagePickerLauncher
 import com.project.tickr.ui.theme.TickrCornerRadius
 import com.project.tickr.ui.theme.TickrTheme
 import kotlinx.coroutines.launch
+import tickrapp.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import com.project.tickr.presentation.common.asString
+import com.project.tickr.ui.i18n.categoryLabel
+import com.project.tickr.ui.i18n.unitLabel
 
 // ——— Public entry-point composable ———
 
@@ -154,13 +159,13 @@ fun AddItemContent(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "Tambah Barang",
+                text = stringResource(Res.string.additem_title),
                 style = typography.sectionTitle,
                 color = colors.textPrimary,
             )
             // Plain X icon — no circle wrapper
             IconButton(onClick = onDismiss) {
-                Icon(Icons.Outlined.Close, contentDescription = "Tutup", tint = colors.textPrimary)
+                Icon(Icons.Outlined.Close, contentDescription = stringResource(Res.string.cd_close), tint = colors.textPrimary)
             }
         }
 
@@ -175,9 +180,9 @@ fun AddItemContent(
             value = state.name,
             onValueChange = { onAction(AddItemAction.NameChanged(it)) },
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Nama Produk", color = colors.textSecondary) },
+            placeholder = { Text(stringResource(Res.string.additem_name_hint), color = colors.textSecondary) },
             isError = state.nameError != null,
-            supportingText = state.nameError?.let { msg -> { Text(msg, color = colors.critical) } },
+            supportingText = state.nameError?.let { msg -> { Text(msg.asString(), color = colors.critical) } },
             shape = RoundedCornerShape(TickrCornerRadius.button),
             colors = tickrOutlinedColors(),
             singleLine = true,
@@ -215,7 +220,7 @@ fun AddItemContent(
         ) {
             if (state.isSaving) {
                 CircularProgressIndicator(
-                    color = Color.White,
+                    color = TickrTheme.colors.onBrand,
                     modifier = Modifier.size(22.dp),
                     strokeWidth = 2.dp,
                 )
@@ -223,11 +228,11 @@ fun AddItemContent(
                 Icon(
                     Icons.Outlined.Check,
                     contentDescription = null,
-                    tint = Color.White,
+                    tint = TickrTheme.colors.onBrand,
                     modifier = Modifier.size(20.dp),
                 )
                 Spacer(Modifier.width(TickrTheme.spacing.sm))
-                Text(text = "Catat Barang", color = Color.White, style = typography.body)
+                Text(text = stringResource(Res.string.additem_save), color = TickrTheme.colors.onBrand, style = typography.body)
             }
         }
     }
@@ -270,7 +275,7 @@ private fun PhotoPickerBox(
                 )
                 Spacer(Modifier.height(TickrTheme.spacing.xs))
                 Text(
-                    text = "Foto dipilih — ketuk untuk ganti",
+                    text = stringResource(Res.string.additem_photo_selected),
                     style = typography.caption,
                     color = colors.safe,
                     textAlign = TextAlign.Center,
@@ -286,7 +291,7 @@ private fun PhotoPickerBox(
                 )
                 Spacer(Modifier.height(TickrTheme.spacing.xs))
                 Text(
-                    text = "Ketuk untuk unggah foto",
+                    text = stringResource(Res.string.additem_photo_hint),
                     style = typography.body,
                     color = colors.textSecondary,
                 )
@@ -304,7 +309,7 @@ private fun CategorySection(
     val typography = TickrTheme.typography
 
     Column {
-        Text(text = "Kategori", style = typography.body, color = colors.textSecondary)
+        Text(text = stringResource(Res.string.additem_category), style = typography.body, color = colors.textSecondary)
         Spacer(Modifier.height(TickrTheme.spacing.xs))
         when {
             state.isLoadingCategories -> {
@@ -321,7 +326,7 @@ private fun CategorySection(
             }
             state.dbCategories.isEmpty() -> {
                 Text(
-                    text = "Gagal memuat kategori. Coba tutup dan buka kembali.",
+                    text = stringResource(Res.string.additem_category_error),
                     style = typography.caption,
                     color = colors.critical,
                 )
@@ -330,7 +335,7 @@ private fun CategorySection(
                 Column(verticalArrangement = Arrangement.spacedBy(TickrTheme.spacing.xs)) {
                     state.dbCategories.forEach { cat ->
                         CategoryRadioRow(
-                            label = cat.name,
+                            label = categoryLabel(cat.key, cat.name),
                             selected = state.selectedCategoryId == cat.id,
                             onClick = { onAction(AddItemAction.CategorySelected(cat.id, cat.name)) },
                         )
@@ -389,7 +394,7 @@ private fun CategoryRadioRow(
                     modifier = Modifier
                         .size(8.dp)
                         .clip(CircleShape)
-                        .background(Color.White),
+                        .background(TickrTheme.colors.onBrand),
                 )
             }
         }
@@ -405,7 +410,7 @@ private fun QuantitySection(
     val typography = TickrTheme.typography
 
     Column {
-        Text(text = "Jumlah", style = typography.body, color = colors.textSecondary)
+        Text(text = stringResource(Res.string.additem_quantity), style = typography.body, color = colors.textSecondary)
         Spacer(Modifier.height(TickrTheme.spacing.xs))
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -428,7 +433,7 @@ private fun QuantitySection(
             ) {
                 Icon(
                     Icons.Outlined.Remove,
-                    contentDescription = "Kurang",
+                    contentDescription = stringResource(Res.string.cd_decrease),
                     tint = if (state.quantity > 0) colors.primaryBrand
                     else colors.textSecondary.copy(alpha = 0.4f),
                     modifier = Modifier.size(20.dp),
@@ -472,7 +477,7 @@ private fun QuantitySection(
             ) {
                 Icon(
                     Icons.Outlined.Add,
-                    contentDescription = "Tambah",
+                    contentDescription = stringResource(Res.string.cd_increase),
                     tint = colors.primaryBrand,
                     modifier = Modifier.size(20.dp),
                 )
@@ -490,7 +495,7 @@ private fun UnitSection(
     val typography = TickrTheme.typography
 
     Column {
-        Text(text = "Satuan", style = typography.body, color = colors.textSecondary)
+        Text(text = stringResource(Res.string.additem_unit), style = typography.body, color = colors.textSecondary)
         Spacer(Modifier.height(TickrTheme.spacing.xs))
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(TickrTheme.spacing.sm),
@@ -512,9 +517,9 @@ private fun UnitSection(
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                 ) {
                     Text(
-                        text = unit,
+                        text = unitLabel(unit),
                         style = typography.body,
-                        color = if (selected) Color.White else colors.textPrimary,
+                        color = if (selected) TickrTheme.colors.onBrand else colors.textPrimary,
                     )
                 }
             }
@@ -532,7 +537,7 @@ private fun ExpiryDateSection(
     val typography = TickrTheme.typography
 
     Column {
-        Text(text = "Waktu Kedaluwarsa", style = typography.body, color = colors.textSecondary)
+        Text(text = stringResource(Res.string.additem_expiry), style = typography.body, color = colors.textSecondary)
         Spacer(Modifier.height(TickrTheme.spacing.xs))
         OutlinedTextField(
             value = state.rawDateDigits,
@@ -542,19 +547,19 @@ private fun ExpiryDateSection(
             },
             visualTransformation = DateMaskTransformation,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            placeholder = { Text("DD / MM / YYYY", color = colors.textSecondary) },
+            placeholder = { Text(stringResource(Res.string.additem_date_hint), color = colors.textSecondary) },
             trailingIcon = {
                 IconButton(onClick = onShowDatePicker) {
                     Icon(
                         Icons.Outlined.CalendarToday,
-                        contentDescription = "Pilih tanggal dari kalender",
+                        contentDescription = stringResource(Res.string.cd_pick_date),
                         tint = colors.textSecondary,
                     )
                 }
             },
             isError = state.expiryError != null,
             supportingText = state.expiryError?.let { msg ->
-                { Text(msg, color = colors.critical, style = typography.caption) }
+                { Text(msg.asString(), color = colors.critical, style = typography.caption) }
             },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(TickrCornerRadius.button),

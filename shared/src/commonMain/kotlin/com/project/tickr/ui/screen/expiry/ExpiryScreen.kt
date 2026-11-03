@@ -31,6 +31,10 @@ import com.project.tickr.ui.screen.expiry.components.StatCardPair
 import com.project.tickr.ui.screen.expiry.components.UrgencyLegend
 import com.project.tickr.ui.screen.home.components.TickrTopBar
 import com.project.tickr.ui.theme.TickrTheme
+import com.project.tickr.core.util.DateParts
+import tickrapp.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import com.project.tickr.presentation.common.asString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,7 +61,7 @@ fun ExpiryScreen(
             item {
                 TickrTopBar(
                     nowEpochMillis = state.nowEpochMillis,
-                    displayDate = state.displayDate,
+                    date = state.date,
                     displayTime = state.displayTime,
                     onNotificationClick = { /* TODO: navigasi notifikasi */ },
                 )
@@ -77,7 +81,7 @@ fun ExpiryScreen(
             // ── Category filter chips ─────────────────────────────────────────
             item {
                 CategoryFilterRow(
-                    selectedCategoryName = state.activeFilter.categoryName,
+                    selectedCategoryKey = state.activeFilter.categoryKey,
                     onCategorySelected = { onAction(ExpiryAction.CategorySelected(it)) },
                     modifier = Modifier.padding(horizontal = spacing.screen),
                 )
@@ -108,14 +112,14 @@ fun ExpiryScreen(
                     }
                     item {
                         Text(
-                            text = "Status Kedaluwarsa", // TODO(user): stringResource expiry_section_title
+                            text = stringResource(Res.string.expiry_section_title),
                             style = typography.sectionTitle,
                             color = colors.textPrimary,
                             modifier = Modifier.padding(horizontal = spacing.screen),
                         )
                         Spacer(Modifier.height(2.dp))
                         Text(
-                            text = "Pantau kesegaran stok rumah Anda.", // TODO(user): stringResource
+                            text = stringResource(Res.string.expiry_section_subtitle),
                             style = typography.body,
                             color = colors.textSecondary,
                             modifier = Modifier.padding(horizontal = spacing.screen),
@@ -156,7 +160,7 @@ fun ExpiryScreen(
                 is ExpiryLoadState.Error -> {
                     item {
                         Text(
-                            text = state.loadState.message,
+                            text = state.loadState.message.asString(),
                             style = typography.body,
                             color = colors.critical,
                             textAlign = TextAlign.Center,
@@ -202,7 +206,7 @@ private fun ExpiryContentPreview() {
                 items = sampleItems,
                 stats = ConsumptionStats(consumed = 8, wasted = 2),
                 nowEpochMillis = 1749470828000L,
-                displayDate = "Rabu, 11 Jun 2026",
+                date = DateParts(3, 11, 6, 2026),
                 displayTime = "09:15:32",
             ),
             onAction = {},
@@ -220,7 +224,7 @@ private fun ExpiryContentDarkPreview() {
                 items = sampleItems,
                 stats = ConsumptionStats(consumed = 8, wasted = 2),
                 nowEpochMillis = 1749470828000L,
-                displayDate = "Rabu, 11 Jun 2026",
+                date = DateParts(3, 11, 6, 2026),
                 displayTime = "09:15:32",
             ),
             onAction = {},
@@ -236,7 +240,7 @@ private fun ExpirySkeletonPreview() {
             state = ExpiryUiState(
                 loadState = ExpiryLoadState.Loading,
                 nowEpochMillis = 1749470828000L,
-                displayDate = "Rabu, 11 Jun 2026",
+                date = DateParts(3, 11, 6, 2026),
                 displayTime = "09:15:32",
             ),
             onAction = {},
@@ -252,7 +256,7 @@ private fun ExpirySkeletonDarkPreview() {
             state = ExpiryUiState(
                 loadState = ExpiryLoadState.Loading,
                 nowEpochMillis = 1749470828000L,
-                displayDate = "Rabu, 11 Jun 2026",
+                date = DateParts(3, 11, 6, 2026),
                 displayTime = "09:15:32",
             ),
             onAction = {},
@@ -269,7 +273,7 @@ private fun ExpiryEmptyPreview() {
                 loadState = ExpiryLoadState.Empty,
                 stats = ConsumptionStats(consumed = 0, wasted = 0),
                 nowEpochMillis = 1749470828000L,
-                displayDate = "Rabu, 11 Jun 2026",
+                date = DateParts(3, 11, 6, 2026),
                 displayTime = "09:15:32",
             ),
             onAction = {},
@@ -285,7 +289,7 @@ private fun ExpiryEmptyDarkPreview() {
             state = ExpiryUiState(
                 loadState = ExpiryLoadState.Empty,
                 nowEpochMillis = 1749470828000L,
-                displayDate = "Rabu, 11 Jun 2026",
+                date = DateParts(3, 11, 6, 2026),
                 displayTime = "09:15:32",
             ),
             onAction = {},

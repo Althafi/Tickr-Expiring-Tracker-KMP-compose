@@ -24,17 +24,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.project.tickr.ui.theme.TickrCornerRadius
 import com.project.tickr.ui.theme.TickrTheme
-
-private val CATEGORY_NAMES = listOf(
-    "Makanan & Minuman",
-    "Kecantikan",
-    "Obat & Vitamin",
-    "Lainnya",
-)
+import tickrapp.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import com.project.tickr.domain.model.CategoryKeys
+import com.project.tickr.ui.i18n.categoryLabel
 
 @Composable
 fun CategoryFilterRow(
-    selectedCategoryName: String?,
+    selectedCategoryKey: String?,
     onCategorySelected: (String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -49,15 +46,15 @@ fun CategoryFilterRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         FilterChip(
-            label = "Semua",
-            isSelected = selectedCategoryName == null,
+            label = stringResource(Res.string.filter_all),
+            isSelected = selectedCategoryKey == null,
             onClick = { onCategorySelected(null) },
         )
-        CATEGORY_NAMES.forEach { name ->
+        CategoryKeys.DEFAULTS.forEach { key ->
             FilterChip(
-                label = name,
-                isSelected = selectedCategoryName == name,
-                onClick = { onCategorySelected(name) },
+                label = categoryLabel(key, key),
+                isSelected = selectedCategoryKey == key,
+                onClick = { onCategorySelected(key) },
             )
         }
     }
@@ -79,7 +76,7 @@ internal fun FilterChip(
         label = "chipBg",
     )
     val textColor by animateColorAsState(
-        targetValue = if (isSelected) Color.White else colors.textSecondary,
+        targetValue = if (isSelected) TickrTheme.colors.onBrand else colors.textSecondary,
         animationSpec = tween(180),
         label = "chipText",
     )
@@ -104,7 +101,7 @@ internal fun FilterChip(
 private fun CategoryFilterRowPreview() {
     TickrTheme {
         CategoryFilterRow(
-            selectedCategoryName = "Makanan & Minuman",
+            selectedCategoryKey = CategoryKeys.FOOD,
             onCategorySelected = {},
             modifier = Modifier.padding(16.dp),
         )

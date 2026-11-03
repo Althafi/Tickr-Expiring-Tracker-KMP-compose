@@ -20,11 +20,15 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.project.tickr.ui.theme.TickrTheme
+import tickrapp.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import com.project.tickr.core.util.DateParts
+import com.project.tickr.ui.i18n.formatLongDate
 
 @Composable
 fun TickrTopBar(
     nowEpochMillis: Long,
-    displayDate: String,
+    date: DateParts?,
     displayTime: String,
     onNotificationClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -32,6 +36,7 @@ fun TickrTopBar(
     val colors = TickrTheme.colors
     val typography = TickrTheme.typography
     val spacing = TickrTheme.spacing
+    val notificationsDescription = stringResource(Res.string.cd_home_notification)
 
     Row(
         modifier = modifier
@@ -46,13 +51,13 @@ fun TickrTopBar(
                 horizontalArrangement = Arrangement.spacedBy(spacing.sm),
             ) {
                 Text(
-                    text = "Tickr", // TODO(user): ganti dengan Image logo jika tersedia
+                    text = stringResource(Res.string.app_name), // TODO(user): ganti dengan Image logo jika tersedia
                     style = typography.greetingTitle,
                     color = colors.primaryBrand,
                 )
                 Column {
                     Text(
-                        text = displayDate,
+                        text = date?.let { formatLongDate(it) } ?: "",
                         style = typography.caption,
                         color = colors.textSecondary,
                     )
@@ -70,7 +75,7 @@ fun TickrTopBar(
             onClick = onNotificationClick,
             modifier = Modifier
                 .size(44.dp)
-                .semantics { contentDescription = "Buka notifikasi" }, // TODO(user): pakai stringResource
+                .semantics { contentDescription = notificationsDescription },
         ) {
             Icon(
                 Icons.Outlined.Notifications,
@@ -88,7 +93,7 @@ private fun TickrTopBarPreview() {
     TickrTheme {
         TickrTopBar(
             nowEpochMillis = 1749470828000L,
-            displayDate = "Rabu, 10 Juni 2026",
+            date = DateParts(3, 10, 6, 2026),
             displayTime = "18:27:08",
             onNotificationClick = {},
         )

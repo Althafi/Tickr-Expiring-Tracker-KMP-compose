@@ -10,7 +10,8 @@ import com.project.tickr.domain.usecase.auth.GetCurrentUserIdUseCase
 import com.project.tickr.domain.usecase.category.GetCategoriesUseCase
 import com.project.tickr.domain.usecase.home.AddItemParams
 import com.project.tickr.domain.usecase.home.AddItemUseCase
-import com.project.tickr.domain.usecase.item.UploadProductImageUseCase
+import com.project.tickr.domain.usecase.item.DiscardProductImageUseCase
+import com.project.tickr.domain.usecase.item.SaveProductImageUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,13 +19,20 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.project.tickr.presentation.common.ErrorMessageProvider
+import com.project.tickr.presentation.common.UiText
+import tickrapp.shared.generated.resources.*
+import com.project.tickr.domain.usecase.reminder.SyncRemindersUseCase
 
 class AddItemViewModel(
     private val addItem: AddItemUseCase,
     private val getCategories: GetCategoriesUseCase,
     private val getCurrentUserId: GetCurrentUserIdUseCase,
     private val dateTime: DateTimeUtil,
-    private val uploadProductImage: UploadProductImageUseCase,
+    private val saveProductImage: SaveProductImageUseCase,
+    private val discardProductImage: DiscardProductImageUseCase,
+    private val errorMessages: ErrorMessageProvider,
+    private val syncReminders: SyncRemindersUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AddItemUiState())
@@ -98,7 +106,7 @@ class AddItemViewModel(
                 rawDateDigits = clamped,
                 expiryIsoDate = iso ?: "",
                 expiryDateMillis = millis,
-                expiryError = if (iso == null) "Format tanggal tidak valid" else null,
+                expiryError = if (iso == null) UiText.Res(Res.string.error_invalid_date_format) else null,
             )
         }
     }
@@ -124,17 +132,14 @@ class AddItemViewModel(
     }
 
     private fun save() {
-        val userId = getCurrentUserId() ?: run {
-            viewModelScope.launch { _events.send(AddItemEvent.ShowError("Sesi habis, silakan masuk kembali")) }
-            return
-        }
+        val userId = getCurrentUserId()
         val s = _state.value
         if (!s.canSave) return
 
         _state.update { it.copy(isSaving = true) }
         viewModelScope.launch {
-            val remoteImageUrl: String? = if (s.photoPath != null) {
-                when (val r = uploadProductImage(userId, s.photoPath)) {
+            val savedImagePath: String? = if (s.photoPath != null) {
+                when (val r = saveProductImage(s.photoPath)) {
                     is DataResult.Success -> r.data
                     is DataResult.Error -> null
                 }
@@ -148,7 +153,7 @@ class AddItemViewModel(
                     quantity = s.quantity,
                     unit = s.unit,
                     expiryDateMillis = s.expiryDateMillis,
-                    imageUrl = remoteImageUrl,
+                    imageUrl = savedImagePath,
                 )
             ).onSuccess {
                 _state.update { s ->
@@ -160,10 +165,13 @@ class AddItemViewModel(
                         selectedCategoryName = cached.firstOrNull()?.name,
                     )
                 }
+                syncReminders.requestSync()
                 _events.send(AddItemEvent.Saved)
             }.onError { err ->
+                // Barang gagal disimpan: jangan biarkan foto yatim di penyimpanan.
+                savedImagePath?.let { discardProductImage(it) }
                 _state.update { it.copy(isSaving = false) }
-                _events.send(AddItemEvent.ShowError(err.message))
+                _events.send(AddItemEvent.ShowError(errorMessages.provide(err)))
             }
         }
     }

@@ -1,165 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Onboarding Strings -->
-    <!-- TODO(user): sesuaikan semua nilai di bawah (teks diambil persis dari mockup) -->
+    <string name="app_name">Tickr</string>
+    <string name="app_version_footer">Tickr v%1$s</string>
+    <string name="cd_back">Kembali</string>
+    <string name="nav_home">Beranda</string>
+    <string name="nav_expiring">Kadaluwarsa</string>
+    <string name="nav_insight">Wawasan</string>
+    <string name="nav_settings">Pengaturan</string>
+    <string name="cd_add_item">Tambah barang baru</string>
+    <string name="coming_soon">Segera hadir</string>
+    <string name="category_food">Makanan &amp; Minuman</string>
+    <string name="category_beauty">Kecantikan</string>
+    <string name="category_medicine">Obat &amp; Vitamin</string>
+    <string name="category_other">Lainnya</string>
+    <string name="unit_pcs">Pcs</string>
+    <string name="unit_gram">Gram</string>
+    <string name="unit_kilogram">Kilogram</string>
+    <string name="unit_liter">Liter</string>
+    <string name="unit_milliliter">Mililiter</string>
+    <string name="unit_bottle">Botol</string>
+    <string name="unit_pack">Bungkus</string>
+    <string name="unit_dozen">Lusin</string>
+    <string name="urgency_critical">Kritis</string>
+    <string name="urgency_warning">Waspada</string>
+    <string name="urgency_safe">Aman</string>
+    <string name="countdown_today">Hari ini</string>
+    <string name="weekday_1">Senin</string>
+    <string name="weekday_2">Selasa</string>
+    <string name="weekday_3">Rabu</string>
+    <string name="weekday_4">Kamis</string>
+    <string name="weekday_5">Jumat</string>
+    <string name="weekday_6">Sabtu</string>
+    <string name="weekday_7">Minggu</string>
+    <string name="month_1">Januari</string>
+    <string name="month_2">Februari</string>
+    <string name="month_3">Maret</string>
+    <string name="month_4">April</string>
+    <string name="month_5">Mei</string>
+    <string name="month_6">Juni</string>
+    <string name="month_7">Juli</string>
+    <string name="month_8">Agustus</string>
+    <string name="month_9">September</string>
+    <string name="month_10">Oktober</string>
+    <string name="month_11">November</string>
+    <string name="month_12">Desember</string>
+    <string name="month_short_1">Jan</string>
+    <string name="month_short_2">Feb</string>
+    <string name="month_short_3">Mar</string>
+    <string name="month_short_4">Apr</string>
+    <string name="month_short_5">Mei</string>
+    <string name="month_short_6">Jun</string>
+    <string name="month_short_7">Jul</string>
+    <string name="month_short_8">Agu</string>
+    <string name="month_short_9">Sep</string>
+    <string name="month_short_10">Okt</string>
+    <string name="month_short_11">Nov</string>
+    <string name="month_short_12">Des</string>
+    <string name="date_long">%1$s, %2$d %3$s %4$d</string>
+    <string name="date_short">%1$d %2$s %3$d</string>
+    <string name="error_generic">Terjadi kesalahan. Coba lagi.</string>
+    <string name="error_not_found">Data tidak ditemukan.</string>
+    <string name="error_process_data">Gagal memproses data.</string>
+    <string name="error_invalid_data">Data tidak valid.</string>
+    <string name="error_validation_name">Nama produk wajib diisi.</string>
+    <string name="error_validation_expiry">Tanggal kedaluwarsa tidak valid.</string>
+    <string name="error_validation_quantity">Jumlah minimal 1.</string>
+    <string name="error_invalid_date_format">Format tanggal tidak valid.</string>
+    <string name="home_greeting">Selamat Datang</string>
+    <string name="home_subtitle">Cek status barangmu hari ini.</string>
+    <string name="cd_home_notification">Buka notifikasi</string>
+    <string name="home_empty_title">Belum ada barang</string>
+    <string name="home_empty_body">Mulai catat barangmu agar tak ada yang kedaluwarsa terlewat.</string>
+    <string name="home_empty_cta">Tambah Barang Pertama</string>
+    <string name="home_consumption_title">Kategori Konsumsi</string>
+    <string name="home_see_all">Lihat Semua</string>
+    <string name="home_no_category_data">Belum ada data kategori.</string>
+    <string name="home_donut_total_label">TOTAL</string>
+    <string name="cd_donut_chart">Komposisi kategori: %1$s</string>
+    <string name="home_expiring_title">Produk Kadaluwarsa</string>
+    <string name="home_need_action">PERLU TINDAKAN</string>
+    <string name="home_no_action_needed">Tidak ada produk yang perlu tindakan</string>
+    <string name="cd_item_summary">%1$s, kedaluwarsa: %2$s</string>
+    <string name="cd_product_photo">Foto produk %1$s</string>
+    <string name="cd_view_item_detail">Lihat detail barang</string>
+    <string name="waste_highlight_down">turun %1$d%</string>
+    <string name="waste_highlight_up">naik %1$d%</string>
+    <string name="waste_message_improving">Bagus sekali! Bulan ini tingkat makanan terbuangmu %1$s.</string>
+    <string name="waste_message_worsening">Bulan ini tingkat makanan terbuangmu %1$s.</string>
+    <string name="waste_message_sub">Terus pertahankan kebiasaan baik ini.</string>
+    <string name="waste_empty">Catat &amp; habiskan barang untuk melihat tren penghematanmu.</string>
+    <string name="waste_cd_trend">Insight: sampah %1$s</string>
+    <string name="waste_cd_no_data">Insight: belum cukup data</string>
+    <string name="cd_close">Tutup</string>
+    <string name="additem_title">Tambah Barang</string>
+    <string name="additem_name_hint">Nama Produk</string>
+    <string name="additem_save">Catat Barang</string>
+    <string name="additem_photo_selected">Foto dipilih — ketuk untuk ganti</string>
+    <string name="additem_photo_hint">Ketuk untuk unggah foto</string>
+    <string name="additem_category">Kategori</string>
+    <string name="additem_category_error">Gagal memuat kategori. Coba tutup dan buka kembali.</string>
+    <string name="additem_quantity">Jumlah</string>
+    <string name="cd_decrease">Kurang</string>
+    <string name="cd_increase">Tambah</string>
+    <string name="additem_unit">Satuan</string>
+    <string name="additem_expiry">Waktu Kedaluwarsa</string>
+    <string name="additem_date_hint">DD / MM / YYYY</string>
+    <string name="cd_pick_date">Pilih tanggal dari kalender</string>
+    <string name="filter_all">Semua</string>
+    <string name="expiry_section_title">Status Kedaluwarsa</string>
+    <string name="expiry_section_subtitle">Pantau kesegaran stok rumah Anda.</string>
+    <string name="expiry_search_hint">Cari barang…</string>
+    <string name="cd_search_items">Cari barang</string>
+    <string name="cd_open_filter">Buka filter status</string>
+    <string name="stat_consumed">Barang Dikonsumsi</string>
+    <string name="stat_wasted">Barang Mubazir</string>
+    <string name="expiry_card_date">Kedaluwarsa: %1$s</string>
+    <string name="expiry_card_consumed">Habis</string>
+    <string name="expiry_empty_title">Belum ada barang</string>
+    <string name="expiry_empty_subtitle">Tambahkan barang pertamamu untuk mulai memantau tanggal kedaluwarsa.</string>
+    <string name="expiry_empty_cta">Tambah Barang</string>
+    <string name="filter_title">Filter Status</string>
+    <string name="filter_urgency">Status Urgensi</string>
+    <string name="filter_time_range">Rentang Waktu</string>
+    <string name="filter_range_gt_6m">&gt;6 Bulan</string>
+    <string name="filter_range_gt_3m">&gt;3 Bulan</string>
+    <string name="filter_range_gt_30d">&gt;30 Hari</string>
+    <string name="filter_range_gt_7d">&gt;7 Hari</string>
+    <string name="filter_range_d0">0 Hari</string>
+    <string name="filter_reset">Reset</string>
+    <string name="filter_apply">Terapkan Filter</string>
+    <string name="banner_critical_today">Kritis – Kedaluwarsa Hari Ini (%1$s)</string>
+    <string name="banner_warning">Waspada – Kedaluwarsa %1$s (%2$s)</string>
+    <string name="banner_safe">Aman – Kedaluwarsa %1$s (%2$s)</string>
+    <string name="cd_detail_photo">Foto %1$s</string>
+    <string name="cd_detail_delete">Hapus barang</string>
+    <string name="detail_label_category">KATEGORI</string>
+    <string name="detail_label_quantity">JUMLAH</string>
+    <string name="detail_quantity_format">%1$d %2$s</string>
+    <string name="detail_storage_note_title">Catatan Penyimpanan</string>
+    <string name="detail_cta_consume">Tandai Sudah Habis Dikonsumsi</string>
+    <string name="detail_delete_title">Hapus barang ini?</string>
+    <string name="detail_delete_message">Tindakan ini tidak dapat dibatalkan.</string>
+    <string name="action_delete">Hapus</string>
+    <string name="action_cancel">Batal</string>
+    <string name="consumed_title">Produk Dikonsumsi</string>
+    <string name="consumed_empty">Belum ada produk yang dikonsumsi</string>
     <string name="onboarding_title_1">Yuk, kelola bahan makanan, kosmetik, hingga stok tokomu dengan lebih pintar. Katakan selamat tinggal pada barang kedaluwarsa!</string>
     <string name="onboarding_title_2">Satu catatan kecil darimu, langkah besar untuk kurangi sampah dan hemat isi dompet. Pantau semua tanggal kedaluwarsa dengan mudah.</string>
     <string name="onboarding_title_3">Terima notifikasi sebelum terlambat. Nikmati kemudahan melacak tanpa takut kecolongan lagi. Mulai sekarang!</string>
     <string name="onboarding_continue">Lanjutkan</string>
-    <string name="app_version_copyright">Versi 1.0.4 • © 2024 Tickr Team</string>
-
-    <!-- Onboarding Content Descriptions -->
     <string name="cd_onboarding_next">Lanjut ke halaman berikutnya</string>
     <string name="cd_onboarding_welcome">Ilustrasi sambutan Tickr</string>
     <string name="cd_onboarding_eco">Ilustrasi ramah lingkungan dan pencatatan</string>
     <string name="cd_onboarding_notify">Ilustrasi notifikasi pengingat kedaluwarsa</string>
-
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- Auth Strings — Phase 3.5                                       -->
-    <!-- TODO(user): sesuaikan semua nilai di bawah                     -->
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-
-    <!-- Login -->
-    <string name="login_google_cta">Masuk dengan Google</string>
-    <string name="login_divider_or">ATAU</string>
-    <string name="login_field_identifier_hint">Masukan Nama Lengkap / Email</string>
-    <string name="login_field_password_hint">Masukan Password</string>
-    <string name="login_cta_submit">Masuk</string>
-    <string name="login_cta_register">Daftar jika belum punya akun</string>
-    <string name="login_footer_terms">Dengan melanjutkan, kamu menyetujui Syarat &amp; Ketentuan serta Kebijakan Privasi kami.</string>
-    <string name="login_error_invalid">Email/nama atau kata sandi salah.</string>
-
-    <!-- Register -->
-    <string name="register_title">Daftar Akun Baru</string>
-    <string name="register_subtitle">Mulai kelola persediaan rumah Anda dengan lebih mudah.</string>
-    <string name="register_label_name">Nama Lengkap</string>
-    <string name="register_hint_name">Contoh: Budi Santoso</string>
-    <string name="register_label_email">Alamat Email</string>
-    <string name="register_hint_email">nama@email.com</string>
-    <string name="register_label_password">Kata Sandi</string>
-    <string name="register_hint_password">Min. 8 karakter</string>
-    <string name="register_cta_submit">Daftar Sekarang</string>
-    <string name="register_have_account">Sudah punya akun? </string>
-    <string name="register_login_link">Masuk di sini</string>
-    <string name="register_divider_or">Atau daftar dengan</string>
-    <string name="register_google_cta">Google</string>
-    <string name="register_error_email_taken">Email ini sudah terdaftar.</string>
-
-    <!-- Password requirements -->
-    <string name="pw_req_length">Minimal 8 karakter</string>
-    <string name="pw_req_case">Huruf besar &amp; kecil</string>
-    <string name="pw_req_digit">Mengandung angka</string>
-    <string name="pw_req_symbol">Mengandung simbol</string>
-    <string name="pw_strength_weak">Lemah</string>
-    <string name="pw_strength_fair">Cukup</string>
-    <string name="pw_strength_good">Baik</string>
-    <string name="pw_strength_strong">Kuat</string>
-
-    <!-- Auth Success -->
-    <string name="auth_success_title">Registrasi Berhasil!</string>
-    <string name="auth_success_body">Akunmu sudah siap. Sekarang kamu bisa mulai mencatat barang dan memantau tanggal kedaluwarsa agar tidak ada lagi yang mubazir.</string>
-
-    <!-- Auth Content Descriptions -->
-    <string name="cd_logo_tickr">Logo Tickr</string>
-    <string name="cd_google_icon">Ikon Google</string>
-    <string name="cd_toggle_password">Tampilkan atau sembunyikan kata sandi</string>
-    <string name="cd_success_check">Ikon registrasi berhasil</string>
-
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- Home Strings — Phase 3.5                                       -->
-    <!-- TODO(user): sesuaikan semua nilai di bawah                     -->
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <string name="home_greeting">Selamat Datang, %1$s</string>
-    <string name="home_subtitle">Cek status barangmu hari ini.</string>
-    <string name="home_insight_text">Bagus sekali! Bulan ini tingkat makanan terbuangmu turun %1$d%%.</string>
-    <string name="home_insight_sub">Terus pertahankan kebiasaan baik ini.</string>
-    <string name="home_insight_empty">Catat &amp; habiskan barang untuk melihat tren penghematanmu.</string>
-    <string name="home_consumption_title">Kategori Konsumsi</string>
-    <string name="home_see_all">Lihat Semua</string>
-    <string name="home_donut_total_label">TOTAL</string>
-    <string name="home_expiring_title">Produk Kadaluwarsa</string>
-    <string name="home_need_action">PERLU TINDAKAN</string>
-    <string name="home_critical_summary">Kritis: %1$d item</string>
-    <string name="home_empty_title">Belum ada barang</string>
-    <string name="home_empty_body">Mulai catat barangmu agar tak ada yang kedaluwarsa terlewat.</string>
-    <string name="home_empty_cta">Tambah Barang Pertama</string>
-    <string name="countdown_today">Hari ini</string>
-    <string name="countdown_day">%1$d hari</string>
-    <string name="countdown_month_day">%1$d bulan %2$d hari</string>
-    <string name="countdown_month">%1$d bulan</string>
-    <string name="countdown_expired">Lewat %1$d hari</string>
-    <string name="nav_home">Beranda</string>
-    <string name="nav_history">Kadaluwarsa</string>
-    <string name="nav_insight">Wawasan</string>
-    <string name="nav_profile">Profil</string>
-    <string name="cd_home_notification">Buka notifikasi</string>
-    <string name="cd_home_add">Tambah barang baru</string>
-
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- AddItem Strings — Phase 3.5                                    -->
-    <!-- TODO(user): sesuaikan semua nilai di bawah                     -->
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <string name="additem_title">Tambah Barang</string>
-    <string name="additem_photo_hint">Ketuk untuk unggah foto</string>
-    <string name="additem_name_hint">Nama Produk</string>
-    <string name="additem_category_label">Kategori</string>
-    <string name="additem_category_more">+ Lainnya</string>
-    <string name="additem_qty_label">Jumlah</string>
-    <string name="additem_unit_label">Satuan</string>
-    <string name="additem_unit_default">Pcs</string>
-    <string name="additem_expiry_label">Waktu Kedaluwarsa</string>
-    <string name="additem_expiry_hint">DD / MM / YYYY</string>
-    <string name="additem_cta_save">Catat Barang</string>
-    <string name="cd_additem_close">Tutup</string>
-    <string name="cd_additem_photo">Unggah foto produk</string>
-
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- Profile Strings — Phase 3.5                                    -->
-    <!-- TODO(user): sesuaikan semua nilai di bawah                     -->
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <string name="profile_menu_connect_google">Hubungkan Google</string>
-    <string name="profile_menu_notifications">Pengaturan Notifikasi</string>
-    <string name="profile_menu_privacy">Kebijakan Privasi</string>
-    <string name="profile_menu_help">Bantuan</string>
-    <string name="profile_logout">Keluar dari Akun</string>
-    <string name="profile_coming_soon_badge">Segera</string>
-    <string name="cd_profile_avatar">Foto profil pengguna</string>
-    <string name="cd_profile_edit_badge">Ubah profil</string>
-    <string name="cd_profile_coming_soon">Fitur ini segera hadir</string>
-
-    <!-- Edit Profile -->
-    <string name="edit_profile_title">Edit Profil</string>
-    <string name="edit_profile_change_photo">Ubah Foto</string>
-    <string name="edit_profile_label_name">Nama Lengkap</string>
-    <string name="edit_profile_label_email">Alamat Email</string>
-    <string name="edit_profile_change_password">Ubah Kata Sandi</string>
-    <string name="edit_profile_info">Informasi profil Anda akan digunakan untuk memudahkan proses pengelolaan stok dan pengingat tanggal kedaluwarsa.</string>
-    <string name="edit_profile_save">Simpan Perubahan</string>
-    <string name="cd_edit_change_photo">Ubah foto profil</string>
-    <string name="cd_back">Kembali</string>
-
-    <!-- Change Password -->
-    <string name="password_title">Ubah Kata Sandi</string>
-    <string name="password_hero_title">Amankan Akun Anda</string>
-    <string name="password_hero_subtitle">Perbarui kata sandi secara berkala untuk menjaga data inventaris tetap aman.</string>
-    <string name="password_label_current">Kata Sandi Saat Ini</string>
-    <string name="password_label_new">Kata Sandi Baru</string>
-    <string name="password_label_confirm">Konfirmasi Kata Sandi Baru</string>
-    <string name="password_rule_info">Gunakan minimal 8 karakter dengan kombinasi huruf dan angka untuk keamanan maksimal.</string>
-    <string name="password_cta_submit">Perbarui Kata Sandi</string>
-    <string name="security_title">Keamanan Akun</string>
-    <string name="password_fail_title">Gagal Memperbarui Kata Sandi</string>
-    <string name="password_fail_body">Maaf, terjadi kendala saat mencoba memperbarui kata sandi Anda. Pastikan koneksi internet stabil atau coba gunakan kata sandi yang berbeda.</string>
-    <string name="password_fail_retry">Coba Lagi</string>
-    <string name="password_fail_help">Bantuan</string>
-    <string name="password_success_title">Kata Sandi Berhasil Diperbarui</string>
-    <string name="password_success_body">Bagus! Kata sandi Anda telah berhasil diubah. Sekarang akun Anda lebih aman dan siap digunakan kembali.</string>
-    <string name="password_success_back">Kembali ke Profil</string>
-    <string name="cd_password_toggle">Tampilkan atau sembunyikan kata sandi</string>
-    <string name="cd_password_fail_illustration">Ilustrasi gagal memperbarui kata sandi</string>
-    <string name="cd_password_success_illustration">Ilustrasi kata sandi berhasil diperbarui</string>
-
-    <!-- Help -->
     <string name="help_title">Bantuan</string>
     <string name="help_subtitle">Temukan jawaban cepat atau hubungi tim kami bila butuh bantuan lebih lanjut.</string>
     <string name="help_section_faq">Pertanyaan Umum</string>
@@ -167,4 +160,65 @@
     <string name="help_contact_email">Email Dukungan</string>
     <string name="help_contact_whatsapp">WhatsApp</string>
     <string name="cd_help_faq_toggle">Buka atau tutup jawaban</string>
+    <string name="help_faq_q1">Bagaimana cara menambahkan barang baru?</string>
+    <string name="help_faq_a1">Tekan tombol tambah (+) di bilah bawah, isi nama barang, kategori, dan tanggal kedaluwarsa, lalu simpan.</string>
+    <string name="help_faq_q2">Kapan saya menerima pengingat kedaluwarsa?</string>
+    <string name="help_faq_a2">Tickr mengirim pengingat 7 hari, 3 hari, dan 1 hari sebelum kedaluwarsa, lalu di hari kedaluwarsa pukul 08.00. Pastikan notifikasi diizinkan di pengaturan perangkat.</string>
+    <string name="help_faq_q3">Apakah data saya tersimpan aman?</string>
+    <string name="help_faq_a3">Semua data tersimpan di perangkat Anda dan tidak dikirim ke server mana pun. Jika aplikasi dihapus, datanya ikut terhapus.</string>
+    <string name="settings_title">Pengaturan</string>
+    <string name="settings_section_display">TAMPILAN</string>
+    <string name="settings_theme">Tema</string>
+    <string name="settings_language">Bahasa</string>
+    <string name="settings_section_help">BANTUAN</string>
+    <string name="settings_help">Bantuan (FAQ)</string>
+    <string name="settings_about">Tentang Aplikasi</string>
+    <string name="theme_system">Sistem</string>
+    <string name="theme_light">Terang</string>
+    <string name="theme_dark">Gelap</string>
+    <string name="language_system">Sistem</string>
+    <string name="language_indonesian">Indonesia</string>
+    <string name="language_english">English</string>
+    <string name="about_title">Tentang Aplikasi</string>
+    <string name="about_version">Versi %1$s (%2$s)</string>
+    <string name="about_description">Tickr membantumu mencatat tanggal kedaluwarsa makanan, kosmetik, hingga stok tokomu agar tidak ada yang terbuang.</string>
+    <string name="about_privacy">Semua datamu tersimpan di perangkat ini. Tickr tidak membutuhkan akun dan tidak mengirim data ke server mana pun.</string>
+    <string name="notif_channel_name">Pengingat kedaluwarsa</string>
+    <string name="notif_channel_description">Pengingat sebelum barangmu kedaluwarsa</string>
+    <string name="notif_title_today">%1$s kedaluwarsa hari ini</string>
+    <string name="notif_body">Buka Tickr untuk melihat detailnya.</string>
+    <string name="notifications_title">Notifikasi</string>
+    <string name="notifications_empty_title">Belum ada notifikasi</string>
+    <string name="notifications_empty_body">Pengingat kedaluwarsa akan muncul di sini.</string>
+    <string name="notif_entry_today">Kedaluwarsa hari ini</string>
+    <string name="notif_permission_off">Notifikasi dinonaktifkan. Aktifkan di pengaturan perangkat agar pengingat muncul.</string>
+    <string name="notif_permission_action">Buka Pengaturan</string>
+    <plurals name="countdown_overdue">
+        <item quantity="one">Lewat %1$d hari</item>
+        <item quantity="other">Lewat %1$d hari</item>
+    </plurals>
+    <plurals name="countdown_days">
+        <item quantity="one">%1$d hari</item>
+        <item quantity="other">%1$d hari</item>
+    </plurals>
+    <plurals name="countdown_months">
+        <item quantity="one">%1$d bulan</item>
+        <item quantity="other">%1$d bulan</item>
+    </plurals>
+    <plurals name="home_critical_summary">
+        <item quantity="one">Kritis: %1$d item</item>
+        <item quantity="other">Kritis: %1$d item</item>
+    </plurals>
+    <plurals name="banner_critical_days">
+        <item quantity="one">Kritis – Kedaluwarsa %1$d Hari Lagi (%2$s)</item>
+        <item quantity="other">Kritis – Kedaluwarsa %1$d Hari Lagi (%2$s)</item>
+    </plurals>
+    <plurals name="notif_title_days">
+        <item quantity="one">%2$s kedaluwarsa %1$d hari lagi</item>
+        <item quantity="other">%2$s kedaluwarsa %1$d hari lagi</item>
+    </plurals>
+    <plurals name="notif_entry_days">
+        <item quantity="one">Kedaluwarsa %1$d hari lagi</item>
+        <item quantity="other">Kedaluwarsa %1$d hari lagi</item>
+    </plurals>
 </resources>

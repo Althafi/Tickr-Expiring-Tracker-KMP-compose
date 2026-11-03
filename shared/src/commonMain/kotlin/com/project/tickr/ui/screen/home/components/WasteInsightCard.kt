@@ -33,6 +33,8 @@ import androidx.compose.ui.unit.dp
 import com.project.tickr.domain.model.WasteTrend
 import com.project.tickr.ui.theme.TickrCornerRadius
 import com.project.tickr.ui.theme.TickrTheme
+import tickrapp.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun WasteInsightCard(
@@ -42,6 +44,22 @@ fun WasteInsightCard(
     val colors = TickrTheme.colors
     val typography = TickrTheme.typography
     val spacing = TickrTheme.spacing
+
+    val highlight = wasteTrend?.let {
+        stringResource(
+            if (it.isImproving) Res.string.waste_highlight_down else Res.string.waste_highlight_up,
+            it.deltaPercent,
+        )
+    }
+    val message = if (wasteTrend != null && highlight != null) {
+        stringResource(
+            if (wasteTrend.isImproving) Res.string.waste_message_improving else Res.string.waste_message_worsening,
+            highlight,
+        )
+    } else null
+    val trendDescription = if (highlight != null) {
+        stringResource(Res.string.waste_cd_trend, highlight)
+    } else stringResource(Res.string.waste_cd_no_data)
 
     Row(
         modifier = modifier
@@ -54,11 +72,7 @@ fun WasteInsightCard(
                 shape = RoundedCornerShape(TickrCornerRadius.card),
             )
             .padding(spacing.cardInner)
-            .semantics {
-                contentDescription = if (wasteTrend != null)
-                    "Insight: sampah ${if (wasteTrend.isImproving) "turun" else "naik"} ${wasteTrend.deltaPercent}%"
-                else "Insight: belum cukup data"
-            },
+            .semantics { contentDescription = trendDescription },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(spacing.md),
     ) {
@@ -80,28 +94,32 @@ fun WasteInsightCard(
 
         Column(modifier = Modifier.weight(1f)) {
             if (wasteTrend != null) {
-                val pctText = "${wasteTrend.deltaPercent}%"
-                val dirText = if (wasteTrend.isImproving) "turun" else "naik"
                 Text(
                     text = buildAnnotatedString {
-                        append("Bagus sekali! Bulan ini tingkat makanan terbuangmu ") // TODO(user): pakai stringResource
-                        withStyle(SpanStyle(color = colors.safe, fontWeight = FontWeight.Bold)) {
-                            append("$dirText $pctText")
+                        val text = message.orEmpty()
+                        val start = highlight?.let { text.indexOf(it) } ?: -1
+                        if (start < 0 || highlight == null) {
+                            append(text)
+                        } else {
+                            append(text.substring(0, start))
+                            withStyle(SpanStyle(color = colors.safe, fontWeight = FontWeight.Bold)) {
+                                append(highlight)
+                            }
+                            append(text.substring(start + highlight.length))
                         }
-                        append(".")
                     },
                     style = typography.body,
                     color = colors.textPrimary,
                 )
                 Spacer(Modifier.size(spacing.xs))
                 Text(
-                    text = "Terus pertahankan kebiasaan baik ini.", // TODO(user): pakai stringResource
+                    text = stringResource(Res.string.waste_message_sub),
                     style = typography.caption,
                     color = colors.textSecondary,
                 )
             } else {
                 Text(
-                    text = "Catat & habiskan barang untuk melihat tren penghematanmu.", // TODO(user): pakai stringResource
+                    text = stringResource(Res.string.waste_empty),
                     style = typography.body,
                     color = colors.textSecondary,
                 )

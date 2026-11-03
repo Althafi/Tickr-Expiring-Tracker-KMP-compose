@@ -18,10 +18,10 @@ fun OnboardingRoute(
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
-                is OnboardingEvent.NavigateToAuth -> {
+                is OnboardingEvent.NavigateToHome -> {
                     // popUpToInclusive=true agar back tidak kembali ke onboarding
                     navigator.navigate(
-                        com.project.tickr.presentation.navigation.Destination.Login,
+                        com.project.tickr.presentation.navigation.Destination.Home,
                         popUpToInclusive = true,
                     )
                 }

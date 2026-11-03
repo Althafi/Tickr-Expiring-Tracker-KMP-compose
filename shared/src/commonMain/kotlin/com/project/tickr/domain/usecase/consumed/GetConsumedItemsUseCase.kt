@@ -6,6 +6,7 @@ import com.project.tickr.domain.model.ExpiringItem
 import com.project.tickr.domain.model.daysToUrgency
 import com.project.tickr.domain.repository.CategoryRepository
 import com.project.tickr.domain.repository.ItemRepository
+import com.project.tickr.domain.model.CategoryKeys
 
 class GetConsumedItemsUseCase(
     private val itemRepository: ItemRepository,
@@ -30,7 +31,8 @@ class GetConsumedItemsUseCase(
                 id = item.id,
                 name = item.name,
                 categoryId = item.categoryId,
-                categoryName = cat?.name ?: "Lainnya",
+                categoryName = cat?.name ?: CategoryKeys.FALLBACK_NAME,
+                categoryKey = cat?.key ?: if (cat == null) CategoryKeys.OTHER else null,
                 categoryColorHex = cat?.colorHex ?: "#6B7280",
                 expiryDate = item.expiryDate,
                 imageUrl = item.imageUrl,

@@ -4,7 +4,6 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
@@ -17,15 +16,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.savedstate.read
 import com.project.tickr.presentation.navigation.Destination
-import com.project.tickr.ui.screen.auth.LoginRoute
-import com.project.tickr.ui.screen.auth.RegisterFailedRoute
-import com.project.tickr.ui.screen.auth.RegisterRoute
-import com.project.tickr.ui.screen.auth.RegisterSuccessRoute
-import com.project.tickr.ui.screen.changepassword.ChangePasswordRoute
+import com.project.tickr.ui.screen.about.AboutRoute
 import com.project.tickr.ui.screen.consumed.ConsumedItemsRoute
-import com.project.tickr.ui.screen.editprofile.EditProfileRoute
 import com.project.tickr.ui.screen.expiry.detail.ItemDetailRoute
 import com.project.tickr.ui.screen.help.HelpRoute
+import com.project.tickr.ui.screen.notifications.NotificationsRoute
 import com.project.tickr.ui.screen.onboarding.OnboardingRoute
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -48,88 +43,6 @@ fun TickrNavGraph(
             exitTransition = { fadeOut(tween(TRANSITION_DURATION)) },
         ) {
             OnboardingRoute(navigator = navigator)
-        }
-
-        // ─── Auth: Login ──────────────────────────────────────────────────────
-        composable(
-            route = Destination.Login.route,
-            enterTransition = {
-                slideInHorizontally(
-                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
-                ) { it } + fadeIn(tween(TRANSITION_DURATION))
-            },
-            exitTransition = {
-                slideOutHorizontally(
-                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
-                ) { -it / 3 } + fadeOut(tween(TRANSITION_DURATION))
-            },
-            popEnterTransition = {
-                slideInHorizontally(
-                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
-                ) { -it / 3 } + fadeIn(tween(TRANSITION_DURATION))
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
-                ) { it } + fadeOut(tween(TRANSITION_DURATION))
-            },
-        ) {
-            LoginRoute(navigator = navigator)
-        }
-
-        // ─── Auth: Register ───────────────────────────────────────────────────
-        composable(
-            route = Destination.Register.route,
-            enterTransition = {
-                slideInHorizontally(
-                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
-                ) { it } + fadeIn(tween(TRANSITION_DURATION))
-            },
-            exitTransition = {
-                slideOutHorizontally(
-                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
-                ) { it } + fadeOut(tween(TRANSITION_DURATION))
-            },
-            popEnterTransition = {
-                slideInHorizontally(
-                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
-                ) { it } + fadeIn(tween(TRANSITION_DURATION))
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
-                ) { it } + fadeOut(tween(TRANSITION_DURATION))
-            },
-        ) {
-            RegisterRoute(navigator = navigator)
-        }
-
-        // ─── Auth: RegisterSuccess (transient) ────────────────────────────────
-        composable(
-            route = Destination.AuthSuccess.route,
-            enterTransition = {
-                scaleIn(
-                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
-                    initialScale = 0.92f,
-                ) + fadeIn(tween(TRANSITION_DURATION))
-            },
-            exitTransition = { fadeOut(tween(TRANSITION_DURATION)) },
-        ) {
-            RegisterSuccessRoute(navigator = navigator)
-        }
-
-        // ─── Auth: RegisterFailed ─────────────────────────────────────────────
-        composable(
-            route = Destination.AuthFailed.route,
-            enterTransition = {
-                scaleIn(
-                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
-                    initialScale = 0.92f,
-                ) + fadeIn(tween(TRANSITION_DURATION))
-            },
-            exitTransition = { fadeOut(tween(TRANSITION_DURATION)) },
-        ) {
-            RegisterFailedRoute(navigator = navigator)
         }
 
         // ─── Home (MainShell — Phase 3.5) ────────────────────────────────────
@@ -177,60 +90,6 @@ fun TickrNavGraph(
             )
         }
 
-        // ─── Edit Profile ─────────────────────────────────────────────────────
-        composable(
-            route = Destination.EditProfile.route,
-            enterTransition = {
-                slideInHorizontally(
-                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
-                ) { it } + fadeIn(tween(TRANSITION_DURATION))
-            },
-            exitTransition = {
-                slideOutHorizontally(
-                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
-                ) { -it / 3 } + fadeOut(tween(TRANSITION_DURATION))
-            },
-            popEnterTransition = {
-                slideInHorizontally(
-                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
-                ) { -it / 3 } + fadeIn(tween(TRANSITION_DURATION))
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
-                ) { it } + fadeOut(tween(TRANSITION_DURATION))
-            },
-        ) {
-            EditProfileRoute(navigator = navigator)
-        }
-
-        // ─── Change Password ───────────────────────────────────────────────────
-        composable(
-            route = Destination.ChangePassword.route,
-            enterTransition = {
-                slideInHorizontally(
-                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
-                ) { it } + fadeIn(tween(TRANSITION_DURATION))
-            },
-            exitTransition = {
-                slideOutHorizontally(
-                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
-                ) { -it / 3 } + fadeOut(tween(TRANSITION_DURATION))
-            },
-            popEnterTransition = {
-                slideInHorizontally(
-                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
-                ) { -it / 3 } + fadeIn(tween(TRANSITION_DURATION))
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
-                ) { it } + fadeOut(tween(TRANSITION_DURATION))
-            },
-        ) {
-            ChangePasswordRoute(navigator = navigator)
-        }
-
         // ─── Help ──────────────────────────────────────────────────────────────
         composable(
             route = Destination.Help.route,
@@ -256,6 +115,60 @@ fun TickrNavGraph(
             },
         ) {
             HelpRoute(navigator = navigator)
+        }
+
+        // ─── About ─────────────────────────────────────────────────────────────
+        composable(
+            route = Destination.About.route,
+            enterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { it } + fadeIn(tween(TRANSITION_DURATION))
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { -it / 3 } + fadeOut(tween(TRANSITION_DURATION))
+            },
+            popEnterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { -it / 3 } + fadeIn(tween(TRANSITION_DURATION))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { it } + fadeOut(tween(TRANSITION_DURATION))
+            },
+        ) {
+            AboutRoute(navigator = navigator)
+        }
+
+        // ─── Notifications ─────────────────────────────────────────────────────
+        composable(
+            route = Destination.Notifications.route,
+            enterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { it } + fadeIn(tween(TRANSITION_DURATION))
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { -it / 3 } + fadeOut(tween(TRANSITION_DURATION))
+            },
+            popEnterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { -it / 3 } + fadeIn(tween(TRANSITION_DURATION))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                ) { it } + fadeOut(tween(TRANSITION_DURATION))
+            },
+        ) {
+            NotificationsRoute(navigator = navigator)
         }
 
         // ─── Consumed Items ───────────────────────────────────────────────────
@@ -288,9 +201,5 @@ fun TickrNavGraph(
             )
         }
 
-        // Legacy Auth route (kept untuk backward compat dengan kode lama)
-        composable(route = Destination.Auth.route) {
-            LoginRoute(navigator = navigator)
-        }
     }
 }

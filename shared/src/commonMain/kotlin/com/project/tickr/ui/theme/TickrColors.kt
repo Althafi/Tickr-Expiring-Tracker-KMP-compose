@@ -17,10 +17,14 @@ data class TickrColors(
     val warningContainer: Color,
     val safe: Color,
     val safeContainer: Color,
+    /** Warna konten di atas [primaryBrand] (teks/ikon tombol). Gelap di mode gelap agar kontras cukup. */
+    val onBrand: Color,
+    /** Warna konten di atas [critical]. */
+    val onCritical: Color,
 ) {
     fun toMaterial3ColorScheme(isDarkTheme: Boolean): ColorScheme = ColorScheme(
         primary = primaryBrand,
-        onPrimary = Color.White,
+        onPrimary = onBrand,
         primaryContainer = primaryBrand.copy(alpha = 0.1f),
         onPrimaryContainer = primaryBrand,
         inversePrimary = primaryPressed,
@@ -42,7 +46,7 @@ data class TickrColors(
         inverseSurface = if (isDarkTheme) surface else background,
         inverseOnSurface = if (isDarkTheme) background else surface,
         error = critical,
-        onError = Color.White,
+        onError = onCritical,
         errorContainer = criticalContainer,
         onErrorContainer = critical,
         outline = textSecondary,
@@ -88,6 +92,8 @@ val TickrLightColors = TickrColors(
     warningContainer = Color(0xFFFEF6E0),
     safe = Color(0xFF16A34A),
     safeContainer = Color(0xFFE8F8EE),
+    onBrand = Color(0xFFFFFFFF),
+    onCritical = Color(0xFFFFFFFF),
 )
 
 val TickrDarkColors = TickrColors(
@@ -104,4 +110,6 @@ val TickrDarkColors = TickrColors(
     warningContainer = Color(0xFF3A3017),
     safe = Color(0xFF4ADE80),
     safeContainer = Color(0xFF16291D),
+    onBrand = Color(0xFF07130F),
+    onCritical = Color(0xFF2A0707),
 )

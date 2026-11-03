@@ -1,18 +1,10 @@
 package com.project.tickr.presentation.additem
 
 import com.project.tickr.domain.model.Category
+import com.project.tickr.presentation.common.UiText
+import com.project.tickr.domain.model.ItemUnits
 
-val UNIT_OPTIONS = listOf("Pcs", "Gram", "Kilogram", "Liter", "Mililiter", "Botol", "Bungkus", "Lusin")
-
-/** Kategori default tampil jika DB kosong */
-data class StaticCategory(val id: Long?, val name: String, val emoji: String)
-
-val DEFAULT_CATEGORIES = listOf(
-    StaticCategory(null, "Makanan & Minuman", "🍎"),
-    StaticCategory(null, "Kecantikan", "💄"),
-    StaticCategory(null, "Obat & Vitamin", "💊"),
-    StaticCategory(null, "Lainnya", "📦"),
-)
+val UNIT_OPTIONS = ItemUnits.ALL
 
 data class AddItemUiState(
     val name: String = "",
@@ -21,15 +13,15 @@ data class AddItemUiState(
     val selectedCategoryId: Long? = null,
     val selectedCategoryName: String? = null,
     val quantity: Int = 0,
-    val unit: String = "Pcs",
+    val unit: String = ItemUnits.DEFAULT,
     /** Hanya digit 0-8 karakter: DDMMYYYY */
     val rawDateDigits: String = "",
     val expiryDateMillis: Long? = null,
     val expiryIsoDate: String = "",
     val photoPath: String? = null,
     val isSaving: Boolean = false,
-    val nameError: String? = null,
-    val expiryError: String? = null,
+    val nameError: UiText? = null,
+    val expiryError: UiText? = null,
 ) {
     val canSave: Boolean
         get() = name.isNotBlank() && expiryDateMillis != null && quantity >= 1 &&

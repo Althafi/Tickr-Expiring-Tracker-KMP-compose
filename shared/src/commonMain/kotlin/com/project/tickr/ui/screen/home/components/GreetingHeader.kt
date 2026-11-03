@@ -8,10 +8,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.project.tickr.ui.theme.TickrTheme
+import tickrapp.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun GreetingHeader(
-    userName: String,
     modifier: Modifier = Modifier,
 ) {
     val colors = TickrTheme.colors
@@ -19,14 +20,13 @@ fun GreetingHeader(
 
     Column(modifier = modifier) {
         Text(
-            text = if (userName.isNotBlank()) "Selamat Datang, $userName" // TODO(user): pakai stringResource format
-                   else "Selamat Datang",
+            text = stringResource(Res.string.home_greeting),
             style = typography.greetingTitle,
             color = colors.textPrimary,
         )
         Spacer(Modifier.height(TickrTheme.spacing.xs))
         Text(
-            text = "Cek status barangmu hari ini.", // TODO(user): pakai stringResource
+            text = stringResource(Res.string.home_subtitle),
             style = typography.body,
             color = colors.textSecondary,
         )
@@ -37,6 +37,6 @@ fun GreetingHeader(
 @Composable
 private fun GreetingHeaderPreview() {
     TickrTheme {
-        GreetingHeader(userName = "Sarah")
+        GreetingHeader()
     }
 }

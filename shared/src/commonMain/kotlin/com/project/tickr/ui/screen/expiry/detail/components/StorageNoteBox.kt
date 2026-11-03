@@ -22,6 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.project.tickr.ui.theme.TickrTheme
+import tickrapp.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun StorageNoteBox(
@@ -50,7 +52,7 @@ fun StorageNoteBox(
             )
             Spacer(Modifier.width(spacing.sm))
             Text(
-                text = "Catatan Penyimpanan", // TODO(user): stringResource detail_storage_note_title
+                text = stringResource(Res.string.detail_storage_note_title),
                 style = typography.body.copy(fontWeight = FontWeight.SemiBold),
                 color = colors.warning,
             )

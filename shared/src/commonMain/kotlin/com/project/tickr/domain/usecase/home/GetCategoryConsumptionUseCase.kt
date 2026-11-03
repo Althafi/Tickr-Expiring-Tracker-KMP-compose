@@ -32,6 +32,7 @@ class GetCategoryConsumptionUseCase(
                 colorHex = cat.colorHex,
                 count = count,
                 percentage = (count * 100 / total),
+                key = cat.key,
             )
         }.sortedByDescending { it.count }
 

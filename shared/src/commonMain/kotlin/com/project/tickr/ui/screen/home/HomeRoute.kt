@@ -19,7 +19,7 @@ fun HomeRoute(
         viewModel.events.collect { event ->
             when (event) {
                 is HomeEvent.NavigateToItemDetail -> navigator.navigate(event.destination)
-                HomeEvent.NavigateToNotifications -> { /* TODO: navigate to notifications */ }
+                HomeEvent.NavigateToNotifications -> navigator.navigate(Destination.Notifications)
                 HomeEvent.ShowAddItemSheet -> { /* handled by MainShell */ }
                 HomeEvent.NavigateToConsumedItems -> navigator.navigate(Destination.ConsumedItems)
                 is HomeEvent.ShowError -> { /* TODO: show snackbar */ }

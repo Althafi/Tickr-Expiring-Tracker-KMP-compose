@@ -28,7 +28,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,11 +44,10 @@ import com.project.tickr.presentation.expiry.ExpiryViewModel
 import com.project.tickr.presentation.home.HomeEvent
 import com.project.tickr.presentation.home.HomeViewModel
 import com.project.tickr.presentation.navigation.Navigator
-import com.project.tickr.presentation.profile.ProfileViewModel
 import com.project.tickr.ui.screen.expiry.ExpiryRoute
 import com.project.tickr.ui.screen.home.HomeRoute
 import com.project.tickr.ui.screen.home.additem.AddItemSheet
-import com.project.tickr.ui.screen.profile.ProfileRoute
+import com.project.tickr.ui.screen.settings.SettingsRoute
 import com.project.tickr.ui.theme.TickrTheme
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -57,19 +55,23 @@ import org.koin.compose.viewmodel.koinViewModel
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.TrendingUp
+import tickrapp.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.StringResource
+import com.project.tickr.presentation.navigation.MainShellViewModel
+import com.project.tickr.ui.common.rememberNotificationPermissionRequester
 
 private enum class BottomTab(
     val icon: ImageVector,
-    val label: String,
-    val contentDesc: String,
+    val label: StringResource,
 ) {
-    HOME(Icons.Outlined.Home, "Beranda", "Tab Beranda"), // TODO(user): sesuaikan
-    EXPIRING(Icons.Outlined.Refresh, "Kadaluwarsa", "Tab Kadaluwarsa"),
-    INSIGHT(Icons.Outlined.TrendingUp, "Wawasan", "Tab Wawasan"),
-    PROFILE(Icons.Outlined.Person, "Profil", "Tab Profil"),
+    HOME(Icons.Outlined.Home, Res.string.nav_home),
+    EXPIRING(Icons.Outlined.Refresh, Res.string.nav_expiring),
+    INSIGHT(Icons.Outlined.TrendingUp, Res.string.nav_insight),
+    SETTINGS(Icons.Outlined.Settings, Res.string.nav_settings),
 }
 
 @Composable
@@ -77,10 +79,14 @@ fun MainShell(navigator: Navigator) {
     val homeVm: HomeViewModel = koinViewModel()
     val addItemVm: AddItemViewModel = koinViewModel()
     val expiryVm: ExpiryViewModel = koinViewModel()
-    val profileVm: ProfileViewModel = koinViewModel()
 
-    var selectedTab by rememberSaveable { mutableStateOf(BottomTab.HOME) }
+    val shellViewModel: MainShellViewModel = koinViewModel()
+    val selectedIndex by shellViewModel.selectedTab.collectAsState()
+    val selectedTab = BottomTab.entries[selectedIndex.coerceIn(0, BottomTab.entries.lastIndex)]
     var showAddItem by remember { mutableStateOf(false) }
+    val requestNotificationPermission = rememberNotificationPermissionRequester {
+        shellViewModel.onNotificationPermissionResult()
+    }
 
     // HomeRoute's "Tambah Barang" CTA button routes through HomeEvent — handle it here.
     LaunchedEffect(Unit) {
@@ -99,6 +105,7 @@ fun MainShell(navigator: Navigator) {
             when (event) {
                 AddItemEvent.Saved -> {
                     showAddItem = false
+                    if (shellViewModel.consumeNotificationPermissionPrompt()) requestNotificationPermission()
                     homeVm.onAction(com.project.tickr.presentation.home.HomeAction.Refresh)
                     expiryVm.onAction(com.project.tickr.presentation.expiry.ExpiryAction.Refresh)
                 }
@@ -112,7 +119,7 @@ fun MainShell(navigator: Navigator) {
         bottomBar = {
             TickrBottomBar(
                 selectedTab = selectedTab,
-                onTabSelected = { selectedTab = it },
+                onTabSelected = { shellViewModel.select(it.ordinal) },
                 // FAB sets state directly — no event channel hop that causes double-click bug.
                 onFabClick = {
                     addItemVm.onAction(com.project.tickr.presentation.additem.AddItemAction.Reset)
@@ -132,8 +139,8 @@ fun MainShell(navigator: Navigator) {
                         showAddItem = true
                     },
                 )
-                BottomTab.INSIGHT -> ComingSoonPlaceholder("Wawasan")     // TODO(user): implementasi layar
-                BottomTab.PROFILE -> ProfileRoute(navigator = navigator, viewModel = profileVm)
+                BottomTab.INSIGHT -> ComingSoonPlaceholder(stringResource(Res.string.nav_insight))
+                BottomTab.SETTINGS -> SettingsRoute(navigator = navigator)
             }
         }
     }
@@ -153,6 +160,7 @@ private fun TickrBottomBar(
     onFabClick: () -> Unit,
 ) {
     val colors = TickrTheme.colors
+    val addItemDescription = stringResource(Res.string.cd_add_item)
 
     Box(
         modifier = Modifier
@@ -174,7 +182,7 @@ private fun TickrBottomBar(
                         modifier = Modifier.size(24.dp),
                     )
                 },
-                label = { Text(BottomTab.HOME.label, fontSize = 11.sp) },
+                label = { Text(stringResource(BottomTab.HOME.label), fontSize = 11.sp) },
                 colors = navBarItemColors(colors.primaryBrand, colors.textSecondary),
             )
             NavigationBarItem(
@@ -186,7 +194,7 @@ private fun TickrBottomBar(
                         modifier = Modifier.size(24.dp),
                     )
                 },
-                label = { Text(BottomTab.EXPIRING.label, fontSize = 11.sp) },
+                label = { Text(stringResource(BottomTab.EXPIRING.label), fontSize = 11.sp) },
                 colors = navBarItemColors(colors.primaryBrand, colors.textSecondary),
             )
             // Slot kosong tengah untuk FAB notch
@@ -207,19 +215,19 @@ private fun TickrBottomBar(
                         modifier = Modifier.size(24.dp),
                     )
                 },
-                label = { Text(BottomTab.INSIGHT.label, fontSize = 11.sp) },
+                label = { Text(stringResource(BottomTab.INSIGHT.label), fontSize = 11.sp) },
                 colors = navBarItemColors(colors.primaryBrand, colors.textSecondary),
             )
             NavigationBarItem(
-                selected = selectedTab == BottomTab.PROFILE,
-                onClick = { onTabSelected(BottomTab.PROFILE) },
+                selected = selectedTab == BottomTab.SETTINGS,
+                onClick = { onTabSelected(BottomTab.SETTINGS) },
                 icon = {
                     Icon(
-                        BottomTab.PROFILE.icon, contentDescription = null,
+                        BottomTab.SETTINGS.icon, contentDescription = null,
                         modifier = Modifier.size(24.dp),
                     )
                 },
-                label = { Text(BottomTab.PROFILE.label, fontSize = 11.sp) },
+                label = { Text(stringResource(BottomTab.SETTINGS.label), fontSize = 11.sp) },
                 colors = navBarItemColors(colors.primaryBrand, colors.textSecondary),
             )
         }
@@ -231,7 +239,7 @@ private fun TickrBottomBar(
                 .align(Alignment.TopCenter)
                 .offset(y = (-24).dp)
                 .size(56.dp)
-                .semantics { contentDescription = "Tambah barang baru" }, // TODO(user): sesuaikan
+                .semantics { contentDescription = addItemDescription },
             shape = CircleShape,
             containerColor = colors.primaryBrand,
             elevation = FloatingActionButtonDefaults.elevation(
@@ -242,7 +250,7 @@ private fun TickrBottomBar(
             Icon(
                 Icons.Outlined.Add,
                 contentDescription = null,
-                tint = Color.White,
+                tint = TickrTheme.colors.onBrand,
                 modifier = Modifier.size(28.dp),
             )
         }
@@ -267,13 +275,13 @@ private fun ComingSoonPlaceholder(label: String) {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = label, // TODO(user): sesuaikan
+                text = label,
                 style = TickrTheme.typography.sectionTitle,
                 color = TickrTheme.colors.textSecondary,
                 textAlign = TextAlign.Center,
             )
             Text(
-                text = "Coming soon", // TODO(user): sesuaikan
+                text = stringResource(Res.string.coming_soon),
                 style = TickrTheme.typography.body,
                 color = TickrTheme.colors.textSecondary,
                 textAlign = TextAlign.Center,

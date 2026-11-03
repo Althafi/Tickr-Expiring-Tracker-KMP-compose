@@ -5,6 +5,7 @@ import com.project.tickr.domain.model.ExpiryFilter
 import com.project.tickr.domain.model.ExpiringItem
 import com.project.tickr.domain.model.TimeRange
 import com.project.tickr.domain.model.Urgency
+import com.project.tickr.core.util.DateParts
 
 data class ExpiryUiState(
     val loadState: ExpiryLoadState = ExpiryLoadState.Loading,
@@ -16,6 +17,6 @@ data class ExpiryUiState(
     val isRefreshing: Boolean = false,
     val isFilterSheetVisible: Boolean = false,
     val nowEpochMillis: Long = 0L,
-    val displayDate: String = "",
+    val date: DateParts? = null,
     val displayTime: String = "",
 )

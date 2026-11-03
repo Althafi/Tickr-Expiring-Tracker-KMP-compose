@@ -10,7 +10,6 @@ import com.project.tickr.domain.usecase.auth.GetCurrentUserIdUseCase
 import com.project.tickr.domain.usecase.home.GetCategoryConsumptionUseCase
 import com.project.tickr.domain.usecase.home.GetExpiringItemsGroupedUseCase
 import com.project.tickr.domain.usecase.home.GetWasteTrendUseCase
-import com.project.tickr.domain.usecase.profile.GetProfileUseCase
 import com.project.tickr.presentation.navigation.Destination
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -21,14 +20,15 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+import com.project.tickr.presentation.common.ErrorMessageProvider
 
 class HomeViewModel(
     private val getExpiringGrouped: GetExpiringItemsGroupedUseCase,
     private val getCategoryConsumption: GetCategoryConsumptionUseCase,
     private val getWasteTrend: GetWasteTrendUseCase,
-    private val getProfile: GetProfileUseCase,
     private val getCurrentUserId: GetCurrentUserIdUseCase,
     private val dateTime: DateTimeUtil,
+    private val errorMessages: ErrorMessageProvider,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeUiState())
@@ -68,7 +68,7 @@ class HomeViewModel(
                 _state.update {
                     it.copy(
                         nowEpochMillis = now,
-                        displayDate = dateTime.formatDisplayDate(now),
+                        date = dateTime.dateParts(now),
                         displayTime = dateTime.formatDisplayTime(now),
                     )
                 }
@@ -78,10 +78,7 @@ class HomeViewModel(
     }
 
     private fun load() {
-        val userId = getCurrentUserId() ?: run {
-            _state.update { it.copy(isLoading = false, error = "Sesi habis, silakan masuk kembali") }
-            return
-        }
+        val userId = getCurrentUserId()
         _state.update { it.copy(isLoading = true, error = null) }
 
         // All data fetches run in parallel inside a single parent coroutine.
@@ -89,11 +86,6 @@ class HomeViewModel(
         // skeleton stays visible for the full duration of the load/refresh.
         viewModelScope.launch {
             val jobs = listOf(
-                launch {
-                    getProfile(userId).onSuccess { profile ->
-                        _state.update { it.copy(userName = profile.fullName ?: "") }
-                    }
-                },
                 launch {
                     getExpiringGrouped(userId).onSuccess { groups ->
                         val criticalCount = groups.sumOf { g ->
@@ -103,7 +95,7 @@ class HomeViewModel(
                             it.copy(expiringGroups = groups, criticalCount = criticalCount)
                         }
                     }.onError { err ->
-                        _state.update { it.copy(error = err.message) }
+                        _state.update { it.copy(error = errorMessages.provide(err)) }
                     }
                 },
                 launch {

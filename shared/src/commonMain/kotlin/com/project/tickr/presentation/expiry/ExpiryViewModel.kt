@@ -18,12 +18,14 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+import com.project.tickr.presentation.common.ErrorMessageProvider
 
 class ExpiryViewModel(
     private val getExpiryItems: GetExpiryListItemsUseCase,
     private val getConsumptionStats: GetConsumptionStatsUseCase,
     private val getCurrentUserId: GetCurrentUserIdUseCase,
     private val dateTime: DateTimeUtil,
+    private val errorMessages: ErrorMessageProvider,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ExpiryUiState())
@@ -48,7 +50,7 @@ class ExpiryViewModel(
             }
 
             is ExpiryAction.CategorySelected -> {
-                _state.update { it.copy(activeFilter = it.activeFilter.copy(categoryName = action.categoryName)) }
+                _state.update { it.copy(activeFilter = it.activeFilter.copy(categoryKey = action.categoryKey)) }
                 load(isRefresh = false)
             }
 
@@ -116,7 +118,7 @@ class ExpiryViewModel(
                 _state.update {
                     it.copy(
                         nowEpochMillis = now,
-                        displayDate = dateTime.formatDisplayDate(now),
+                        date = dateTime.dateParts(now),
                         displayTime = dateTime.formatDisplayTime(now),
                     )
                 }
@@ -126,10 +128,7 @@ class ExpiryViewModel(
     }
 
     private fun load(isRefresh: Boolean) {
-        val userId = getCurrentUserId() ?: run {
-            _state.update { it.copy(loadState = ExpiryLoadState.Error("Sesi habis, silakan masuk kembali")) }
-            return
-        }
+        val userId = getCurrentUserId()
 
         _state.update {
             it.copy(
@@ -158,7 +157,7 @@ class ExpiryViewModel(
                             }
                         }
                         .onError { err ->
-                            _state.update { it.copy(loadState = ExpiryLoadState.Error(err.message)) }
+                            _state.update { it.copy(loadState = ExpiryLoadState.Error(errorMessages.provide(err))) }
                         }
                 },
             )

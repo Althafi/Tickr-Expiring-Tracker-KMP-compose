@@ -49,6 +49,9 @@ import com.project.tickr.presentation.help.HelpAction
 import com.project.tickr.presentation.help.HelpUiState
 import com.project.tickr.ui.theme.TickrCornerRadius
 import com.project.tickr.ui.theme.TickrTheme
+import tickrapp.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import com.project.tickr.ui.i18n.LocalAppInfo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,7 +68,7 @@ fun HelpScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Bantuan", // TODO(user): string resource help_title
+                        text = stringResource(Res.string.help_title),
                         style = TickrTheme.typography.productName,
                         color = colors.primaryBrand,
                     )
@@ -74,7 +77,7 @@ fun HelpScreen(
                     IconButton(onClick = { onAction(HelpAction.Back) }) {
                         Icon(
                             Icons.Outlined.ArrowBack,
-                            contentDescription = "Kembali", // TODO(user): cd_back
+                            contentDescription = stringResource(Res.string.cd_back),
                             tint = colors.textPrimary,
                         )
                     }
@@ -113,7 +116,7 @@ fun HelpScreen(
                 }
                 Spacer(Modifier.size(spacing.md))
                 Text(
-                    text = "Temukan jawaban cepat atau hubungi tim kami bila butuh bantuan lebih lanjut.", // TODO(user): string resource help_subtitle
+                    text = stringResource(Res.string.help_subtitle),
                     style = TickrTheme.typography.body,
                     color = colors.textSecondary,
                 )
@@ -121,7 +124,7 @@ fun HelpScreen(
 
             // FAQ section
             Text(
-                text = "Pertanyaan Umum", // TODO(user): string resource help_section_faq
+                text = stringResource(Res.string.help_section_faq),
                 style = TickrTheme.typography.sectionTitle,
                 color = colors.textPrimary,
                 modifier = Modifier.padding(bottom = spacing.sm),
@@ -162,27 +165,27 @@ fun HelpScreen(
 
             // Contact section
             Text(
-                text = "Hubungi Kami", // TODO(user): string resource help_section_contact
+                text = stringResource(Res.string.help_section_contact),
                 style = TickrTheme.typography.sectionTitle,
                 color = colors.textPrimary,
                 modifier = Modifier.padding(bottom = spacing.sm),
             )
             HelpContactRow(
                 icon = Icons.Outlined.Email,
-                label = "Email Dukungan", // TODO(user): string resource help_contact_email
+                label = stringResource(Res.string.help_contact_email),
                 onClick = { onAction(HelpAction.ContactEmail) },
             )
             Spacer(Modifier.height(spacing.sm))
             HelpContactRow(
                 icon = Icons.Outlined.Send,
-                label = "WhatsApp", // TODO(user): string resource help_contact_whatsapp
+                label = stringResource(Res.string.help_contact_whatsapp),
                 onClick = { onAction(HelpAction.ContactWhatsApp) },
             )
 
             Spacer(Modifier.height(spacing.xxl))
 
             Text(
-                text = "Versi 1.0.4 • © 2024 Tickr Team", // TODO(user): gunakan string resource app_version_copyright
+                text = stringResource(Res.string.app_version_footer, LocalAppInfo.current.versionName),
                 style = TickrTheme.typography.caption,
                 color = colors.textSecondary,
                 textAlign = TextAlign.Center,
@@ -201,6 +204,7 @@ private fun FaqExpandableItem(
 ) {
     val colors = TickrTheme.colors
     val spacing = TickrTheme.spacing
+    val toggleDescription = stringResource(Res.string.cd_help_faq_toggle)
     val chevronRotation by animateFloatAsState(
         targetValue = if (isExpanded) 180f else 0f,
         animationSpec = tween(200),
@@ -212,11 +216,11 @@ private fun FaqExpandableItem(
             .clickable(onClick = onToggle)
             .padding(spacing.cardInner)
             .animateContentSize()
-            .semantics { contentDescription = "Buka atau tutup jawaban" }, // TODO(user): cd_help_faq_toggle
+            .semantics { contentDescription = toggleDescription },
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = faq.question,
+                text = stringResource(faq.question),
                 style = TickrTheme.typography.body,
                 color = colors.textPrimary,
                 modifier = Modifier.weight(1f),
@@ -232,7 +236,7 @@ private fun FaqExpandableItem(
         if (isExpanded) {
             Spacer(Modifier.height(spacing.sm))
             Text(
-                text = faq.answer,
+                text = stringResource(faq.answer),
                 style = TickrTheme.typography.body,
                 color = colors.textSecondary,
             )
@@ -282,8 +286,8 @@ private fun HelpScreenPreviewLight() {
         HelpScreen(
             state = HelpUiState(
                 faqs = listOf(
-                    FaqItem("1", "Bagaimana cara menambahkan barang baru?", "Tekan tombol tambah (+) di bilah bawah..."),
-                    FaqItem("2", "Kapan saya menerima pengingat?", "Tickr mengirim notifikasi bertahap..."),
+                    FaqItem("1", Res.string.help_faq_q1, Res.string.help_faq_a1),
+                    FaqItem("2", Res.string.help_faq_q2, Res.string.help_faq_a2),
                 ),
                 expandedId = "1",
             ),
@@ -298,7 +302,7 @@ private fun HelpScreenPreviewDark() {
     TickrTheme(darkTheme = true) {
         HelpScreen(
             state = HelpUiState(
-                faqs = listOf(FaqItem("1", "Bagaimana cara menambahkan barang baru?", "Tekan tombol tambah...")),
+                faqs = listOf(FaqItem("1", Res.string.help_faq_q1, Res.string.help_faq_a1)),
             ),
             onAction = {},
         )

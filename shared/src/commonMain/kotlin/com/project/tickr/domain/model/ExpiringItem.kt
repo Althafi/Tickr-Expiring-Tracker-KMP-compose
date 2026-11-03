@@ -12,4 +12,6 @@ data class ExpiringItem(
     val unit: String,
     val daysUntilExpiry: Int,
     val urgency: Urgency,
+    /** Kunci kategori default (`food`, …) atau null bila kategori buatan pengguna. */
+    val categoryKey: String? = null,
 )

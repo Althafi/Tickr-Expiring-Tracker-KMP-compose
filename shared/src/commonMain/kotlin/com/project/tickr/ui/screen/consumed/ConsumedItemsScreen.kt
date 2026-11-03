@@ -51,6 +51,9 @@ import com.project.tickr.presentation.consumed.ConsumedItemsUiState
 import com.project.tickr.ui.screen.expiry.components.ExpiryItemCard
 import com.project.tickr.ui.theme.TickrCornerRadius
 import com.project.tickr.ui.theme.TickrTheme
+import tickrapp.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import com.project.tickr.presentation.common.asString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,7 +74,7 @@ fun ConsumedItemsScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Produk Dikonsumsi",
+                        text = stringResource(Res.string.consumed_title),
                         style = typography.sectionTitle,
                         color = colors.textPrimary,
                     )
@@ -80,7 +83,7 @@ fun ConsumedItemsScreen(
                     IconButton(onClick = { onAction(ConsumedItemsAction.Back) }) {
                         Icon(
                             imageVector = Icons.Outlined.ArrowBack,
-                            contentDescription = "Kembali",
+                            contentDescription = stringResource(Res.string.cd_back),
                             tint = colors.textPrimary,
                         )
                     }
@@ -111,7 +114,7 @@ fun ConsumedItemsScreen(
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            text = state.loadState.message,
+                            text = state.loadState.message.asString(),
                             style = typography.body,
                             color = colors.critical,
                         )
@@ -125,7 +128,7 @@ fun ConsumedItemsScreen(
                             contentAlignment = Alignment.Center,
                         ) {
                             Text(
-                                text = "Belum ada produk yang dikonsumsi",
+                                text = stringResource(Res.string.consumed_empty),
                                 style = typography.body,
                                 color = colors.textSecondary,
                             )

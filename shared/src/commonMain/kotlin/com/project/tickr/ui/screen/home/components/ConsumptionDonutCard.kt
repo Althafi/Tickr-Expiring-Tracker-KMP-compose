@@ -42,6 +42,9 @@ import com.project.tickr.domain.model.CategorySlice
 import com.project.tickr.ui.theme.DonutCategoryColors
 import com.project.tickr.ui.theme.TickrCornerRadius
 import com.project.tickr.ui.theme.TickrTheme
+import tickrapp.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import com.project.tickr.ui.i18n.categoryLabel
 
 @Composable
 fun ConsumptionDonutCard(
@@ -73,12 +76,12 @@ fun ConsumptionDonutCard(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "Kategori Konsumsi", // TODO(user): pakai stringResource
+                text = stringResource(Res.string.home_consumption_title),
                 style = typography.sectionTitle,
                 color = colors.textPrimary,
             )
             Text(
-                text = "Lihat Semua", // TODO(user): pakai stringResource
+                text = stringResource(Res.string.home_see_all),
                 style = typography.body,
                 color = colors.primaryBrand,
                 modifier = Modifier.clickable(onClick = onSeeAll),
@@ -89,7 +92,7 @@ fun ConsumptionDonutCard(
 
         if (slices.isEmpty()) {
             Text(
-                text = "Belum ada data kategori.", // TODO(user): pakai stringResource
+                text = stringResource(Res.string.home_no_category_data),
                 style = typography.body,
                 color = colors.textSecondary,
                 textAlign = TextAlign.Center,
@@ -134,11 +137,12 @@ private fun DonutChart(
     val strokeWidth = 44f // stroke tebal ~22dp
     val gap = 4f         // gap kecil antar segmen
 
-    val accessibilityText = slices.joinToString(", ") { "${it.name} ${it.percentage}%" }
+    val accessibilityText = slices.map { "${categoryLabel(it.key, it.name)} ${it.percentage}%" }.joinToString(", ")
+    val chartDescription = stringResource(Res.string.cd_donut_chart, accessibilityText)
 
     Box(
         modifier = modifier.semantics {
-            contentDescription = "Komposisi kategori: $accessibilityText" // TODO(user): pakai stringResource
+            contentDescription = chartDescription
         },
         contentAlignment = Alignment.Center,
     ) {
@@ -166,7 +170,7 @@ private fun DonutChart(
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = "TOTAL", // TODO(user): pakai stringResource
+                text = stringResource(Res.string.home_donut_total_label),
                 style = typography.caption,
                 color = colors.textSecondary,
             )
@@ -200,7 +204,7 @@ private fun DonutLegend(
                         .background(DonutCategoryColors.fromHex(slice.colorHex)),
                 )
                 Text(
-                    text = slice.name,
+                    text = categoryLabel(slice.key, slice.name),
                     style = typography.body,
                     color = colors.textPrimary,
                     modifier = Modifier.weight(1f),

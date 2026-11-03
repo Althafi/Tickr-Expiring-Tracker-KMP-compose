@@ -33,12 +33,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.project.tickr.ui.common.rememberProductImageModel
 import com.project.tickr.domain.model.CategoryGroup
 import com.project.tickr.domain.model.ExpiringItem
 import com.project.tickr.domain.model.Urgency
 import com.project.tickr.ui.theme.DonutCategoryColors
 import com.project.tickr.ui.theme.TickrCornerRadius
 import com.project.tickr.ui.theme.TickrTheme
+import tickrapp.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.pluralStringResource
+import com.project.tickr.ui.i18n.categoryLabel
+import com.project.tickr.ui.i18n.countdownText
+import com.project.tickr.ui.i18n.formatShortDate
 
 @Composable
 fun ExpiringSection(
@@ -59,7 +66,7 @@ fun ExpiringSection(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "Produk Kadaluwarsa", // TODO(user): pakai stringResource
+                text = stringResource(Res.string.home_expiring_title),
                 style = typography.sectionTitle,
                 color = colors.textPrimary,
             )
@@ -71,7 +78,7 @@ fun ExpiringSection(
                         .padding(horizontal = spacing.sm, vertical = spacing.xs),
                 ) {
                     Text(
-                        text = "PERLU TINDAKAN", // TODO(user): pakai stringResource
+                        text = stringResource(Res.string.home_need_action),
                         style = typography.caption.copy(letterSpacing = 0.5.sp),
                         color = colors.critical,
                     )
@@ -82,7 +89,7 @@ fun ExpiringSection(
         if (criticalCount > 0) {
             Spacer(Modifier.height(spacing.xs))
             Text(
-                text = "Kritis: $criticalCount item", // TODO(user): format dinamis
+                text = pluralStringResource(Res.plurals.home_critical_summary, criticalCount, criticalCount),
                 style = typography.caption,
                 color = colors.textSecondary,
             )
@@ -92,14 +99,14 @@ fun ExpiringSection(
 
         if (groups.isEmpty()) {
             Text(
-                text = "Tidak ada produk yang perlu tindakan",
+                text = stringResource(Res.string.home_no_action_needed),
                 style = typography.body,
                 color = colors.textSecondary,
             )
         } else {
             groups.forEach { group ->
                 CategoryGroupHeader(
-                    categoryName = group.categoryName,
+                    categoryName = categoryLabel(group.categoryKey, group.categoryName),
                     colorHex = group.colorHex,
                 )
                 Spacer(Modifier.height(spacing.sm))
@@ -137,7 +144,7 @@ private fun CategoryGroupHeader(
                 .background(DonutCategoryColors.fromHex(colorHex)),
         )
         Text(
-            text = categoryName.uppercase(), // TODO(user): pakai stringResource
+            text = categoryName.uppercase(),
             style = typography.caption.copy(
                 fontWeight = FontWeight.SemiBold,
                 letterSpacing = 1.sp,
@@ -163,16 +170,9 @@ private fun ExpiringItemRow(
         Urgency.SAFE -> colors.safeContainer to colors.safe
     }
 
-    val countdownText = when {
-        item.daysUntilExpiry < 0 -> "Lewat ${-item.daysUntilExpiry} hari" // TODO(user): pakai stringResource
-        item.daysUntilExpiry == 0 -> "Hari ini"
-        item.daysUntilExpiry < 30 -> "${item.daysUntilExpiry} hari"
-        else -> {
-            val months = item.daysUntilExpiry / 30
-            val days = item.daysUntilExpiry % 30
-            if (days == 0) "$months bulan" else "$months bulan $days hari"
-        }
-    }
+    val countdownText = countdownText(item.daysUntilExpiry)
+    val summaryDescription = stringResource(Res.string.cd_item_summary, item.name, countdownText)
+    val photoDescription = stringResource(Res.string.cd_product_photo, item.name)
 
     Row(
         modifier = modifier
@@ -182,13 +182,13 @@ private fun ExpiringItemRow(
             .border(1.dp, colors.textSecondary.copy(alpha = 0.10f), RoundedCornerShape(TickrCornerRadius.card))
             .clickable(onClick = onClick)
             .padding(spacing.cardInner)
-            .semantics { contentDescription = "${item.name}, kedaluwarsa $countdownText" },
+            .semantics { contentDescription = summaryDescription },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(spacing.md),
     ) {
         AsyncImage(
-            model = item.imageUrl,
-            contentDescription = "Foto produk ${item.name}",
+            model = rememberProductImageModel(item.imageUrl),
+            contentDescription = photoDescription,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(56.dp)
@@ -206,7 +206,7 @@ private fun ExpiringItemRow(
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
-                text = "${item.categoryName} • ${item.expiryDate}", // TODO(user): format tanggal lebih ramah
+                text = "${categoryLabel(item.categoryKey, item.categoryName)} • ${formatShortDate(item.expiryDate)}",
                 style = typography.caption,
                 color = colors.textSecondary,
                 maxLines = 1,
@@ -231,7 +231,7 @@ private fun ExpiringItemRow(
         Spacer(Modifier.width(4.dp))
         Icon(
             imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
-            contentDescription = "Lihat detail barang", // TODO(user): pakai stringResource
+            contentDescription = stringResource(Res.string.cd_view_item_detail),
             tint = colors.textSecondary,
             modifier = Modifier.size(20.dp),
         )
