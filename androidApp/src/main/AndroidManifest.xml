@@ -5,6 +5,8 @@
     <!-- Fitur online: pencarian produk lewat barcode. Cek koneksi sebelum memakainya. -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- Kamera opsional (foto produk lewat intent kamera sistem; tanpa izin CAMERA). -->
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
     <application
         android:name=".TickrApplication"
         android:allowBackup="true"
@@ -23,6 +25,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

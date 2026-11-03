@@ -95,6 +95,9 @@
     <string name="additem_save">Save Item</string>
     <string name="additem_photo_selected">Photo selected — tap to change</string>
     <string name="additem_photo_hint">Tap to add a photo</string>
+    <string name="additem_photo_source_title">Product Photo</string>
+    <string name="additem_photo_camera">Take a photo</string>
+    <string name="additem_photo_gallery">Choose from gallery</string>
     <string name="additem_category">Category</string>
     <string name="additem_category_error">Failed to load categories. Close and reopen this sheet.</string>
     <string name="additem_quantity">Quantity</string>

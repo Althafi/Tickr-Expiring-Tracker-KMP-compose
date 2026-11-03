@@ -51,6 +51,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.AnnotatedString
@@ -69,6 +70,7 @@ import com.project.tickr.presentation.additem.UNIT_OPTIONS
 import com.project.tickr.ui.common.BarcodeScanResult
 import com.project.tickr.ui.common.PlatformDatePicker
 import com.project.tickr.ui.common.rememberBarcodeScanner
+import com.project.tickr.ui.common.rememberCameraLauncher
 import com.project.tickr.ui.common.rememberImagePickerLauncher
 import com.project.tickr.ui.theme.TickrCornerRadius
 import com.project.tickr.ui.theme.TickrTheme
@@ -99,8 +101,20 @@ fun AddItemSheet(
         }
     }
 
-    val pickImage = rememberImagePickerLauncher { uri ->
-        viewModel.onAction(AddItemAction.PhotoPicked(uri))
+    // Dibatalkan (uri null) tidak boleh menghapus foto yang sudah dipilih sebelumnya.
+    val pickFromGallery = rememberImagePickerLauncher { uri ->
+        if (uri != null) viewModel.onAction(AddItemAction.PhotoPicked(uri))
+    }
+    val takePhoto = rememberCameraLauncher { uri ->
+        if (uri != null) viewModel.onAction(AddItemAction.PhotoPicked(uri))
+    }
+    var showPhotoSource by remember { mutableStateOf(false) }
+    if (showPhotoSource) {
+        PhotoSourceSheet(
+            onCamera = takePhoto,
+            onGallery = pickFromGallery,
+            onDismiss = { showPhotoSource = false },
+        )
     }
 
     val openScanner = rememberBarcodeScanner { result ->
@@ -141,7 +155,7 @@ fun AddItemSheet(
             state = state,
             onAction = viewModel::onAction,
             onDismiss = dismissSheet,
-            onPickImage = pickImage,
+            onPickImage = { showPhotoSource = true },
             onShowDatePicker = { showDatePicker = true },
         )
     }
@@ -681,5 +695,60 @@ private fun AddItemContentDarkPreview() {
             onPickImage = {},
             onShowDatePicker = {},
         )
+    }
+}
+
+/** Pilihan sumber foto: kamera langsung atau galeri. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PhotoSourceSheet(
+    onCamera: () -> Unit,
+    onGallery: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val colors = TickrTheme.colors
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        shape = RoundedCornerShape(topStart = TickrCornerRadius.card, topEnd = TickrCornerRadius.card),
+        containerColor = colors.surface,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = TickrTheme.spacing.screen)
+                .padding(bottom = TickrTheme.spacing.xl),
+        ) {
+            Text(
+                text = stringResource(Res.string.additem_photo_source_title),
+                style = TickrTheme.typography.productName,
+                color = colors.textPrimary,
+            )
+            Spacer(Modifier.height(TickrTheme.spacing.md))
+            PhotoSourceRow(Icons.Outlined.CameraAlt, stringResource(Res.string.additem_photo_camera)) {
+                onCamera()
+                onDismiss()
+            }
+            PhotoSourceRow(Icons.Outlined.Image, stringResource(Res.string.additem_photo_gallery)) {
+                onGallery()
+                onDismiss()
+            }
+        }
+    }
+}
+
+@Composable
+private fun PhotoSourceRow(icon: ImageVector, label: String, onClick: () -> Unit) {
+    val colors = TickrTheme.colors
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(TickrCornerRadius.card))
+            .clickable(onClick = onClick)
+            .padding(horizontal = 4.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(icon, contentDescription = null, tint = colors.primaryBrand, modifier = Modifier.size(24.dp))
+        Spacer(Modifier.width(14.dp))
+        Text(text = label, style = TickrTheme.typography.body, color = colors.textPrimary)
     }
 }

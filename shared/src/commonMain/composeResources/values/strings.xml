@@ -95,6 +95,9 @@
     <string name="additem_save">Catat Barang</string>
     <string name="additem_photo_selected">Foto dipilih — ketuk untuk ganti</string>
     <string name="additem_photo_hint">Ketuk untuk unggah foto</string>
+    <string name="additem_photo_source_title">Foto Produk</string>
+    <string name="additem_photo_camera">Ambil foto</string>
+    <string name="additem_photo_gallery">Pilih dari galeri</string>
     <string name="additem_category">Kategori</string>
     <string name="additem_category_error">Gagal memuat kategori. Coba tutup dan buka kembali.</string>
     <string name="additem_quantity">Jumlah</string>
