@@ -69,15 +69,20 @@ kotlin {
             implementation(libs.sqldelight.runtime)
             implementation(libs.sqldelight.coroutines)
 
+            // Ktor — pencarian produk lewat barcode (fitur online)
+            implementation(libs.ktor.client.core)
         }
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.sqldelight.android.driver)
             implementation(libs.androidx.work.runtime)
+            implementation(libs.ktor.client.okhttp)
+            implementation(libs.play.services.code.scanner)
         }
         iosMain.dependencies {
             implementation(libs.sqldelight.native.driver)
+            implementation(libs.ktor.client.darwin)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

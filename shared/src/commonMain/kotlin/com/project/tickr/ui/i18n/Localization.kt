@@ -95,3 +95,15 @@ fun formatShortDate(isoDate: String): String {
     if (year == null || month == null || day == null || month !in 1..12) return isoDate
     return stringResource(Res.string.date_short, day, stringResource(MONTHS_SHORT[month - 1]), year)
 }
+
+/** Nama hari singkat (3 huruf) dari nomor hari 1 = Senin … 7 = Minggu. */
+@Composable
+fun weekdayShortLabel(isoDay: Int): String = stringResource(WEEKDAYS[(isoDay - 1).coerceIn(0, 6)]).take(3)
+
+/** Nama hari lengkap dari nomor hari 1 = Senin … 7 = Minggu. */
+@Composable
+fun weekdayLabel(isoDay: Int): String = stringResource(WEEKDAYS[(isoDay - 1).coerceIn(0, 6)])
+
+/** Nama bulan singkat dari nomor bulan 1–12. */
+@Composable
+fun shortMonthLabel(month: Int): String = stringResource(MONTHS_SHORT[(month - 1).coerceIn(0, 11)])

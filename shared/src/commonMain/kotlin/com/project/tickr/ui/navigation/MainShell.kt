@@ -44,6 +44,8 @@ import com.project.tickr.presentation.additem.AddItemViewModel
 import com.project.tickr.presentation.expiry.ExpiryViewModel
 import com.project.tickr.presentation.home.HomeEvent
 import com.project.tickr.presentation.home.HomeViewModel
+import com.project.tickr.presentation.insight.InsightViewModel
+import com.project.tickr.ui.screen.insight.InsightRoute
 import com.project.tickr.presentation.navigation.Navigator
 import com.project.tickr.ui.screen.expiry.ExpiryRoute
 import com.project.tickr.ui.screen.home.HomeRoute
@@ -81,6 +83,7 @@ fun MainShell(navigator: Navigator) {
     val homeVm: HomeViewModel = koinViewModel()
     val addItemVm: AddItemViewModel = koinViewModel()
     val expiryVm: ExpiryViewModel = koinViewModel()
+    val insightVm: InsightViewModel = koinViewModel()
 
     val shellViewModel: MainShellViewModel = koinViewModel()
     val selectedIndex by shellViewModel.selectedTab.collectAsState()
@@ -146,7 +149,14 @@ fun MainShell(navigator: Navigator) {
                         showAddItem = true
                     },
                 )
-                BottomTab.INSIGHT -> ComingSoonPlaceholder(stringResource(Res.string.nav_insight))
+                BottomTab.INSIGHT -> InsightRoute(
+                    navigator = navigator,
+                    viewModel = insightVm,
+                    onAddItemRequest = {
+                        addItemVm.onAction(com.project.tickr.presentation.additem.AddItemAction.Reset)
+                        showAddItem = true
+                    },
+                )
                 BottomTab.SETTINGS -> SettingsRoute(navigator = navigator)
             }
         }
@@ -273,26 +283,3 @@ private fun navBarItemColors(selected: Color, unselected: Color) =
         unselectedTextColor = unselected,
         indicatorColor = Color.Transparent,
     )
-
-@Composable
-private fun ComingSoonPlaceholder(label: String) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = label,
-                style = TickrTheme.typography.sectionTitle,
-                color = TickrTheme.colors.textSecondary,
-                textAlign = TextAlign.Center,
-            )
-            Text(
-                text = stringResource(Res.string.coming_soon),
-                style = TickrTheme.typography.body,
-                color = TickrTheme.colors.textSecondary,
-                textAlign = TextAlign.Center,
-            )
-        }
-    }
-}

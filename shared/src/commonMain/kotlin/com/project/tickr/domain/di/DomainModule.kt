@@ -42,6 +42,9 @@ import com.project.tickr.domain.usecase.reminder.MarkNotificationPermissionAsked
 import com.project.tickr.domain.usecase.reminder.ProcessDueRemindersUseCase
 import com.project.tickr.domain.usecase.reminder.ShouldRequestNotificationPermissionUseCase
 import com.project.tickr.domain.usecase.reminder.SyncRemindersUseCase
+import com.project.tickr.domain.usecase.product.DownloadProductImageUseCase
+import com.project.tickr.domain.usecase.product.LookupBarcodeUseCase
+import com.project.tickr.domain.usecase.insight.ObserveInsightsUseCase
 import org.koin.dsl.module
 
 val domainModule = module {
@@ -87,6 +90,13 @@ val domainModule = module {
 
     // Consumed items
     factory { GetConsumedItemsUseCase(get(), get(), get()) }
+
+    // Wawasan (offline)
+    factory { ObserveInsightsUseCase(get(), get(), get()) }
+
+    // Barcode (online)
+    factory { LookupBarcodeUseCase(get(), get()) }
+    factory { DownloadProductImageUseCase(get(), get()) }
 
     // Settings
     factory { ObserveSettingsUseCase(get()) }

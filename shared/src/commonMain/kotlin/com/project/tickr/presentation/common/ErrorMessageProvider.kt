@@ -2,7 +2,10 @@ package com.project.tickr.presentation.common
 
 import com.project.tickr.core.result.AppError
 import tickrapp.shared.generated.resources.Res
+import tickrapp.shared.generated.resources.error_barcode_invalid
 import tickrapp.shared.generated.resources.error_generic
+import tickrapp.shared.generated.resources.error_network
+import tickrapp.shared.generated.resources.error_offline
 import tickrapp.shared.generated.resources.error_invalid_data
 import tickrapp.shared.generated.resources.error_not_found
 import tickrapp.shared.generated.resources.error_backup_invalid
@@ -21,8 +24,11 @@ class ErrorMessageProvider {
             "name" -> UiText.Res(Res.string.error_validation_name)
             "expiry_date" -> UiText.Res(Res.string.error_validation_expiry)
             "quantity" -> UiText.Res(Res.string.error_validation_quantity)
+            "barcode" -> UiText.Res(Res.string.error_barcode_invalid)
             else -> UiText.Res(Res.string.error_invalid_data)
         }
+        AppError.Offline -> UiText.Res(Res.string.error_offline)
+        is AppError.Network -> UiText.Res(Res.string.error_network)
         is AppError.Unknown -> UiText.Res(Res.string.error_generic)
     }
 }

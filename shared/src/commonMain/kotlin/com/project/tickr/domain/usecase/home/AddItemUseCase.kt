@@ -15,6 +15,7 @@ data class AddItemParams(
     val expiryDateMillis: Long?,
     val imageUrl: String?,
     val notes: String? = null,
+    val barcode: String? = null,
 )
 
 class AddItemUseCase(
@@ -37,7 +38,7 @@ class AddItemUseCase(
             id = 0L,
             categoryId = params.categoryId,
             name = params.name.trim(),
-            barcode = null,
+            barcode = params.barcode?.trim()?.takeIf { it.isNotEmpty() },
             expiryDate = isoDate,
             imageUrl = params.imageUrl,
             notes = params.notes,

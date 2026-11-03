@@ -11,6 +11,14 @@ import com.project.tickr.domain.usecase.home.AddItemParams
 import com.project.tickr.domain.usecase.home.AddItemUseCase
 import com.project.tickr.domain.usecase.item.DiscardProductImageUseCase
 import com.project.tickr.domain.usecase.item.SaveProductImageUseCase
+import com.project.tickr.core.result.AppError
+import com.project.tickr.domain.model.CategoryKeys
+import com.project.tickr.domain.model.ProductInfo
+import com.project.tickr.domain.provider.ConnectivityProvider
+import com.project.tickr.domain.usecase.product.DownloadProductImageUseCase
+import com.project.tickr.domain.usecase.product.LookupBarcodeUseCase
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,6 +42,9 @@ class AddItemViewModel(
     private val errorMessages: ErrorMessageProvider,
     private val syncReminders: SyncRemindersUseCase,
     private val messenger: AppMessenger,
+    private val lookupBarcode: LookupBarcodeUseCase,
+    private val downloadProductImage: DownloadProductImageUseCase,
+    private val connectivity: ConnectivityProvider,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AddItemUiState())
@@ -42,6 +53,9 @@ class AddItemViewModel(
     private val _events = Channel<AddItemEvent>(Channel.BUFFERED)
     val events = _events.receiveAsFlow()
 
+    private var lookupJob: Job? = null
+    private var noticeJob: Job? = null
+
     init {
         loadCategories()
     }
@@ -49,6 +63,8 @@ class AddItemViewModel(
     fun onAction(action: AddItemAction) {
         when (action) {
             AddItemAction.Reset -> {
+                lookupJob?.cancel()
+                noticeJob?.cancel()
                 _state.update { s ->
                     val cached = s.dbCategories
                     AddItemUiState(
@@ -84,8 +100,82 @@ class AddItemViewModel(
             }
             is AddItemAction.PhotoPicked ->
                 _state.update { it.copy(photoPath = action.path) }
+            AddItemAction.ScanClicked -> onScanClicked()
+            AddItemAction.ScannerLaunched -> _state.update { it.copy(requestScanner = false) }
+            is AddItemAction.BarcodeScanned -> onBarcodeScanned(action.code)
+            AddItemAction.ScanFailed ->
+                showNotice(UiText.Res(Res.string.additem_scan_failed), NoticeKind.WARNING)
+            AddItemAction.ClearBarcode -> _state.update { it.copy(barcode = null) }
+            AddItemAction.DismissNotice -> {
+                noticeJob?.cancel()
+                _state.update { it.copy(notice = null) }
+            }
             AddItemAction.Save -> save()
             AddItemAction.Dismiss -> { /* dismiss handled by UI layer directly */ }
+        }
+    }
+
+    // ——— Scan barcode (fitur online) ———
+
+    private fun onScanClicked() {
+        if (_state.value.isLookingUp) return
+        if (!connectivity.isOnline()) {
+            // Offline: fitur ini tidak dipakai, tapi form tetap bisa diisi manual.
+            showNotice(UiText.Res(Res.string.error_offline), NoticeKind.OFFLINE)
+            return
+        }
+        _state.update { it.copy(requestScanner = true, notice = null) }
+    }
+
+    private fun onBarcodeScanned(code: String) {
+        val barcode = code.trim()
+        lookupJob?.cancel()
+        noticeJob?.cancel()
+        _state.update { it.copy(barcode = barcode, isLookingUp = true, notice = null) }
+        lookupJob = viewModelScope.launch {
+            lookupBarcode(barcode)
+                .onSuccess { product ->
+                    if (product == null) {
+                        _state.update { it.copy(isLookingUp = false) }
+                        showNotice(UiText.Res(Res.string.additem_scan_not_found), NoticeKind.INFO)
+                    } else {
+                        applyProduct(product)
+                        showNotice(UiText.Res(Res.string.additem_scan_found), NoticeKind.SUCCESS)
+                    }
+                }
+                .onError { err ->
+                    _state.update { it.copy(isLookingUp = false) }
+                    val kind = if (err is AppError.Offline || err is AppError.Network) NoticeKind.OFFLINE else NoticeKind.INFO
+                    showNotice(errorMessages.provide(err), kind)
+                }
+        }
+    }
+
+    /** Mengisi form dari data produk. Isian yang sudah diketik pengguna tidak ditimpa. */
+    private fun applyProduct(product: ProductInfo) {
+        _state.update { s ->
+            val category = product.categoryKey
+                ?.takeIf { it != CategoryKeys.OTHER }
+                ?.let { key -> s.dbCategories.firstOrNull { it.key == key } }
+            s.copy(
+                isLookingUp = false,
+                name = if (s.name.isBlank()) product.displayName.orEmpty() else s.name,
+                nameError = null,
+                photoPath = s.photoPath ?: product.imageUrl,
+                selectedCategoryId = category?.id ?: s.selectedCategoryId,
+                selectedCategoryName = category?.name ?: s.selectedCategoryName,
+                quantity = if (s.quantity == 0) (product.quantity ?: 1) else s.quantity,
+                unit = if (s.quantity == 0 && product.unit != null) product.unit else s.unit,
+            )
+        }
+    }
+
+    private fun showNotice(text: UiText, kind: NoticeKind) {
+        noticeJob?.cancel()
+        _state.update { it.copy(notice = AddItemNotice(text, kind)) }
+        noticeJob = viewModelScope.launch {
+            delay(NOTICE_DURATION_MS)
+            _state.update { it.copy(notice = null) }
         }
     }
 
@@ -140,7 +230,10 @@ class AddItemViewModel(
         viewModelScope.launch {
             var photoFailed = false
             val savedImagePath: String? = if (s.photoPath != null) {
-                when (val r = saveProductImage(s.photoPath)) {
+                // Foto dari barcode masih berupa URL: diunduh dulu. Foto dari galeri disalin dan dikecilkan.
+                val saved = if (s.photoPath.startsWith("https://")) downloadProductImage(s.photoPath)
+                else saveProductImage(s.photoPath)
+                when (val r = saved) {
                     is DataResult.Success -> r.data
                     is DataResult.Error -> { photoFailed = true; null }
                 }
@@ -154,6 +247,7 @@ class AddItemViewModel(
                     unit = s.unit,
                     expiryDateMillis = s.expiryDateMillis,
                     imageUrl = savedImagePath,
+                    barcode = s.barcode,
                 )
             ).onSuccess {
                 _state.update { s ->
@@ -165,6 +259,7 @@ class AddItemViewModel(
                         selectedCategoryName = cached.firstOrNull()?.name,
                     )
                 }
+                noticeJob?.cancel()
                 syncReminders.requestSync()
                 if (photoFailed) messenger.error(Res.string.msg_item_saved_photo_failed.asUiText())
                 else messenger.success(Res.string.msg_item_saved.asUiText())
@@ -175,5 +270,9 @@ class AddItemViewModel(
                 _state.update { it.copy(isSaving = false, saveError = errorMessages.provide(err)) }
             }
         }
+    }
+
+    private companion object {
+        const val NOTICE_DURATION_MS = 6_000L
     }
 }

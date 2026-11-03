@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Android 13+: izin menampilkan notifikasi pengingat kedaluwarsa (notifikasi lokal, tanpa server) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <!-- Fitur online: pencarian produk lewat barcode. Cek koneksi sebelum memakainya. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <application
         android:name=".TickrApplication"
         android:allowBackup="true"

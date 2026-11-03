@@ -16,7 +16,12 @@ import com.project.tickr.db.TickrDatabase
 import com.project.tickr.domain.di.domainModule
 import com.project.tickr.domain.model.AppInfo
 import com.project.tickr.domain.model.DueReminder
+import com.project.tickr.core.result.DataResult
 import com.project.tickr.domain.model.Item
+import com.project.tickr.domain.model.ProductInfo
+import com.project.tickr.domain.provider.ConnectivityProvider
+import com.project.tickr.domain.repository.ProductLookupRepository
+import com.project.tickr.presentation.insight.InsightViewModel
 import com.project.tickr.domain.provider.AppInfoProvider
 import com.project.tickr.domain.repository.BackupRepository
 import com.project.tickr.domain.repository.CategoryRepository
@@ -109,6 +114,17 @@ class DiGraphTest {
                 override suspend fun cancelAll() = Unit
             }
         }
+        single<ConnectivityProvider> {
+            object : ConnectivityProvider {
+                override fun isOnline() = true
+            }
+        }
+        single<ProductLookupRepository> {
+            object : ProductLookupRepository {
+                override suspend fun lookup(barcode: String): DataResult<ProductInfo?> = DataResult.Success(null)
+                override suspend fun downloadImage(url: String): DataResult<ByteArray> = DataResult.Success(ByteArray(0))
+            }
+        }
         single<OnboardingPreferencesRepository> {
             object : OnboardingPreferencesRepository {
                 override fun hasSeenOnboarding(): Flow<Boolean> = flowOf(false)
@@ -131,5 +147,6 @@ class DiGraphTest {
         koin.get<AboutViewModel>()
         koin.get<NotificationsViewModel>()
         koin.get<ConsumedItemsViewModel>()
+        koin.get<InsightViewModel>()
     }
 }

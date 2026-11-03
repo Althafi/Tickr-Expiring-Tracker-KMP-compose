@@ -41,6 +41,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -65,7 +66,9 @@ import com.project.tickr.presentation.additem.AddItemAction
 import com.project.tickr.presentation.additem.AddItemUiState
 import com.project.tickr.presentation.additem.AddItemViewModel
 import com.project.tickr.presentation.additem.UNIT_OPTIONS
+import com.project.tickr.ui.common.BarcodeScanResult
 import com.project.tickr.ui.common.PlatformDatePicker
+import com.project.tickr.ui.common.rememberBarcodeScanner
 import com.project.tickr.ui.common.rememberImagePickerLauncher
 import com.project.tickr.ui.theme.TickrCornerRadius
 import com.project.tickr.ui.theme.TickrTheme
@@ -98,6 +101,21 @@ fun AddItemSheet(
 
     val pickImage = rememberImagePickerLauncher { uri ->
         viewModel.onAction(AddItemAction.PhotoPicked(uri))
+    }
+
+    val openScanner = rememberBarcodeScanner { result ->
+        when (result) {
+            is BarcodeScanResult.Success -> viewModel.onAction(AddItemAction.BarcodeScanned(result.code))
+            BarcodeScanResult.Cancelled -> Unit
+            BarcodeScanResult.Failed -> viewModel.onAction(AddItemAction.ScanFailed)
+        }
+    }
+    // ViewModel yang memutuskan boleh/tidaknya scan (harus online); UI hanya membuka pemindainya.
+    LaunchedEffect(state.requestScanner) {
+        if (state.requestScanner) {
+            viewModel.onAction(AddItemAction.ScannerLaunched)
+            openScanner()
+        }
     }
 
     if (showDatePicker) {
@@ -168,6 +186,12 @@ fun AddItemContent(
                 Icon(Icons.Outlined.Close, contentDescription = stringResource(Res.string.cd_close), tint = colors.textPrimary)
             }
         }
+
+        // ── 0. Pesan (offline / hasil scan) + scan barcode ──────────
+        state.notice?.let { notice ->
+            AddItemNoticeBanner(notice = notice, onDismiss = { onAction(AddItemAction.DismissNotice) })
+        }
+        BarcodeScanSection(state = state, onAction = onAction)
 
         // ── 1. Photo picker ─────────────────────────────────────────
         PhotoPickerBox(

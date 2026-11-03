@@ -28,6 +28,10 @@ import com.project.tickr.domain.repository.BackupRepository
 import com.project.tickr.domain.repository.CategoryRepository
 import com.project.tickr.domain.repository.ItemRepository
 import com.project.tickr.domain.repository.NotificationRepository
+import com.project.tickr.data.remote.createConnectivityProvider
+import com.project.tickr.data.remote.product.OpenFactsApi
+import com.project.tickr.domain.provider.ConnectivityProvider
+import com.project.tickr.domain.repository.ProductLookupRepository
 import org.koin.dsl.module
 
 val localModule = module {
@@ -55,4 +59,8 @@ val localModule = module {
 
     single<ReminderScheduler> { createReminderScheduler(get()) }
     single<ReminderPreferences> { ReminderPreferencesImpl(get()) }
+
+    // Satu-satunya bagian yang memakai internet: pencarian produk lewat barcode.
+    single<ConnectivityProvider> { createConnectivityProvider() }
+    single<ProductLookupRepository> { OpenFactsApi() }
 }
