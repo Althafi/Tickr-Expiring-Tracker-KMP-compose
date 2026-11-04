@@ -2,10 +2,11 @@ package com.project.tickr.ui.screen.onboarding
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.animateFloat
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -16,63 +17,41 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.GraphicsLayerScope
 import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import tickrapp.shared.generated.resources.Res
-import tickrapp.shared.generated.resources.ill1_arm_upper
-import tickrapp.shared.generated.resources.ill1_arm_wave
-import tickrapp.shared.generated.resources.ill1_blob
-import tickrapp.shared.generated.resources.ill1_body
-import tickrapp.shared.generated.resources.ill1_eyes
-import tickrapp.shared.generated.resources.ill1_face
-import tickrapp.shared.generated.resources.ill1_ground
-import tickrapp.shared.generated.resources.ill1_hair_back
-import tickrapp.shared.generated.resources.ill1_hair_front
-import tickrapp.shared.generated.resources.ill1_leaf_big
-import tickrapp.shared.generated.resources.ill1_leaf_left
-import tickrapp.shared.generated.resources.ill1_leaf_right
-import tickrapp.shared.generated.resources.ill1_mouth
-import tickrapp.shared.generated.resources.ill1_neck
-import tickrapp.shared.generated.resources.ill1_pot
-import tickrapp.shared.generated.resources.ill1_rest_hand
-import tickrapp.shared.generated.resources.ill2_arm_upper
-import tickrapp.shared.generated.resources.ill2_arm_wave
-import tickrapp.shared.generated.resources.ill2_blob
-import tickrapp.shared.generated.resources.ill2_body
-import tickrapp.shared.generated.resources.ill2_chair
-import tickrapp.shared.generated.resources.ill2_emblem
-import tickrapp.shared.generated.resources.ill2_eyes
-import tickrapp.shared.generated.resources.ill2_face
-import tickrapp.shared.generated.resources.ill2_hair
-import tickrapp.shared.generated.resources.ill2_laptop_base
-import tickrapp.shared.generated.resources.ill2_laptop_screen
-import tickrapp.shared.generated.resources.ill2_mouth
-import tickrapp.shared.generated.resources.ill2_neck
-import tickrapp.shared.generated.resources.ill2_notebook
-import tickrapp.shared.generated.resources.ill2_screen_lines
-import tickrapp.shared.generated.resources.ill2_write_arm
-import tickrapp.shared.generated.resources.ill2_writer
-import tickrapp.shared.generated.resources.ill3_arm
-import tickrapp.shared.generated.resources.ill3_badge
-import tickrapp.shared.generated.resources.ill3_bell
-import tickrapp.shared.generated.resources.ill3_bubble
-import tickrapp.shared.generated.resources.ill3_mouth
-import tickrapp.shared.generated.resources.ill3_phone
-import tickrapp.shared.generated.resources.ill3_phone_glow
-import tickrapp.shared.generated.resources.ill3_ripple
-import tickrapp.shared.generated.resources.ill3_tap_hand
+import tickrapp.shared.generated.resources.ob1_arm
+import tickrapp.shared.generated.resources.ob1_base
+import tickrapp.shared.generated.resources.ob1_eyes
+import tickrapp.shared.generated.resources.ob1_plant
+import tickrapp.shared.generated.resources.ob2_arm
+import tickrapp.shared.generated.resources.ob2_base
+import tickrapp.shared.generated.resources.ob2_emblem
+import tickrapp.shared.generated.resources.ob2_eyes
+import tickrapp.shared.generated.resources.ob2_plant
+import tickrapp.shared.generated.resources.ob3_badge
+import tickrapp.shared.generated.resources.ob3_base
+import tickrapp.shared.generated.resources.ob3_bell
+import tickrapp.shared.generated.resources.ob3_bubble
+import tickrapp.shared.generated.resources.ob3_eyes
+import tickrapp.shared.generated.resources.ob3_plant
 import kotlin.math.PI
 import kotlin.math.exp
 import kotlin.math.max
 import kotlin.math.sin
 
 /*
- * Ilustrasi onboarding berupa vector drawable per bagian (500x500, ditumpuk persis) yang masing-masing
- * dianimasikan sendiri. Semua koordinat pivot memakai ruang 500x500 yang sama dengan file vektornya.
+ * Ilustrasi onboarding: satu gambar utama (ob{n}_base.png, 500x500) + beberapa layer PNG hasil potongan
+ * dari gambar yang sama (ob{n}_arm/eyes/plant/...) dengan ukuran kanvas identik, ditumpuk persis di atas
+ * gambar utama. Bagian yang dipotong sudah dihapus dari gambar utama, jadi saat layer bergerak tidak ada
+ * bayangan ganda. Semua pivot memakai ruang 500x500 yang sama dengan file gambarnya.
  *
  *  - `time`  : detik berulang 0..12 (periode gerak dipilih pembagi 12 supaya mulus saat mengulang).
  *  - `intro` : 0..1, diputar ulang setiap halaman menjadi aktif (animasi masuk bertahap).
@@ -80,6 +59,7 @@ import kotlin.math.sin
  */
 
 private const val SPACE = 500f
+private val RippleColor = Color(0xFFB7DFAA)
 
 @Composable
 fun OnboardingIllustration(page: Int, active: Boolean, modifier: Modifier = Modifier) {
@@ -147,11 +127,16 @@ private fun Scene(modifier: Modifier, content: @Composable BoxScope.() -> Unit) 
     Box(modifier = modifier.aspectRatio(1f), content = content)
 }
 
-/** Muncul dari bawah sambil memudar masuk antara intro [a]..[b]. */
-private fun Modifier.riseIn(intro: State<Float>, a: Float, b: Float, dy: Float = 48f) = graphicsLayer {
-    val p = easeOut(seg(intro.value, a, b))
+/** Seluruh gambar naik dari bawah sambil membesar dan memudar masuk, lalu "bernapas" pelan. */
+private fun Modifier.figure(time: State<Float>, intro: State<Float>) = graphicsLayer {
+    val p = easeOut(seg(intro.value, 0f, 0.5f))
+    val s = 0.9f + 0.1f * p
     alpha = p
-    translationY = (1f - p) * dy * unit
+    scaleX = s
+    scaleY = s
+    translationY = (1f - p) * 50f * unit + 1.8f * unit * wave(time.value, 4f)
+    rotationZ = 0.5f * wave(time.value, 6f)
+    pivot(250f, 440f)
 }
 
 /** Tumbuh dari titik ([px],[py]) dengan sedikit membal antara intro [a]..[b]. */
@@ -164,68 +149,6 @@ private fun Modifier.popIn(intro: State<Float>, a: Float, b: Float, px: Float, p
     pivot(px, py)
 }
 
-// ---------------------------------------------------------------- bagian bersama
-
-@Composable
-private fun BoxScope.BlobBack(res: DrawableResource, time: State<Float>, intro: State<Float>) {
-    Part(
-        res,
-        Modifier.graphicsLayer {
-            val s = easeOutBack(seg(intro.value, 0f, 0.38f)).coerceAtLeast(0f)
-            val breathe = 1f + 0.03f * wave(time.value, 6f)
-            scaleX = s * breathe
-            scaleY = s * breathe
-            rotationZ = 2.2f * wave(time.value, 12f)
-            pivot(270f, 260f)
-        },
-    )
-}
-
-@Composable
-private fun BoxScope.PlantAndGround(time: State<Float>, intro: State<Float>) {
-    Part(
-        Res.drawable.ill1_ground,
-        Modifier.graphicsLayer {
-            scaleX = easeOut(seg(intro.value, 0.02f, 0.3f))
-            pivot(250f, 440f)
-        },
-    )
-    Part(Res.drawable.ill1_pot, Modifier.riseIn(intro, 0.12f, 0.38f, dy = 70f))
-    PlantLeaf(Res.drawable.ill1_leaf_big, time, intro, 0.28f, 0.58f, amp = 3f, phase = 0f)
-    PlantLeaf(Res.drawable.ill1_leaf_right, time, intro, 0.38f, 0.68f, amp = 5f, phase = 1.3f)
-    PlantLeaf(Res.drawable.ill1_leaf_left, time, intro, 0.48f, 0.78f, amp = 5f, phase = 2.6f)
-}
-
-@Composable
-private fun BoxScope.PlantLeaf(
-    res: DrawableResource,
-    time: State<Float>,
-    intro: State<Float>,
-    a: Float,
-    b: Float,
-    amp: Float,
-    phase: Float,
-) {
-    Part(
-        res,
-        Modifier.graphicsLayer {
-            val s = easeOutBack(seg(intro.value, a, b)).coerceAtLeast(0f)
-            scaleX = s
-            scaleY = s
-            // Daun tumbuh dari pangkal lalu bergoyang tertiup angin lembut.
-            rotationZ = amp * wave(time.value, 4f, phase) * seg(intro.value, b, 1f)
-            pivot(68f, 390f)
-        },
-    )
-}
-
-/** Kepala bergoyang pelan (menoleh kecil) mengelilingi leher. */
-private fun Modifier.headMotion(time: State<Float>, tiltDeg: Float = 2f) = graphicsLayer {
-    rotationZ = tiltDeg * wave(time.value, 6f)
-    translationX = 2f * unit * wave(time.value, 6f, 1.2f)
-    pivot(262f, 280f)
-}
-
 /** Kedipan tiap 3 detik: kelopak menutup cepat lalu membuka. */
 private fun Modifier.blink(time: State<Float>, cx: Float, cy: Float) = graphicsLayer {
     val m = time.value % 3f
@@ -234,9 +157,40 @@ private fun Modifier.blink(time: State<Float>, cx: Float, cy: Float) = graphicsL
     pivot(cx, cy)
 }
 
-/** Napas: seluruh badan naik-turun sangat halus. */
-private fun Modifier.breath(time: State<Float>) = graphicsLayer {
-    translationY = 2.5f * unit * wave(time.value, 4f)
+// ---------------------------------------------------------------- bagian bersama
+
+/** Daun tumbuh dari pangkal lalu bergoyang tertiup angin lembut. */
+@Composable
+private fun Plant(res: DrawableResource, time: State<Float>, intro: State<Float>) {
+    Part(
+        res,
+        Modifier.graphicsLayer {
+            val s = easeOutBack(seg(intro.value, 0.25f, 0.6f)).coerceAtLeast(0f)
+            scaleX = s
+            scaleY = s
+            rotationZ = 2.5f * wave(time.value, 4f) * seg(intro.value, 0.6f, 1f)
+            pivot(68f, 388f)
+        },
+    )
+}
+
+/**
+ * Lambaian: tangan terangkat saat intro, lalu 3 detik melambai bolak-balik dengan amplitudo
+ * naik-turun (berporos di pergelangan), jeda 3 detik, ulangi.
+ */
+@Composable
+private fun WaveArm(res: DrawableResource, time: State<Float>, intro: State<Float>) {
+    Part(
+        res,
+        Modifier.graphicsLayer {
+            val raise = easeOutBack(seg(intro.value, 0.45f, 0.8f))
+            val m = time.value % 6f
+            val swing = if (m < 3f) 13f * wave(m, 0.75f) * sin(PI.toFloat() * m / 3f) else 0f
+            rotationZ = (1f - raise) * 30f + swing * seg(intro.value, 0.8f, 1f)
+            alpha = seg(intro.value, 0.4f, 0.55f)
+            pivot(435f, 272f)
+        },
+    )
 }
 
 // ---------------------------------------------------------------- adegan 1
@@ -246,50 +200,13 @@ private fun WelcomeIllustration(active: Boolean, modifier: Modifier) {
     val time = rememberSceneTime()
     val intro = rememberIntro(active)
     Scene(modifier) {
-        BlobBack(Res.drawable.ill1_blob, time, intro)
-        PlantAndGround(time, intro)
-
-        Box(Modifier.fillMaxSize().riseIn(intro, 0.22f, 0.62f, dy = 60f).breath(time)) {
-            Part(Res.drawable.ill1_hair_back, Modifier.headMotion(time))
-            Part(Res.drawable.ill1_body)
-            Part(Res.drawable.ill1_arm_upper)
-            Part(Res.drawable.ill1_rest_hand)
-            Box(Modifier.fillMaxSize().headMotion(time)) {
-                Part(Res.drawable.ill1_neck)
-                Part(Res.drawable.ill1_face)
-                Part(Res.drawable.ill1_hair_front)
-                Part(Res.drawable.ill1_eyes, Modifier.blink(time, 263f, 166f))
-                Part(
-                    Res.drawable.ill1_mouth,
-                    Modifier.graphicsLayer {
-                        // Senyum melebar sedikit saat melambai.
-                        scaleX = 1f + 0.07f * max(0f, wave(time.value, 6f, -1.2f))
-                        pivot(271f, 200f)
-                    },
-                )
-            }
-            WaveArm(Res.drawable.ill1_arm_wave, time, intro)
+        Box(Modifier.fillMaxSize().figure(time, intro)) {
+            Part(Res.drawable.ob1_base)
+            Plant(Res.drawable.ob1_plant, time, intro)
+            WaveArm(Res.drawable.ob1_arm, time, intro)
+            Part(Res.drawable.ob1_eyes, Modifier.blink(time, 276f, 149f))
         }
     }
-}
-
-/**
- * Lambaian: lengan terangkat dari bawah saat intro, lalu 3 detik melambai bolak-balik
- * dengan amplitudo naik-turun, jeda 3 detik, ulangi.
- */
-@Composable
-private fun BoxScope.WaveArm(res: DrawableResource, time: State<Float>, intro: State<Float>) {
-    Part(
-        res,
-        Modifier.graphicsLayer {
-            val raise = easeOutBack(seg(intro.value, 0.5f, 0.85f))
-            val m = time.value % 6f
-            val swing = if (m < 3f) 15f * wave(m, 0.75f) * sin(PI.toFloat() * m / 3f) else 0f
-            rotationZ = (1f - raise) * 55f + swing * seg(intro.value, 0.85f, 1f)
-            alpha = seg(intro.value, 0.45f, 0.6f)
-            pivot(398f, 392f)
-        },
-    )
 }
 
 // ---------------------------------------------------------------- adegan 2
@@ -299,61 +216,23 @@ private fun TrackIllustration(active: Boolean, modifier: Modifier) {
     val time = rememberSceneTime()
     val intro = rememberIntro(active)
     Scene(modifier) {
-        BlobBack(Res.drawable.ill2_blob, time, intro)
-        Part(Res.drawable.ill2_chair, Modifier.riseIn(intro, 0.1f, 0.4f, dy = 30f))
-        PlantAndGround(time, intro)
-
-        Box(Modifier.fillMaxSize().riseIn(intro, 0.22f, 0.62f, dy = 60f).breath(time)) {
-            Part(Res.drawable.ill2_body)
+        Box(Modifier.fillMaxSize().figure(time, intro)) {
+            Part(Res.drawable.ob2_base)
+            Plant(Res.drawable.ob2_plant, time, intro)
             Part(
-                Res.drawable.ill2_emblem,
+                Res.drawable.ob2_emblem,
                 Modifier.graphicsLayer {
                     // Emblem daur ulang berputar terus (12 dtk = 1 putaran) sambil berdenyut.
                     val s = easeOutBack(seg(intro.value, 0.5f, 0.8f)).coerceAtLeast(0f)
-                    val pulse = 1f + 0.06f * wave(time.value, 3f)
+                    val pulse = 1f + 0.05f * wave(time.value, 3f)
                     scaleX = s * pulse
                     scaleY = s * pulse
                     rotationZ = 360f * time.value / 12f
-                    pivot(262f, 350f)
+                    pivot(263f, 333f)
                 },
             )
-            Part(Res.drawable.ill2_arm_upper)
-            WaveArm(Res.drawable.ill2_arm_wave, time, intro)
-            Part(Res.drawable.ill2_write_arm)
-
-            // Laptop: layar menyala, baris teks "diketik" bertahap lalu diulang.
-            Part(Res.drawable.ill2_laptop_base)
-            Part(Res.drawable.ill2_laptop_screen, Modifier.riseIn(intro, 0.55f, 0.85f, dy = 24f))
-            Part(
-                Res.drawable.ill2_screen_lines,
-                Modifier.graphicsLayer {
-                    val m = time.value % 4f
-                    // Tersendat per kata agar terasa seperti mengetik, bukan wipe linear.
-                    val typed = (seg(m, 0.2f, 3.2f) * 14f).toInt() / 14f
-                    scaleX = typed * seg(intro.value, 0.8f, 0.95f)
-                    pivot(372f, 380f)
-                },
-            )
-            Part(Res.drawable.ill2_notebook, Modifier.riseIn(intro, 0.5f, 0.8f, dy = 20f))
-            Part(
-                Res.drawable.ill2_writer,
-                Modifier.graphicsLayer {
-                    // Tangan + pena menulis: goresan kecil cepat ke kanan-kiri sambil bergeser sepanjang baris.
-                    val t = time.value
-                    translationX = (7f * wave(t, 0.45f) + 9f * wave(t, 4f)) * unit
-                    translationY = 2f * unit * wave(t, 0.225f)
-                    rotationZ = 3f * wave(t, 0.45f, 0.6f)
-                    pivot(276f, 414f)
-                },
-            )
-
-            Box(Modifier.fillMaxSize().headMotion(time, tiltDeg = 2.4f)) {
-                Part(Res.drawable.ill2_neck)
-                Part(Res.drawable.ill2_face)
-                Part(Res.drawable.ill2_hair)
-                Part(Res.drawable.ill2_eyes, Modifier.blink(time, 265f, 174f))
-                Part(Res.drawable.ill2_mouth)
-            }
+            WaveArm(Res.drawable.ob2_arm, time, intro)
+            Part(Res.drawable.ob2_eyes, Modifier.blink(time, 283f, 151f))
         }
     }
 }
@@ -364,95 +243,52 @@ private fun TrackIllustration(active: Boolean, modifier: Modifier) {
 private fun NotifyIllustration(active: Boolean, modifier: Modifier) {
     val time = rememberSceneTime()
     val intro = rememberIntro(active)
-    // Satu siklus 3 detik: ketuk (1.0-1.3) → layar menyala → lonceng berdering → lencana berdenyut.
+    // Satu siklus 3 detik: notifikasi masuk (1.2) → lonceng berdering → lencana berdenyut → riak memuai.
     Scene(modifier) {
-        BlobBack(Res.drawable.ill1_blob, time, intro)
-        PlantAndGround(time, intro)
+        Box(Modifier.fillMaxSize().figure(time, intro)) {
+            Part(Res.drawable.ob3_base)
+            Plant(Res.drawable.ob3_plant, time, intro)
 
-        Box(Modifier.fillMaxSize().riseIn(intro, 0.22f, 0.62f, dy = 60f).breath(time)) {
-            Part(Res.drawable.ill1_hair_back, Modifier.headMotion(time))
-            Part(Res.drawable.ill1_body)
-            Part(Res.drawable.ill1_rest_hand)
-            Part(Res.drawable.ill3_phone, Modifier.riseIn(intro, 0.45f, 0.7f, dy = 20f))
-            Part(
-                Res.drawable.ill3_phone_glow,
-                Modifier.graphicsLayer {
-                    val m = time.value % 3f
-                    val p = seg(m, 1.1f, 1.9f)
-                    alpha = sin(PI.toFloat() * p) * seg(intro.value, 0.8f, 1f)
-                    val s = 1f + 0.55f * p
-                    scaleX = s
-                    scaleY = s
-                    pivot(424f, 427f)
-                },
-            )
-            // Lengan + tangan mengetuk ponsel.
-            Box(
-                Modifier.fillMaxSize().graphicsLayer {
-                    val m = time.value % 3f
-                    val tap = sin(PI.toFloat() * seg(m, 1.0f, 1.3f))
-                    translationY = 9f * unit * tap * seg(intro.value, 0.85f, 1f)
-                    rotationZ = -1.5f * tap
-                    pivot(340f, 280f)
-                },
-            ) {
-                Part(Res.drawable.ill3_arm)
-                Part(Res.drawable.ill3_tap_hand)
-            }
-            Box(Modifier.fillMaxSize().headMotion(time)) {
-                Part(Res.drawable.ill1_neck)
-                Part(Res.drawable.ill1_face)
-                Part(Res.drawable.ill1_hair_front)
-                Part(Res.drawable.ill1_eyes, Modifier.blink(time, 263f, 166f))
-                Part(
-                    Res.drawable.ill3_mouth,
-                    Modifier.graphicsLayer {
-                        // Tersenyum lebar: mulut membuka sedikit lebih besar saat notifikasi masuk.
-                        val m = time.value % 3f
-                        scaleY = 1f + 0.18f * sin(PI.toFloat() * seg(m, 1.2f, 2.2f))
-                        pivot(271f, 200f)
-                    },
-                )
-            }
-        }
-
-        // Riak notifikasi: tiga cincin memuai dan memudar bergantian dari gelembung.
-        repeat(3) { k ->
-            Part(
-                Res.drawable.ill3_ripple,
-                Modifier.graphicsLayer {
+            // Riak notifikasi: tiga cincin memuai dan memudar bergantian dari gelembung.
+            Canvas(Modifier.fillMaxSize()) {
+                val u = size.width / SPACE
+                val gate = seg(intro.value, 0.75f, 0.95f)
+                repeat(3) { k ->
                     val p = ((time.value / 2f + k / 3f) % 1f)
-                    val s = 1f + 0.9f * p
-                    scaleX = s
-                    scaleY = s
-                    alpha = (1f - p) * 0.9f * seg(intro.value, 0.75f, 0.95f)
-                    pivot(410f, 200f)
+                    drawCircle(
+                        color = RippleColor.copy(alpha = ((1f - p) * 0.7f * gate).coerceIn(0f, 1f)),
+                        radius = (48f + 42f * p) * u,
+                        center = Offset(418f * u, 200f * u),
+                        style = Stroke(width = 2.6f * u),
+                    )
+                }
+            }
+
+            Part(Res.drawable.ob3_bubble, Modifier.popIn(intro, 0.45f, 0.8f, 395f, 255f))
+            Part(
+                Res.drawable.ob3_bell,
+                Modifier.graphicsLayer {
+                    val pop = easeOutBack(seg(intro.value, 0.55f, 0.88f)).coerceAtLeast(0f)
+                    scaleX = pop
+                    scaleY = pop
+                    // Lonceng berdering: ayunan teredam setelah notifikasi masuk, lalu diam.
+                    val m = (time.value % 3f) - 1.2f
+                    rotationZ = if (m in 0f..1.7f) 22f * exp(-2.4f * m) * sin(2f * PI.toFloat() * 2.8f * m) else 0f
+                    pivot(423f, 172f)
                 },
             )
+            Part(
+                Res.drawable.ob3_badge,
+                Modifier.graphicsLayer {
+                    val pop = easeOutBack(seg(intro.value, 0.7f, 0.95f)).coerceAtLeast(0f)
+                    val m = (time.value % 3f) - 1.2f
+                    val beat = if (m in 0f..0.5f) 0.3f * sin(PI.toFloat() * m / 0.5f) else 0f
+                    scaleX = pop * (1f + beat)
+                    scaleY = pop * (1f + beat)
+                    pivot(441f, 186f)
+                },
+            )
+            Part(Res.drawable.ob3_eyes, Modifier.blink(time, 282f, 152f))
         }
-        Part(Res.drawable.ill3_bubble, Modifier.popIn(intro, 0.45f, 0.8f, 380f, 264f))
-        Part(
-            Res.drawable.ill3_bell,
-            Modifier.graphicsLayer {
-                val pop = easeOutBack(seg(intro.value, 0.55f, 0.88f)).coerceAtLeast(0f)
-                scaleX = pop
-                scaleY = pop
-                // Lonceng berdering: ayunan teredam setelah ketukan, lalu diam.
-                val m = (time.value % 3f) - 1.2f
-                rotationZ = if (m in 0f..1.7f) 24f * exp(-2.4f * m) * sin(2f * PI.toFloat() * 2.8f * m) else 0f
-                pivot(410f, 177f)
-            },
-        )
-        Part(
-            Res.drawable.ill3_badge,
-            Modifier.graphicsLayer {
-                val pop = easeOutBack(seg(intro.value, 0.7f, 0.95f)).coerceAtLeast(0f)
-                val m = (time.value % 3f) - 1.2f
-                val beat = if (m in 0f..0.5f) 0.35f * sin(PI.toFloat() * m / 0.5f) else 0f
-                scaleX = pop * (1f + beat)
-                scaleY = pop * (1f + beat)
-                pivot(438f, 178f)
-            },
-        )
     }
 }
