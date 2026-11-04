@@ -1,5 +1,6 @@
 package com.project.tickr.ui.screen.insight
 
+import com.project.tickr.ui.common.TickrIcons
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,9 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.BarChart
-import androidx.compose.material.icons.outlined.OfflinePin
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -94,7 +92,7 @@ private fun InsightHeader() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            Icon(Icons.Outlined.OfflinePin, contentDescription = null, tint = colors.safe, modifier = Modifier.size(14.dp))
+            Icon(TickrIcons.OfflinePin, contentDescription = null, tint = colors.safe, modifier = Modifier.size(14.dp))
             Text(
                 text = stringResource(Res.string.insight_offline_badge),
                 style = typography.caption,
@@ -127,7 +125,7 @@ private fun InsightEmptyState(onAddClick: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Icon(Icons.Outlined.BarChart, contentDescription = null, tint = colors.textSecondary.copy(alpha = 0.6f), modifier = Modifier.size(72.dp))
+        Icon(TickrIcons.BarChart, contentDescription = null, tint = colors.textSecondary.copy(alpha = 0.6f), modifier = Modifier.size(72.dp))
         Text(
             text = stringResource(Res.string.insight_empty_title),
             style = typography.sectionTitle,

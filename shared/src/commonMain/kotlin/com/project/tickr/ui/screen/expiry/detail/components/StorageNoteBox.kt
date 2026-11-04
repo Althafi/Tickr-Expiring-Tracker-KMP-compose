@@ -1,5 +1,6 @@
 package com.project.tickr.ui.screen.expiry.detail.components
 
+import com.project.tickr.ui.common.TickrIcons
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,8 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,7 +44,7 @@ fun StorageNoteBox(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
-                Icons.Outlined.PushPin,
+                TickrIcons.PushPin,
                 contentDescription = null,
                 tint = colors.warning,
                 modifier = Modifier.size(18.dp),

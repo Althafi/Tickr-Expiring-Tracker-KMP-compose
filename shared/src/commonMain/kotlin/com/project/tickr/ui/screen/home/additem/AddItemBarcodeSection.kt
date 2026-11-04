@@ -1,5 +1,6 @@
 package com.project.tickr.ui.screen.home.additem
 
+import com.project.tickr.ui.common.TickrIcons
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,14 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CheckCircle
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.QrCodeScanner
-import androidx.compose.material.icons.outlined.Warning
-import androidx.compose.material.icons.outlined.Wifi
-import androidx.compose.material.icons.outlined.WifiOff
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -59,10 +52,10 @@ fun AddItemNoticeBanner(
         NoticeKind.INFO -> colors.background to colors.textSecondary
     }
     val icon = when (notice.kind) {
-        NoticeKind.SUCCESS -> Icons.Outlined.CheckCircle
-        NoticeKind.WARNING -> Icons.Outlined.Warning
-        NoticeKind.OFFLINE -> Icons.Outlined.WifiOff
-        NoticeKind.INFO -> Icons.Outlined.Info
+        NoticeKind.SUCCESS -> TickrIcons.CheckCircle
+        NoticeKind.WARNING -> TickrIcons.Warning
+        NoticeKind.OFFLINE -> TickrIcons.WifiOff
+        NoticeKind.INFO -> TickrIcons.Info
     }
     Row(
         modifier = modifier
@@ -84,7 +77,7 @@ fun AddItemNoticeBanner(
             modifier = Modifier.weight(1f),
         )
         Icon(
-            Icons.Outlined.Close,
+            TickrIcons.Close,
             contentDescription = stringResource(Res.string.cd_close),
             tint = content,
             modifier = Modifier.size(16.dp),
@@ -125,7 +118,7 @@ fun BarcodeScanSection(
                         strokeWidth = 2.dp,
                     )
                 } else {
-                    Icon(Icons.Outlined.QrCodeScanner, contentDescription = null, tint = colors.onBrand, modifier = Modifier.size(22.dp))
+                    Icon(TickrIcons.QrCodeScanner, contentDescription = null, tint = colors.onBrand, modifier = Modifier.size(22.dp))
                 }
             }
             Column(modifier = Modifier.weight(1f)) {
@@ -136,7 +129,7 @@ fun BarcodeScanSection(
                 )
                 Spacer(Modifier.size(2.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Outlined.Wifi, contentDescription = null, tint = colors.textSecondary, modifier = Modifier.size(12.dp))
+                    Icon(TickrIcons.Wifi, contentDescription = null, tint = colors.textSecondary, modifier = Modifier.size(12.dp))
                     Spacer(Modifier.width(4.dp))
                     Text(
                         text = stringResource(Res.string.additem_scan_needs_internet),
@@ -170,7 +163,7 @@ fun BarcodeScanSection(
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
-                        Icons.Outlined.Close,
+                        TickrIcons.Close,
                         contentDescription = stringResource(Res.string.cd_clear_barcode),
                         tint = colors.textSecondary,
                         modifier = Modifier.size(14.dp),

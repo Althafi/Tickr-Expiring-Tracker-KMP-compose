@@ -1,5 +1,6 @@
 package com.project.tickr.ui.screen.settings
 
+import com.project.tickr.ui.common.TickrIcons
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,8 +17,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -247,7 +246,7 @@ private fun SettingsRow(
             )
         } else {
             Icon(
-                Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                TickrIcons.KeyboardArrowRightMirrored,
                 contentDescription = null,
                 tint = colors.textSecondary,
                 modifier = Modifier.padding(start = TickrTheme.spacing.xs).size(20.dp),

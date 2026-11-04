@@ -1,5 +1,6 @@
 package com.project.tickr.ui.screen.notifications
 
+import com.project.tickr.ui.common.TickrIcons
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,9 +18,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -74,7 +72,7 @@ fun NotificationsScreen(
                 navigationIcon = {
                     IconButton(onClick = { onAction(NotificationsAction.Back) }) {
                         Icon(
-                            Icons.AutoMirrored.Outlined.ArrowBack,
+                            TickrIcons.ArrowBackMirrored,
                             contentDescription = stringResource(Res.string.cd_back),
                             tint = colors.textPrimary,
                         )
@@ -146,7 +144,7 @@ private fun EmptyState() {
         verticalArrangement = Arrangement.Center,
     ) {
         Icon(
-            Icons.Outlined.Notifications,
+            TickrIcons.Notifications,
             contentDescription = null,
             tint = colors.textSecondary,
             modifier = Modifier.size(48.dp),
@@ -194,7 +192,7 @@ private fun EntryRow(entry: NotificationEntry, onClick: () -> Unit) {
             contentAlignment = Alignment.Center,
         ) {
             Icon(
-                Icons.Outlined.Notifications,
+                TickrIcons.Notifications,
                 contentDescription = null,
                 tint = if (critical) colors.critical else colors.warning,
                 modifier = Modifier.size(22.dp),

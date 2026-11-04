@@ -1,5 +1,6 @@
 package com.project.tickr.ui.screen.home.components
 
+import com.project.tickr.ui.common.TickrIcons
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -15,8 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -230,7 +229,7 @@ private fun ExpiringItemRow(
 
         Spacer(Modifier.width(4.dp))
         Icon(
-            imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+            imageVector = TickrIcons.KeyboardArrowRightMirrored,
             contentDescription = stringResource(Res.string.cd_view_item_detail),
             tint = colors.textSecondary,
             modifier = Modifier.size(20.dp),

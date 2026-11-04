@@ -1,5 +1,6 @@
 package com.project.tickr.ui.screen.home.components
 
+import com.project.tickr.ui.common.TickrIcons
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -13,9 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.TrendingDown
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -85,7 +83,7 @@ fun WasteInsightCard(
             contentAlignment = Alignment.Center,
         ) {
             Icon(
-                imageVector = if (wasteTrend != null) Icons.Outlined.TrendingDown else Icons.Outlined.Info,
+                imageVector = if (wasteTrend != null) TickrIcons.TrendingDown else TickrIcons.Info,
                 contentDescription = null,
                 tint = if (wasteTrend != null) colors.safe else colors.textSecondary,
                 modifier = Modifier.size(22.dp),

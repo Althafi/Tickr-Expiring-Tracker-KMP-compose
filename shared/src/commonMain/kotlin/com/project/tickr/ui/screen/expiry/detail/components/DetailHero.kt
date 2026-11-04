@@ -1,5 +1,6 @@
 package com.project.tickr.ui.screen.expiry.detail.components
 
+import com.project.tickr.ui.common.TickrIcons
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -7,9 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -65,7 +63,7 @@ fun DetailHero(
                 .semantics { contentDescription = backDescription },
         ) {
             Icon(
-                Icons.Outlined.ArrowBack,
+                TickrIcons.ArrowBack,
                 contentDescription = null,
                 tint = colors.textPrimary,
                 modifier = Modifier.size(20.dp),
@@ -85,7 +83,7 @@ fun DetailHero(
                 .semantics { contentDescription = deleteDescription },
         ) {
             Icon(
-                Icons.Outlined.Delete,
+                TickrIcons.Delete,
                 contentDescription = null,
                 tint = colors.critical,
                 modifier = Modifier.size(20.dp),

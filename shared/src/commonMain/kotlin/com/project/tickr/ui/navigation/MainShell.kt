@@ -1,5 +1,6 @@
 package com.project.tickr.ui.navigation
 
+import com.project.tickr.ui.common.TickrIcons
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -55,12 +56,6 @@ import com.project.tickr.ui.theme.TickrTheme
 import org.koin.compose.viewmodel.koinViewModel
 
 // Icons (using Material Icons as placeholder — TODO(user): replace with Lucide/Phosphor outline icons)
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.outlined.Refresh
-import androidx.compose.material.icons.outlined.TrendingUp
 import tickrapp.shared.generated.resources.*
 import com.project.tickr.ui.common.LocalSnackbarInset
 import org.jetbrains.compose.resources.stringResource
@@ -72,10 +67,10 @@ private enum class BottomTab(
     val icon: ImageVector,
     val label: StringResource,
 ) {
-    HOME(Icons.Outlined.Home, Res.string.nav_home),
-    EXPIRING(Icons.Outlined.Refresh, Res.string.nav_expiring),
-    INSIGHT(Icons.Outlined.TrendingUp, Res.string.nav_insight),
-    SETTINGS(Icons.Outlined.Settings, Res.string.nav_settings),
+    HOME(TickrIcons.Home, Res.string.nav_home),
+    EXPIRING(TickrIcons.Refresh, Res.string.nav_expiring),
+    INSIGHT(TickrIcons.TrendingUp, Res.string.nav_insight),
+    SETTINGS(TickrIcons.Settings, Res.string.nav_settings),
 }
 
 @Composable
@@ -265,7 +260,7 @@ private fun TickrBottomBar(
             ),
         ) {
             Icon(
-                Icons.Outlined.Add,
+                TickrIcons.Add,
                 contentDescription = null,
                 tint = TickrTheme.colors.onBrand,
                 modifier = Modifier.size(28.dp),

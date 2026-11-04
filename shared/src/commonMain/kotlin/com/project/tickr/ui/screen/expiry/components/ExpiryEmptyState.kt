@@ -1,5 +1,6 @@
 package com.project.tickr.ui.screen.expiry.components
 
+import com.project.tickr.ui.common.TickrIcons
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,8 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ShoppingBasket
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -47,7 +46,7 @@ fun ExpiryEmptyState(
         ) {
             // Placeholder ilustrasi — TODO(user): ganti dengan ill_empty_expiry
             Icon(
-                Icons.Outlined.ShoppingBasket,
+                TickrIcons.ShoppingBasket,
                 contentDescription = null,
                 tint = colors.primaryBrand.copy(alpha = 0.35f),
                 modifier = Modifier.size(64.dp),

@@ -1,5 +1,6 @@
 package com.project.tickr.ui.screen.insight
 
+import com.project.tickr.ui.common.TickrIcons
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,19 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.EmojiEvents
-import androidx.compose.material.icons.outlined.EventAvailable
-import androidx.compose.material.icons.outlined.Inventory2
-import androidx.compose.material.icons.outlined.Lightbulb
-import androidx.compose.material.icons.outlined.LocalFireDepartment
-import androidx.compose.material.icons.outlined.Lock
-import androidx.compose.material.icons.outlined.Schedule
-import androidx.compose.material.icons.outlined.Timer
-import androidx.compose.material.icons.outlined.TrendingDown
-import androidx.compose.material.icons.outlined.TrendingUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
@@ -193,24 +181,24 @@ internal fun StatsGrid(data: InsightData, modifier: Modifier = Modifier) {
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             StatTile(
                 value = data.totalTracked, label = stringResource(Res.string.insight_stat_tracked),
-                icon = Icons.Outlined.Inventory2, tint = colors.primaryBrand, container = colors.primaryBrand.copy(alpha = 0.1f),
+                icon = TickrIcons.Inventory2, tint = colors.primaryBrand, container = colors.primaryBrand.copy(alpha = 0.1f),
                 modifier = Modifier.weight(1f),
             )
             StatTile(
                 value = data.active, label = stringResource(Res.string.insight_stat_active),
-                icon = Icons.Outlined.Schedule, tint = colors.warning, container = colors.warningContainer,
+                icon = TickrIcons.Schedule, tint = colors.warning, container = colors.warningContainer,
                 modifier = Modifier.weight(1f),
             )
         }
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             StatTile(
                 value = data.consumed, label = stringResource(Res.string.insight_stat_consumed),
-                icon = Icons.Outlined.Check, tint = colors.safe, container = colors.safeContainer,
+                icon = TickrIcons.Check, tint = colors.safe, container = colors.safeContainer,
                 modifier = Modifier.weight(1f),
             )
             StatTile(
                 value = data.wasted, label = stringResource(Res.string.insight_stat_wasted),
-                icon = Icons.Outlined.Delete, tint = colors.critical, container = colors.criticalContainer,
+                icon = TickrIcons.Delete, tint = colors.critical, container = colors.criticalContainer,
                 modifier = Modifier.weight(1f),
             )
         }
@@ -293,7 +281,7 @@ private fun TrendMessage(data: InsightData) {
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Icon(
-            if (improving) Icons.Outlined.TrendingDown else Icons.Outlined.TrendingUp,
+            if (improving) TickrIcons.TrendingDown else TickrIcons.TrendingUp,
             contentDescription = null, tint = tint, modifier = Modifier.size(20.dp),
         )
         Text(text = text, style = typography.body, color = colors.textPrimary)
@@ -314,7 +302,7 @@ internal fun StreakCard(data: InsightData, modifier: Modifier = Modifier) {
 
     InsightCard(modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-            IconBadge(Icons.Outlined.LocalFireDepartment, accent, accent.copy(alpha = 0.15f), size = 52)
+            IconBadge(TickrIcons.LocalFireDepartment, accent, accent.copy(alpha = 0.15f), size = 52)
             Column(Modifier.weight(1f)) {
                 Text(
                     text = stringResource(Res.string.insight_streak_title),
@@ -428,7 +416,7 @@ internal fun UrgentItemsCard(
     InsightCard(modifier = modifier, title = stringResource(Res.string.insight_urgent_title)) {
         if (items.isEmpty()) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                IconBadge(Icons.Outlined.EventAvailable, colors.safe, colors.safeContainer)
+                IconBadge(TickrIcons.EventAvailable, colors.safe, colors.safeContainer)
                 Text(
                     text = stringResource(Res.string.insight_urgent_none),
                     style = typography.body,
@@ -452,7 +440,7 @@ internal fun UrgentItemsCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    IconBadge(Icons.Outlined.Timer, tint, container)
+                    IconBadge(TickrIcons.Timer, tint, container)
                     Text(
                         text = item.name,
                         style = typography.body,
@@ -538,13 +526,13 @@ internal fun HabitsCard(data: InsightData, modifier: Modifier = Modifier) {
     InsightCard(modifier = modifier, title = stringResource(Res.string.insight_habits_title)) {
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             HabitTile(
-                icon = Icons.Outlined.Timer,
+                icon = TickrIcons.Timer,
                 label = stringResource(Res.string.insight_habit_finish_time),
                 value = data.avgDaysToConsume?.let { pluralStringResource(Res.plurals.countdown_days, it, it) },
                 modifier = Modifier.weight(1f),
             )
             HabitTile(
-                icon = Icons.Outlined.EventAvailable,
+                icon = TickrIcons.EventAvailable,
                 label = stringResource(Res.string.insight_habit_before_expiry),
                 value = data.avgDaysBeforeExpiry?.let {
                     if (it == 0) stringResource(Res.string.insight_habit_on_the_day)
@@ -595,7 +583,7 @@ internal fun TipsCard(tips: List<InsightTip>, modifier: Modifier = Modifier) {
     InsightCard(modifier = modifier, title = stringResource(Res.string.insight_tips_title)) {
         tips.forEach { tip ->
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.Top) {
-                IconBadge(Icons.Outlined.Lightbulb, colors.secondaryAccent, colors.secondaryAccent.copy(alpha = 0.15f))
+                IconBadge(TickrIcons.Lightbulb, colors.secondaryAccent, colors.secondaryAccent.copy(alpha = 0.15f))
                 Text(
                     text = tipText(tip),
                     style = typography.body,
@@ -669,7 +657,7 @@ private fun AchievementTile(achievement: Achievement, modifier: Modifier = Modif
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         IconBadge(
-            icon = if (unlocked) Icons.Outlined.EmojiEvents else Icons.Outlined.Lock,
+            icon = if (unlocked) TickrIcons.EmojiEvents else TickrIcons.Lock,
             tint = if (unlocked) colors.secondaryAccent else colors.textSecondary,
             background = if (unlocked) colors.secondaryAccent.copy(alpha = 0.2f) else colors.textSecondary.copy(alpha = 0.1f),
         )

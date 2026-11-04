@@ -1,5 +1,6 @@
 package com.project.tickr.ui.screen.about
 
+import com.project.tickr.ui.common.TickrIcons
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -15,9 +16,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -61,7 +59,7 @@ fun AboutScreen(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
-                            Icons.AutoMirrored.Outlined.ArrowBack,
+                            TickrIcons.ArrowBackMirrored,
                             contentDescription = stringResource(Res.string.cd_back),
                             tint = colors.textPrimary,
                         )
@@ -90,7 +88,7 @@ fun AboutScreen(
                     .background(colors.primaryBrand.copy(alpha = 0.10f), CircleShape),
                 contentAlignment = Alignment.Center,
             ) {
-                Icon(Icons.Outlined.Info, contentDescription = null, tint = colors.primaryBrand, modifier = Modifier.size(36.dp))
+                Icon(TickrIcons.Info, contentDescription = null, tint = colors.primaryBrand, modifier = Modifier.size(36.dp))
             }
             Text(text = info.name, style = TickrTheme.typography.greetingTitle, color = colors.textPrimary)
             Text(

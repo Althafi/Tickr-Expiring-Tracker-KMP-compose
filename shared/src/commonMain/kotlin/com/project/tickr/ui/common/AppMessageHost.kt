@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -109,7 +107,7 @@ fun AppMessageHost(
                     {
                         IconButton(onClick = { data.dismiss() }) {
                             Icon(
-                                imageVector = Icons.Filled.Close,
+                                imageVector = TickrIcons.Close,
                                 contentDescription = stringResource(Res.string.cd_close),
                                 tint = contentColor,
                             )

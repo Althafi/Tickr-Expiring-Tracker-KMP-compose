@@ -1,5 +1,6 @@
 package com.project.tickr.ui.screen.help
 
+import com.project.tickr.ui.common.TickrIcons
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -19,12 +20,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.Email
-import androidx.compose.material.icons.outlined.ExpandMore
-import androidx.compose.material.icons.outlined.Help
-import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -76,7 +71,7 @@ fun HelpScreen(
                 navigationIcon = {
                     IconButton(onClick = { onAction(HelpAction.Back) }) {
                         Icon(
-                            Icons.Outlined.ArrowBack,
+                            TickrIcons.ArrowBack,
                             contentDescription = stringResource(Res.string.cd_back),
                             tint = colors.textPrimary,
                         )
@@ -108,7 +103,7 @@ fun HelpScreen(
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
-                        Icons.Outlined.Help,
+                        TickrIcons.Help,
                         contentDescription = null,
                         tint = colors.primaryBrand,
                         modifier = Modifier.size(22.dp),
@@ -171,13 +166,13 @@ fun HelpScreen(
                 modifier = Modifier.padding(bottom = spacing.sm),
             )
             HelpContactRow(
-                icon = Icons.Outlined.Email,
+                icon = TickrIcons.Email,
                 label = stringResource(Res.string.help_contact_email),
                 onClick = { onAction(HelpAction.ContactEmail) },
             )
             Spacer(Modifier.height(spacing.sm))
             HelpContactRow(
-                icon = Icons.Outlined.Send,
+                icon = TickrIcons.Send,
                 label = stringResource(Res.string.help_contact_whatsapp),
                 onClick = { onAction(HelpAction.ContactWhatsApp) },
             )
@@ -227,7 +222,7 @@ private fun FaqExpandableItem(
             )
             Spacer(Modifier.size(spacing.sm))
             Icon(
-                Icons.Outlined.ExpandMore,
+                TickrIcons.ExpandMore,
                 contentDescription = null,
                 tint = colors.textSecondary,
                 modifier = Modifier.size(20.dp).rotate(chevronRotation),

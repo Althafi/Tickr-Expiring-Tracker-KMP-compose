@@ -1,5 +1,6 @@
 package com.project.tickr.ui.screen.expiry.detail.components
 
+import com.project.tickr.ui.common.TickrIcons
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -11,9 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Category
-import androidx.compose.material.icons.outlined.Inventory2
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,13 +44,13 @@ fun InfoBoxPair(
     ) {
         InfoBox(
             label = stringResource(Res.string.detail_label_category),
-            icon = { Icon(Icons.Outlined.Category, contentDescription = null, tint = TickrTheme.colors.primaryBrand, modifier = Modifier.size(18.dp)) },
+            icon = { Icon(TickrIcons.Category, contentDescription = null, tint = TickrTheme.colors.primaryBrand, modifier = Modifier.size(18.dp)) },
             value = categoryLabel(categoryKey, categoryName),
             modifier = Modifier.weight(1f),
         )
         InfoBox(
             label = stringResource(Res.string.detail_label_quantity),
-            icon = { Icon(Icons.Outlined.Inventory2, contentDescription = null, tint = TickrTheme.colors.primaryBrand, modifier = Modifier.size(18.dp)) },
+            icon = { Icon(TickrIcons.Inventory2, contentDescription = null, tint = TickrTheme.colors.primaryBrand, modifier = Modifier.size(18.dp)) },
             value = stringResource(Res.string.detail_quantity_format, quantity, unitLabel(unit)),
             modifier = Modifier.weight(1f),
         )

@@ -1,5 +1,6 @@
 package com.project.tickr.ui.screen.consumed
 
+import com.project.tickr.ui.common.TickrIcons
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -22,8 +23,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -82,7 +81,7 @@ fun ConsumedItemsScreen(
                 navigationIcon = {
                     IconButton(onClick = { onAction(ConsumedItemsAction.Back) }) {
                         Icon(
-                            imageVector = Icons.Outlined.ArrowBack,
+                            imageVector = TickrIcons.ArrowBack,
                             contentDescription = stringResource(Res.string.cd_back),
                             tint = colors.textPrimary,
                         )

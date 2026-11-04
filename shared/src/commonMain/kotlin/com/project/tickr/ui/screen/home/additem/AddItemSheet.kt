@@ -1,5 +1,6 @@
 package com.project.tickr.ui.screen.home.additem
 
+import com.project.tickr.ui.common.TickrIcons
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,14 +22,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.CalendarToday
-import androidx.compose.material.icons.outlined.CameraAlt
-import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Image
-import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -197,7 +190,7 @@ fun AddItemContent(
             )
             // Plain X icon — no circle wrapper
             IconButton(onClick = onDismiss) {
-                Icon(Icons.Outlined.Close, contentDescription = stringResource(Res.string.cd_close), tint = colors.textPrimary)
+                Icon(TickrIcons.Close, contentDescription = stringResource(Res.string.cd_close), tint = colors.textPrimary)
             }
         }
 
@@ -272,7 +265,7 @@ fun AddItemContent(
                 )
             } else {
                 Icon(
-                    Icons.Outlined.Check,
+                    TickrIcons.Check,
                     contentDescription = null,
                     tint = TickrTheme.colors.onBrand,
                     modifier = Modifier.size(20.dp),
@@ -314,7 +307,7 @@ private fun PhotoPickerBox(
         if (photoPath != null) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Icon(
-                    Icons.Outlined.Image,
+                    TickrIcons.Image,
                     contentDescription = null,
                     tint = colors.safe,
                     modifier = Modifier.size(28.dp),
@@ -330,7 +323,7 @@ private fun PhotoPickerBox(
         } else {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Icon(
-                    Icons.Outlined.CameraAlt,
+                    TickrIcons.CameraAlt,
                     contentDescription = null,
                     tint = colors.textSecondary,
                     modifier = Modifier.size(28.dp),
@@ -478,7 +471,7 @@ private fun QuantitySection(
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
-                    Icons.Outlined.Remove,
+                    TickrIcons.Remove,
                     contentDescription = stringResource(Res.string.cd_decrease),
                     tint = if (state.quantity > 0) colors.primaryBrand
                     else colors.textSecondary.copy(alpha = 0.4f),
@@ -522,7 +515,7 @@ private fun QuantitySection(
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
-                    Icons.Outlined.Add,
+                    TickrIcons.Add,
                     contentDescription = stringResource(Res.string.cd_increase),
                     tint = colors.primaryBrand,
                     modifier = Modifier.size(20.dp),
@@ -597,7 +590,7 @@ private fun ExpiryDateSection(
             trailingIcon = {
                 IconButton(onClick = onShowDatePicker) {
                     Icon(
-                        Icons.Outlined.CalendarToday,
+                        TickrIcons.CalendarToday,
                         contentDescription = stringResource(Res.string.cd_pick_date),
                         tint = colors.textSecondary,
                     )
@@ -724,11 +717,11 @@ private fun PhotoSourceSheet(
                 color = colors.textPrimary,
             )
             Spacer(Modifier.height(TickrTheme.spacing.md))
-            PhotoSourceRow(Icons.Outlined.CameraAlt, stringResource(Res.string.additem_photo_camera)) {
+            PhotoSourceRow(TickrIcons.CameraAlt, stringResource(Res.string.additem_photo_camera)) {
                 onCamera()
                 onDismiss()
             }
-            PhotoSourceRow(Icons.Outlined.Image, stringResource(Res.string.additem_photo_gallery)) {
+            PhotoSourceRow(TickrIcons.Image, stringResource(Res.string.additem_photo_gallery)) {
                 onGallery()
                 onDismiss()
             }

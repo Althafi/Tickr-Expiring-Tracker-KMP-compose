@@ -1,5 +1,6 @@
 package com.project.tickr.ui.screen.expiry.components
 
+import com.project.tickr.ui.common.TickrIcons
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -13,9 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,7 +43,7 @@ fun StatCardPair(
         StatCard(
             value = stats?.consumed?.toString() ?: "–",
             label = stringResource(Res.string.stat_consumed),
-            icon = { Icon(Icons.Outlined.Check, contentDescription = null, tint = colors.safe, modifier = Modifier.size(20.dp)) },
+            icon = { Icon(TickrIcons.Check, contentDescription = null, tint = colors.safe, modifier = Modifier.size(20.dp)) },
             iconBg = colors.safeContainer,
             cardBg = colors.safeContainer.copy(alpha = 0.55f),
             modifier = Modifier.weight(1f),
@@ -53,7 +51,7 @@ fun StatCardPair(
         StatCard(
             value = stats?.wasted?.toString() ?: "–",
             label = stringResource(Res.string.stat_wasted),
-            icon = { Icon(Icons.Outlined.Delete, contentDescription = null, tint = colors.critical, modifier = Modifier.size(20.dp)) },
+            icon = { Icon(TickrIcons.Delete, contentDescription = null, tint = colors.critical, modifier = Modifier.size(20.dp)) },
             iconBg = colors.criticalContainer,
             cardBg = colors.criticalContainer.copy(alpha = 0.55f),
             modifier = Modifier.weight(1f),

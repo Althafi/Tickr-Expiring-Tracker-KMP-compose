@@ -1,5 +1,6 @@
 package com.project.tickr.ui.screen.home.components
 
+import com.project.tickr.ui.common.TickrIcons
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,8 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -78,7 +77,7 @@ fun TickrTopBar(
                 .semantics { contentDescription = notificationsDescription },
         ) {
             Icon(
-                Icons.Outlined.Notifications,
+                TickrIcons.Notifications,
                 contentDescription = null,
                 tint = colors.textPrimary,
                 modifier = Modifier.size(24.dp),

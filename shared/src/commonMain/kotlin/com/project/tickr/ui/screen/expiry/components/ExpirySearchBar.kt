@@ -1,5 +1,6 @@
 package com.project.tickr.ui.screen.expiry.components
 
+import com.project.tickr.ui.common.TickrIcons
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
@@ -13,9 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -62,7 +60,7 @@ fun ExpirySearchBar(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
-                Icons.Outlined.Search,
+                TickrIcons.Search,
                 contentDescription = null,
                 tint = colors.textSecondary,
                 modifier = Modifier.size(20.dp).semantics { contentDescription = searchDescription },
@@ -102,7 +100,7 @@ fun ExpirySearchBar(
                 .semantics { contentDescription = filterDescription },
         ) {
             Icon(
-                Icons.Outlined.Tune,
+                TickrIcons.Tune,
                 contentDescription = null,
                 tint = colors.textPrimary,
                 modifier = Modifier.size(20.dp),
